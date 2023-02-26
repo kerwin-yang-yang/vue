@@ -464,6 +464,10 @@ const authProtectedRoutes = [
   ...emailAppsRoutes,
   ...ReadRoutes,
 
+  ...uiRoutes,
+  ...formsRoutes,
+  ...chartsRoutes,
+  ...tablesRoutes
 ]
 
 // ...uiRoutes,
