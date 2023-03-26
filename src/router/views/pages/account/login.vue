@@ -14,8 +14,8 @@ export default {
 	components: { Layout },
 	data() {
 		return {
-			username: 'admin',
-			password: 'password',
+			username: 'kerwin',
+			password: '11111',
 			authError: null,
 			tryingToLogIn: false,
 			isAuthError: false,
@@ -26,9 +26,9 @@ export default {
 			return process.env.NODE_ENV === 'production'
 				? {}
 				: {
-						username: 'Use "admin" to log in with the mock API',
-						password: 'Use "password" to log in with the mock API',
-				  }
+					username: 'Use "admin" to log in with the mock API',
+					password: 'Use "password" to log in with the mock API',
+				}
 		},
 	},
 	methods: {
@@ -75,9 +75,7 @@ export default {
 										<div class="mx-auto mb-5">
 											<a routerLink="/">
 												<img src="@assets/images/logo.png" alt height="24" />
-												<h3 class="d-inline align-middle ml-1 text-logo"
-													>Shreyu</h3
-												>
+												<h3 class="d-inline align-middle ml-1 text-logo">Shreyu</h3>
 											</a>
 										</div>
 
@@ -87,84 +85,48 @@ export default {
 											panel.
 										</p>
 
-										<b-alert
-											v-model="isAuthError"
-											variant="danger"
-											dismissible
-											>{{ authError }}</b-alert
-										>
+										<b-alert v-model="isAuthError" variant="danger" dismissible>{{ authError
+										}}</b-alert>
 
-										<b-form
-											class="authentication-form"
-											@submit.prevent="tryToLogIn"
-										>
+										<b-form class="authentication-form" @submit.prevent="tryToLogIn">
 											<div class="form-group">
 												<div class="input-group input-group-merge">
 													<div class="input-group-prepend">
 														<span class="input-group-text">
-															<feather
-																type="mail"
-																class="align-middle icon-dual"
-															></feather>
+															<feather type="mail" class="align-middle icon-dual"></feather>
 														</span>
 													</div>
-													<b-form-input
-														id="input-1"
-														v-model="username"
-														type="text"
-														required
-														placeholder="Enter username"
-													></b-form-input>
+													<b-form-input id="input-1" v-model="username" type="text" required
+														placeholder="Enter username"></b-form-input>
 												</div>
 											</div>
 											<div class="form-group mt-4">
 												<label class="form-control-label">Password</label>
-												<router-link
-													to="forget-password"
-													class="float-right text-muted text-unline-dashed ml-1"
-													>Forgot your password?</router-link
-												>
+												<router-link to="forget-password"
+													class="float-right text-muted text-unline-dashed ml-1">Forgot your
+													password?</router-link>
 												<div class="input-group input-group-merge">
 													<div class="input-group-prepend">
 														<span class="input-group-text">
-															<feather
-																type="lock"
-																class="align-middle icon-dual"
-															></feather>
-														</span>
-													</div>
-													<b-form-input
-														id="password"
-														v-model="password"
-														type="password"
-														required
-														placeholder="Enter your password"
-													></b-form-input>
+															<feather type="lock" class="align-middle icon-dual"></feather>
+													</span>
+												</div>
+												<b-form-input id="password" v-model="password" type="password" required
+														placeholder="Enter your password"></b-form-input>
 												</div>
 											</div>
 											<div class="form-group mb-4">
 												<div class="custom-control custom-checkbox">
-													<input
-														id="checkbox-signin"
-														type="checkbox"
-														class="custom-control-input"
-														checked
-													/>
-													<label
-														class="custom-control-label"
-														for="checkbox-signin"
-													>
+													<input id="checkbox-signin" type="checkbox" class="custom-control-input"
+														checked />
+													<label class="custom-control-label" for="checkbox-signin">
 														Remember me
 													</label>
 												</div>
 											</div>
 											<b-form-group id="button-group" class="mt-4 mb-1">
-												<b-button
-													type="submit"
-													variant="primary"
-													class="btn-block"
-													>Log In</b-button
-												>
+												<b-button type="submit" variant="primary" class="btn-block">Log
+													In</b-button>
 											</b-form-group>
 										</b-form>
 										<div class="py-3 text-center">
@@ -189,12 +151,9 @@ export default {
 										<div class="auth-page-sidebar">
 											<div class="overlay"></div>
 											<div class="auth-user-testimonial">
-												<p class="font-size-24 font-weight-bold text-white mb-1"
-													>I simply love it!</p
-												>
-												<p class="lead"
-													>"It's a elegent templete. I love it very much!"</p
-												>
+												<p class="font-size-24 font-weight-bold text-white mb-1">I simply love it!
+												</p>
+												<p class="lead">"It's a elegent templete. I love it very much!"</p>
 												<p>- Admin User</p>
 											</div>
 										</div>
@@ -209,17 +168,13 @@ export default {
 							<div class="col-12 text-center">
 								<p class="text-muted">
 									Don't have an account?
-									<router-link
-										tag="a"
-										to="/register"
-										class="text-primary font-weight-bold ml-1"
-									>
+									<router-link tag="a" to="/register" class="text-primary font-weight-bold ml-1">
 										<b>Sign Up</b>
 									</router-link>
 									<!-- <a
-                    routerLink="/account/signup"
-                    class="text-primary font-weight-bold ml-1"
-                  >Sign Up</a>-->
+	                    routerLink="/account/signup"
+	                    class="text-primary font-weight-bold ml-1"
+	                  >Sign Up</a>-->
 								</p>
 							</div>
 							<!-- end col -->

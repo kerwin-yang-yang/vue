@@ -29,4 +29,10 @@ export default {
 
 // Design variables and utilities from src/design.
 @import '@design';
+::-webkit-scrollbar {
+  width: 0 !important;
+}
+::-webkit-scrollbar {
+  width: 0 !important;height: 0;
+}
 </style>

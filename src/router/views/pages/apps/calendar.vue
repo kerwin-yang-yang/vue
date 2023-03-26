@@ -58,10 +58,16 @@ export default {
 			event: {
 				title: '',
 				category: '',
+				start:'',
+				end: ''
 			},
 			editevent: {
 				editTitle: '',
 			},
+			dateTimePicker: {
+        enableTime: true,
+        // dateFormat: 'd-m-Y H:i',
+      },
 		}
 	},
 	validations: {
@@ -84,12 +90,15 @@ export default {
 			} else {
 				const title = this.event.title
 				const category = this.event.category
+				const start = this.event.start
+				const end = this.event.end
+
 
 				this.calendarEvents = this.calendarEvents.concat({
 					id: this.calendarEvents.length + 1,
 					title,
-					start: new Date(),
-					end: new Date(),
+					start: start,
+					end: end,
 					classNames: [category],
 				})
 
@@ -266,6 +275,38 @@ export default {
 					</div>
 					<div class="col-12">
 						<div class="form-group">
+							<label for="name">Event Name</label>
+							<flat-pickr
+                v-model="event.start"
+                :config="dateTimePicker"
+                class="form-control"
+                placeholder="Date and Time"
+              ></flat-pickr>
+							<div
+								v-if="submitted && !$v.event.start.required"
+								class="invalid-feedback"
+								>This value is required.</div
+							>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group">
+							<label for="name">Event Name</label>
+							<flat-pickr
+                v-model="event.end"
+                :config="dateTimePicker"
+                class="form-control"
+                placeholder="Date and Time"
+              ></flat-pickr>
+							<div
+								v-if="submitted && !$v.event.end.required && event.end<event.start"
+								class="invalid-feedback"
+								>This value is wrong.</div
+							>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group">
 							<label class="control-label">Category</label>
 							<select
 								v-model="event.category"
@@ -287,6 +328,7 @@ export default {
 							>
 						</div>
 					</div>
+
 				</div>
 
 				<div class="text-right">

@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 export const state = {
   currentUser: getSavedState('auth.currentUser'),
 }
@@ -41,15 +42,20 @@ export const actions = {
 
   // Logs out the current user.
   logOut({ commit }) {
+
+    axios
+      .get('api/logout', { params: state.currentUser })
+      .then((response) => {
+      })
     commit('SET_CURRENT_USER', null)
   },
 
   // register the user
-  register({ commit, dispatch, getters }, { fullname, email, password } = {}) {
+  register({ commit, dispatch, getters }, { username, email, password, repassword } = {}) {
     if (getters.loggedIn) return dispatch('validate')
 
     return axios
-      .post('/api/register', { fullname, email, password })
+      .post('/api/register', { username, email, password, repassword })
       .then((response) => {
         const user = response.data
         return user
@@ -71,8 +77,11 @@ export const actions = {
   validate({ commit, state }) {
     if (!state.currentUser) return Promise.resolve(null)
 
+    return state.currentUser
     return axios
-      .get('/api/session')
+      .get('/api/session', {
+        params: state.currentUser
+      })
       .then((response) => {
         const user = response.data
         commit('SET_CURRENT_USER', user)

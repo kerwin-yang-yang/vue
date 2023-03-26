@@ -1,140 +1,101 @@
-<script>
-import appConfig from '@src/app.config'
-import Layout from '@layouts/main'
+<script async src="https://docs.opencv.org/master/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
 
-/**
- * Pricing component
- */
+<template>
+  <div>
+    <video ref="video" autoplay width="640" height="360"></video>
+    <canvas ref="canvas" width="640" height="360" style="visibility: hidden;z-index: 100;"></canvas>
+    <canvas ref="canvas1" width="640" height="360"></canvas>
+    <button @click="uploadVideo()">上传</button>
+  </div>
+</template>
+
+
+<script>
+import axios from 'axios'
+
 export default {
-	page: {
-		title: 'Pricing',
-		meta: [{ name: 'description', content: appConfig.description }],
-	},
-	components: { Layout },
-	data() {
-		return {
-			title: 'Pricing',
-			items: [
-				{
-					text: 'Shreyu',
-					href: '/',
-				},
-				{
-					text: 'Extras',
-					href: '/',
-				},
-				{
-					text: 'Pricing',
-					active: true,
-				},
-			],
-			plans: [
-				{
-					id: 1,
-					name: 'Professional Pack',
-					icon: 'users',
-					price: '$19',
-					features: [
-						'10 GB Storage',
-						'500 GB Bandwidth',
-						'No Domain',
-						'Email Support',
-						'24x7 Support',
-					],
-					isRecommended: false,
-				},
-				{
-					id: 2,
-					name: 'Business Pack',
-					icon: 'briefcase',
-					price: '$29',
-					features: [
-						'50 GB Storage',
-						'900 GB Bandwidth',
-						'2 Domain',
-						'Email Support',
-						'24x7 Support',
-					],
-					isRecommended: true,
-				},
-				{
-					id: 3,
-					name: 'Enterprise Pack',
-					icon: 'shopping-bag',
-					price: '$49',
-					features: [
-						'100 GB Storage',
-						'Unlimited Bandwidth',
-						'10 Domain',
-						'Email Support',
-						'24x7 Support',
-					],
-					isRecommended: false,
-				},
-			],
-		}
-	},
+  mounted() {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: { ideal: 640 },
+          height: { ideal: 360 },
+        },
+        audio: false,
+      })
+      .then((stream) => {
+        this.$refs.video.srcObject = stream
+      })
+
+     this.uploadTimer=setInterval(this.uploadVideo,100);
+  },
+
+  methods: {
+    destroyed() {
+      clearInterval(this.uploadTimer)
+    },
+    async uploadVideo() {
+      const canvas = this.$refs.canvas
+      const video = this.$refs.video
+
+      try {
+        // 判断当前视屏是否被暂停、结束或者音频播放状态等.
+        if (video.paused || video.ended) return false
+
+        // 如果之前没有添加过该 Node 则将它添加至 DOM 节点树种。
+        if (!document.getElementById('canvas')) {
+          this.$el.appendChild(canvas)
+        }
+
+        var context = canvas.getContext('2d')
+        context.drawImage(video, 0, 0)
+      } catch (err) {
+        console.error(err)
+      }
+
+      let dataURL = canvas.toDataURL()
+
+      try {
+        let response = (
+          await axios.post('/api/process_image', {
+            image: dataURL,
+            filename: 'process.jpeg',
+            mimetype: 'image/jpeg',
+          })
+        ).data
+
+        if (response) {
+          console.log(response)
+
+          // 响应回传 JSON 数据必须包含待渲染图形字段、长宽比还有其他可能需要修改项内容.
+          if (response.image && response.aspectRatio) {
+
+            this.renderImageToScreen(response.image, response.aspectRatio)
+          }
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+
+    renderImageToScreen(base64EncodedStr, ratio) {
+      const cv = this.$refs.canvas1
+      const ctx = cv.getContext('2d')
+      // 清除画布并将处理后图像填充至整个画布区域
+      // ctx.clearRect(0, 0, cv.width, cv.height)
+      const img = new Image()
+      img.onload = function () {
+        cv.width = img.naturalWidth * ratio * 1.75
+        cv.height = img.naturalHeight * ratio * 1.75
+        ctx.clearRect(0, 0, cv.width, cv.height)
+        ctx.drawImage(img, 0,0,cv.width,cv.height)
+      }
+      img.src = 'data:image/jpeg;base64,' + base64EncodedStr
+    },
+  },
 }
 </script>
 
-<template>
-	<Layout>
-		<div class="row justify-content-center">
-			<div class="col-lg-10">
-				<div class="text-center mt-4 mb-5">
-					<h3>Simple pricing for Everyone</h3>
-					<p class="text-muted"
-						>Fully functional accounts are starting from $19/month only</p
-					>
-				</div>
-				<div class="row">
-					<div v-for="plan in plans" :key="plan.id" class="col-lg-4">
-						<div class="card card-pricing">
-							<div class="card-body p-4">
-								<div class="media">
-									<div class="media-body">
-										<h5 class="mt-0 mb-2 font-size-16">{{ plan.name }}</h5>
-										<h2 class="mt-0 mb-2">
-											{{ plan.price }}
-											<span class="font-size-14">/ Month</span>
-										</h2>
-									</div>
-									<div class="align-self-center">
-										<!-- <i class="icon-dual icon-lg" [attr.data-feather]="plan.icon"></i> -->
-										<feather
-											class="icon-dual icon-lg"
-											:type="plan.icon"
-										></feather>
-									</div>
-								</div>
+<style scoped>
+</style>
 
-								<ul
-									class="card-pricing-features text-muted border-top pt-2 mt-2 pl-0 list-unstyled"
-								>
-									<li v-for="feature in plan.features" :key="feature">
-										<i class="uil uil-check text-success font-size-15 mr-1"></i>
-										{{ feature }}
-									</li>
-								</ul>
-
-								<div class="mt-5 text-center">
-									<button
-										class="btn px-sm-4"
-										:class="{
-											'btn-primary': plan.isRecommended,
-											'btn-soft-primary': !plan.isRecommended,
-										}"
-									>
-										<i class="uil uil-arrow-right mr-1"></i>Buy Now for
-										{{ plan.price }}
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- end row -->
-	</Layout>
-</template>

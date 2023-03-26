@@ -14,9 +14,10 @@ export default {
 	components: { Layout },
 	data() {
 		return {
-			fullname: '',
+			username: '',
 			email: '',
 			password: '',
+			repassword: '',
 			regError: null,
 			tryingToRegister: false,
 			isRegisterError: false,
@@ -32,9 +33,10 @@ export default {
 			// Reset the regError if it existed.
 			this.regError = null
 			return this.register({
-				fullname: this.fullname,
+				username: this.username,
 				email: this.email,
 				password: this.password,
+				repassword: this.repassword
 			})
 				.then((token) => {
 					this.tryingToRegister = false
@@ -67,18 +69,14 @@ export default {
 										<div class="mx-auto mb-5">
 											<a href="/">
 												<img src="@assets/images/logo.png" alt height="24" />
-												<h3 class="d-inline align-middle ml-1 text-logo"
-													>Shreyu</h3
-												>
+												<h3 class="d-inline align-middle ml-1 text-logo">Shreyu</h3>
 											</a>
 										</div>
 
 										<h6 class="h5 mb-0 mt-4">Create your account</h6>
-										<p class="text-muted mt-0 mb-4"
-											>Create a free account and start using Shreyu</p
-										>
+										<p class="text-muted mt-0 mb-4">Create a free account and start using Shreyu</p>
 
-										<form action="#" class="authentication-form">
+										<form class="authentication-form" @submit.prevent="tryToRegisterIn">
 											<div class="form-group">
 												<label class="form-control-label">Name</label>
 												<div class="input-group input-group-merge">
@@ -87,13 +85,8 @@ export default {
 															<feather type="user" class="icon-dual"></feather>
 														</span>
 													</div>
-													<input
-														id="name"
-														type="text"
-														class="form-control"
-														placeholder="Your full name"
-														required
-													/>
+													<input id="name" v-model="username" type="text" class="form-control"
+														placeholder="Your full name" required />
 												</div>
 											</div>
 
@@ -105,12 +98,8 @@ export default {
 															<feather type="mail" class="icon-dual"></feather>
 														</span>
 													</div>
-													<input
-														id="email"
-														type="email"
-														class="form-control"
-														placeholder="hello@coderthemes.com"
-													/>
+													<input id="email" v-model="email" type="email" class="form-control"
+														placeholder="hello@coderthemes.com" />
 												</div>
 											</div>
 
@@ -122,39 +111,36 @@ export default {
 															<feather type="lock" class="icon-dual"></feather>
 														</span>
 													</div>
-													<input
-														id="password"
-														type="password"
-														class="form-control"
-														placeholder="Enter your password"
-													/>
+													<input id="password" v-model="password" type="password"
+														class="form-control" placeholder="Enter your password" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="form-control-label">Rewrite Password</label>
+												<div class="input-group input-group-merge">
+													<div class="input-group-prepend">
+														<span class="input-group-text">
+															<feather type="lock" class="icon-dual"></feather>
+														</span>
+													</div>
+													<input id="repassword" v-model="repassword" type="password"
+														class="form-control" placeholder="Rewrite your password" />
 												</div>
 											</div>
 
 											<div class="form-group mb-4">
 												<div class="custom-control custom-checkbox">
-													<input
-														id="checkbox-signup"
-														type="checkbox"
-														class="custom-control-input"
-														checked
-													/>
-													<label
-														class="custom-control-label"
-														for="checkbox-signup"
-													>
+													<input id="checkbox-signup" type="checkbox" class="custom-control-input"
+														checked />
+													<label class="custom-control-label" for="checkbox-signup">
 														I accept
-														<a href="javascript: void(0);"
-															>Terms and Conditions</a
-														>
+														<a href="javascript: void(0);">Terms and Conditions</a>
 													</label>
 												</div>
 											</div>
 
 											<div class="form-group mb-0 text-center">
-												<button class="btn btn-primary btn-block" type="submit"
-													>Sign Up</button
-												>
+												<button class="btn btn-primary btn-block" type="submit">Sign Up</button>
 											</div>
 										</form>
 									</div>
@@ -163,12 +149,9 @@ export default {
 										<div class="auth-page-sidebar">
 											<div class="overlay"></div>
 											<div class="auth-user-testimonial">
-												<p class="font-size-24 font-weight-bold text-white mb-1"
-													>I simply love it!</p
-												>
-												<p class="lead"
-													>"It's a elegent templete. I love it very much!"</p
-												>
+												<p class="font-size-24 font-weight-bold text-white mb-1">I simply love it!
+												</p>
+												<p class="lead">"It's a elegent templete. I love it very much!"</p>
 												<p>- Admin User</p>
 											</div>
 										</div>
@@ -183,12 +166,8 @@ export default {
 							<div class="col-12 text-center">
 								<p class="text-muted">
 									Already have account?
-									<router-link
-										tag="a"
-										to="/login"
-										class="text-primary font-weight-bold ml-1"
-										>Log In</router-link
-									>
+									<router-link tag="a" to="/login" class="text-primary font-weight-bold ml-1">Log
+										In</router-link>
 								</p>
 							</div>
 							<!-- end col -->
