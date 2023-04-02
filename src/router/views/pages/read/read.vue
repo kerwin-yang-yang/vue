@@ -6,7 +6,23 @@ import TimeLine from '@views/pages/secondary/starter.vue'
 import ReadTopbar from './edit.vue'
 import Footer from '@components/footer'
 import VueDragResize from 'vue-drag-resize'
+import axios from 'axios'
+import Overview from '@components/overview'
+import appConfig from '@src/app.config'
+import StatChart from '@components/widget-stat-chart'
+
 export default {
+  page: {
+    title: 'Read Document',
+    meta: [{ name: 'description', content: appConfig.description }],
+  },
+  props: {
+    user: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+  },
   components: {
     LeftbarList,
     VueEditor,
@@ -14,13 +30,58 @@ export default {
     ReadTopbar,
     Footer,
     VueDragResize,
+    StatChart,
+    Overview
   },
   data() {
     return {
+      tabContent: `Vakal text here dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.`,
+      content: ` Donec pede justo, fringilla vel, aliquet nec, vulputate
+                  eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
+                  justo. Nullam dictum felis eu pede mollis pretium. Integer
+                  tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean
+                  vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
+                  consequat vitae, eleifend ac, enim.`,
+      overviewData: [
+        {
+          class: 'py-3 border-bottom',
+          icon: 'package',
+          value: '2100',
+          title: 'Total Tasks Completed',
+        },
+        {
+          class: 'py-3 border-bottom',
+          icon: 'clock',
+          value: '21,000',
+          title: 'Total Hours Worked',
+        },
+        {
+          class: 'py-3 border-bottom',
+          icon: 'briefcase',
+          value: '1095',
+          title: 'Total Issues Fixed',
+        },
+        {
+          class: 'py-3',
+          icon: 'tag',
+          value: '51,200',
+          title: 'Total Commits',
+        },
+      ],
+      timer: 0,
+      timerRunning: false,
+      statChart: [
+        {
+          mainTitle: 'today revenue',
+          value: 2100,
+          subValue: '10.21%',
+          chartColor: '#5369f8',
+        }],
+      errorModal: false,
       isVisible: true,
       fullscreen: false,
-      videoWidth: 160,
-      videoHeight: 90,
+      videoWidth: 304,
+      videoHeight: 171,
       imgSrc: '',
       thisCancas: null,
       images: [],
@@ -54,13 +115,104 @@ export default {
     }
   },
   mounted() {
-    this.getCompetence()
-    
+    // this.getCompetence()
+    this.screen()
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: { ideal: 640 },
+          height: { ideal: 360 },
+        },
+        audio: false,
+      })
+      .then((stream) => {
+        this.$refs.video.srcObject = stream
+      })
+
+    // this.uploadTimer = setInterval(this.uploadVideo, 100);
+
     axios.get('/api/document/get_images').then((response) => {
-      this.images = response.data.images // 从Flask后端获取图片数据，并将其添加到images列表中
+      // this.images = response.data.images // 从Flask后端获取图片数据，并将其添加到images列表中
+      this.images = response.data.images.map(image => ({ url: image.data, path: image.path, comment: image.comment }));
+      console.log(this.images)
     })
+    this.startTimer()
   },
   methods: {
+    startTimer() {
+      this.timerRunning = true;
+      const startTime = Date.now();
+      this.timer = 0;
+      this.interval = setInterval(() => {
+        const now = Date.now();
+        this.timer = Math.floor((now - startTime) / 1000);
+      }, 1000);
+    }, formatTime(seconds) {
+      const date = new Date(null)
+      date.setSeconds(seconds)
+      return date.toISOString().substr(11, 8)
+    },
+    destroyed() {
+      clearInterval(this.uploadTimer)
+    },
+    async uploadVideo() {
+      const canvas = this.$refs.canvas
+      const video = this.$refs.video
+
+      try {
+        // 判断当前视屏是否被暂停、结束或者音频播放状态等.
+        if (video.paused || video.ended) return false
+
+        // 如果之前没有添加过该 Node 则将它添加至 DOM 节点树种。
+        if (!document.getElementById('canvas')) {
+          this.$el.appendChild(canvas)
+        }
+
+        var context = canvas.getContext('2d')
+        context.drawImage(video, 0, 0)
+      } catch (err) {
+        console.error(err)
+      }
+
+      let dataURL = canvas.toDataURL()
+
+      try {
+        let response = (
+          await axios.post('/api/process_image', {
+            image: dataURL,
+            filename: 'process.jpeg',
+            mimetype: 'image/jpeg',
+          })
+        ).data
+
+        if (response) {
+          console.log(response)
+
+          // 响应回传 JSON 数据必须包含待渲染图形字段、长宽比还有其他可能需要修改项内容.
+          if (response.image && response.aspectRatio) {
+
+            this.renderImageToScreen(response.image, response.aspectRatio)
+          }
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+
+    renderImageToScreen(base64EncodedStr, ratio) {
+      const cv = this.$refs.canvas1
+      const ctx = cv.getContext('2d')
+      // 清除画布并将处理后图像填充至整个画布区域
+      // ctx.clearRect(0, 0, cv.width, cv.height)
+      const img = new Image()
+      img.onload = function () {
+        cv.width = img.naturalWidth * ratio * 0.85
+        cv.height = img.naturalHeight * ratio * 0.85
+        ctx.clearRect(0, 0, 304, 171)
+        ctx.drawImage(img, 0, 0, 304, 171)
+      }
+      img.src = 'data:image/jpeg;base64,' + base64EncodedStr
+    },
     resize(newRect) {
       this.width = newRect.width
       this.height = newRect.height
@@ -72,6 +224,16 @@ export default {
 
     remove() {
       this.isVisible = false
+    },
+    Immersion() {
+      this.leftSide = 0
+      this.topleft = 0
+      this.label = 0
+      this.show = 0
+      for (let i = 0; i < this.Sidebar.length; i++) {
+        this.sidebarNotViewd(i)
+      }
+
     },
     screen() {
       let element = document.documentElement
@@ -247,6 +409,9 @@ export default {
       this.label = !this.label
     },
   },
+  beforeDestroy() {
+    clearInterval(this.interval);
+  },
 }
 </script>
 
@@ -258,51 +423,54 @@ export default {
     <div class="row">
       <div class="col-lg-12">
         <div class="email-container">
-          
-          <VueDragResize :isActive="true" :w="640" :h="320" :x="300" :y="300" v-on:resizing="resize" v-on:dragging="resize" :parent-limitation="true"
-            style="z-index: 1000; position: fixed">
+
+          <VueDragResize :isActive="true" :w="304" :h="171" :x="1" :y="550" v-on:resizing="resize" v-on:dragging="resize"
+            :parent-limitation="true" style="z-index: 1000; position: fixed" :sticks="['tr']">
             <div v-if="isVisible" class="chatbox1 overflow-hidden">
               <!-- <div class="bg-primary p-2">
-                                                                                                                                                      <div class="media">
-                                                                                                                                                          <img src="@assets/images/users/avatar-2.jpg" alt class="avatar-sm rounded ml-1 mr-2" />
-                                                                                                                                                          <div class="media-body">
-                                                                                                                                                              <h5 class="font-size-13 text-white m-0">Johnny</h5>
-                                                                                                                                                              <small class="text-white-50">
-                                                                                                                                              <i class="uil uil-circle font-size-11 text-success mr-1"></i>Active Now
-                                                                                                                                          </small>
-                                                                                                                                                          </div>
-                                                                                                                                                      <div class="float-right font-size-18 mt-1">
-                                                                                                                                                          <a href="javascript: void(0);" class="text-white mr-2">
-                                                                                                                                                                  <i class="uil uil-comment-alt-notes font-size-16"></i>
-                                                                                                                                                              </a>
-                                                                                                                                                              <a class="chat-close text-white mr-2" href="javascript: void(0);" @click="remove">
-                                                                                                                                                                  <i class="uil uil-multiply font-size-14"></i>
-                                                                                                                                                              </a>
-                                                                                                                                                          </div>
-                                                                                                                                                      </div>
-                                                                                                                                                  </div> -->
+                                                                                                                                                                                              <div class="media">
+                                                                                                                                                                                                  <img src="@assets/images/users/avatar-2.jpg" alt class="avatar-sm rounded ml-1 mr-2" />
+                                                                                                                                                                                                  <div class="media-body">
+                                                                                                                                                                                                      <h5 class="font-size-13 text-white m-0">Johnny</h5>
+                                                                                                                                                                                                  <small class="text-white-50">
+                                                                                                                                                                                  <i class="uil uil-circle font-size-11 text-success mr-1"></i>Active Now
+                                                                                                                                                                                  </small>
+                                                                                                                                                                                                  </div>
+                                                                                                                                                                                              <div class="float-right font-size-18 mt-1">
+                                                                                                                                                                                                  <a href="javascript: void(0);" class="text-white mr-2">
+                                                                                                                                                                                                          <i class="uil uil-comment-alt-notes font-size-16"></i>
+                                                                                                                                                                                                      </a>
+                                                                                                                                                                                                      <a class="chat-close text-white mr-2" href="javascript: void(0);" @click="remove">
+                                                                                                                                                                                                          <i class="uil uil-multiply font-size-14"></i>
+                                                                                                                                                                                                      </a>
+                                                                                                                                                                                              </div>
+                                                                                                                                                                                          </div>
+                                                                                                                                                                                          </div> -->
 
-              <div class="chat-conversation p-2">
-                <video id="videoCamera" :width="videoWidth" :height="videoHeight" autoplay></video>
-                <canvas style="display: none" id="canvasCamera" :width="videoWidth" :height="videoHeight"></canvas>
-                <div v-if="imgSrc" class="img_bg_camera">
-                  <img :src="imgSrc" alt="" class="tx_img" />
-                </div>
-                <button @click="getCompetence()">打开摄像头</button>
-                <button @click="stopNavigator()">关闭摄像头</button>
-                <button @click="setImage()">拍照</button>
+              <!-- <div class="chat-conversation p-2">
+                                                      <video id="videoCamera" :width="videoWidth" :height="videoHeight" autoplay></video>
+                                                      <canvas style="display: none" id="canvasCamera" :width="videoWidth" :height="videoHeight"></canvas>
+                                                      <div v-if="imgSrc" class="img_bg_camera">
+                                                        <img :src="imgSrc" alt="" class="tx_img" />
+                                                        </div>
+                                                        <button @click="getCompetence()">打开摄像头</button>
+                                                        <button @click="stopNavigator()">关闭摄像头</button>
+                                                      <button @click="setImage()">拍照</button>
+                                                    </div> -->
+              <video ref="video" autoplay width="640" height="360" style="display: none;"></video>
+              <canvas ref="canvas" width="640" height="360" style="display: none;z-index: 100;"></canvas>
+              <canvas ref="canvas1" width="304" height="171"></canvas>
+              <!-- <button @click="uploadVideo()">上传</button> -->
+
+              <div v-for="stat of statChart" :key="stat.mainTitle" style="width: 100%;height:auto">
+                <StatChart :value="stat.value" :sub-value="stat.subValue" :chart-color="stat.chartColor" />
+
               </div>
             </div>
           </VueDragResize>
 
           <div class="inbox-leftbar" :class="{ active: this.leftSide }">
-            <!-- <LeftbarList /> -->
             <header id="header">
-              <!-- 
-          <div id="topNavMobile">
-            <nav id="mobileMenuLink" class="main-nav clear"><ul><li class="active-link"><a>Menu</a></li></ul></nav>
-          </div> -->
-
               <div id="logo" data-content-field="site-title">
                 <h1 class="logo image" data-shrink-original-size="26" style="letter-spacing: 0em">
                   <a href="/">
@@ -317,13 +485,27 @@ export default {
                 <nav id="mainNavigation" class="main-nav dropdown-click desktop-nav">
                   <ul>
                     <li class="page-collection active-link">
-                      <a href="/overview">Overview</a>
+                      <a @click="errorModal = true">暂停</a>
+                      <b-modal v-model="errorModal" centered hide-footer title="Behavior Warning" title-class="font-18">
+                        <div class="text-center">
+                          <i class="uil-no-entry text-warning display-3"></i>
+                          <h4 class="text-danger mt-4">Abnormal Behavior Warning </h4>
+                          <p class="w-75 mx-auto text-muted">Please note that your suspension behavior will be recorded in
+                            the documentation, and any resulting leakage consequences will be borne by you</p>
+                          <div class="mt-4">
+                            <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
+                              @click="errorModal = false">
+                              I know
+                            </a>
+                          </div>
+                        </div>
+                      </b-modal>
                     </li>
 
                     <li class="page-collection active-link">
                       <div>
                         <div>
-                          <router-link to="/apps/email/inbox" class="">退出阅读</router-link>
+                          <router-link to="/apps/email/inbox" class="" @click="errorModal = true">退出</router-link>
 
                           <!-- <a-button class="btn btn-danger btn-block mb-4" type="primary">全屏</a-button> -->
                         </div>
@@ -346,27 +528,9 @@ export default {
                       <a href="/environmental-1">Environmental</a>
                     </li>
 
-                    <li class="page-collection">
-                      <a href="/studio">Studio</a>
-                    </li>
 
-                    <li class="page-collection">
-                      <a href="/cultures">Cultures</a>
-                    </li>
-
-                    <li class="page-collection">
-                      <a href="/agriindustry">AGR(I)NDUSTRY</a>
-                    </li>
-
-                    <li class="page-collection">
-                      <a href="/fitness">Fitness</a>
-                    </li>
-
-                    <li class="page-collection">
-                      <a href="/clients">Clients</a>
-                    </li>
                   </ul>
-              </nav>
+                </nav>
 
                 <nav id="secondaryNavigation" class="main-nav dropdown-click desktop-nav">
                   <ul>
@@ -381,7 +545,7 @@ export default {
                 </nav>
               </div>
 
-            <div class="sqs-layout sqs-grid-1 columns-1" data-layout-label="Header Content" data-type="block-field"
+              <div class="sqs-layout sqs-grid-1 columns-1" data-layout-label="Header Content" data-type="block-field"
                 data-updated-on="1544863640479" id="headerBlocks">
                 <div class="row sqs-row">
                   <div class="col sqs-col-1 span-1">
@@ -478,63 +642,77 @@ export default {
             <div class="top-container" :class="{ active: this.topleft }">
               <nav class="navbar navbar-expand-md bg-light navbar-light sticky-top" style="">
                 <div class="header-crumb">
-                  <a href="#" class="navbar-brand"> 💁🏻‍♀️ 团队介绍 </a>
+                  <a href="#" class="navbar-brand"> 💁🏻‍♀️ {{ user.username }} </a>
                   <div><b-button variant="outline-dark" size="sm" style="
-                          border-radius: 8px;
-                          border: 1px solid #bbb6b7;
-                          height: 32px;
-                          width: 56px;
-                        " @click="changeLeftSide"><i class="uil font-size-15" :class="{
+                                                                  border-radius: 8px;
+                                                                border: 1px solid #bbb6b7;
+                                                                height: 32px;
+                                                                  width: 56px;
+                                                                " @click="changeLeftSide"><i class="uil font-size-15"
+                        :class="{
                           'uil-left-arrow-to-left': label,
                           'uil-arrow-to-right': !label,
                         }"></i></b-button>
                   </div>
-                  <div class="sc-elJkPf cuKFxh"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
-                      class="sc-bYSBpT cZZyrb" width="10px" height="10px">
-                      <path
-                        d="M7 13c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zm0-1c2.8 0 5-2.2 5-5S9.8 2 7 2 2 4.2 2 7s2.2 5 5 5zm2.2-8l.8.4L6.1 10 4 7l.7-.6L6.1 8l3.1-4z"
-                        fill="#7a9880"></path>
-                    </svg>2022年6月23日 更新</div>
+                  <span>{{ formatTime(timer) }}</span>
                 </div>
+                <div class="head-center"></div>
 
                 <div class="head-action">
+                  <div class="header-action-item"><b-button variant="outline-dark" size="sm"
+                      style="
+                                                          border-radius: 8px;
+                                                          border: none;
+                                                          height: 32px;
+                                                    width: 40px;    display: flex; justify-content: center;align-items: center; ">
+                      <feather type="music"></feather>
+                    </b-button>
+                  </div>
                   <div class="header-action-item"><b-button variant="outline-dark" size="sm" style="
-                          border-radius: 8px;
-                          border: 1px solid #bbb6b7;
-                          height: 32px;
-                          width: 56px;
-                        " @click="screen">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="feather font-size-12">
-                        <path
-                          d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
-                        </path>
-                      </svg></b-button>
+                                                                border-radius: 8px;
+                                                                border: none;
+                                                                height: 32px;
+                                                          width: 40px;    display: flex;
+                                    justify-content: center;
+                                          align-items: center;
+                                                              " @click="Immersion">
+                      <feather type="airplay"></feather>
+                    </b-button>
                   </div>
 
                   <div class="header-action-item"><b-button variant="outline-dark" size="sm" style="
-                          border-radius: 8px;
-                          border: 1px solid #bbb6b7;
-                          height: 32px;
-                          width: 56px;
-                        " @click="show = !show"><i class="uil-comment-alt-message font-size-15"></i></b-button>
+                                                          border-radius: 8px;
+                                                          border: none;
+                                                          height: 32px;
+                                                    width: 40px;    display: flex;
+                              justify-content: center;
+                                align-items: center;
+                                                    " @click="show = !show"><i
+                        class="uil uil-chat-info font-size-18"></i></b-button>
                   </div>
-                  <span class="header-action-item" style="margin-left: 8px">
-                    <div class="style-module_container_5pQ7D style-module_commentActive_dTftF">
-                      <div class="style-module_switchActiveBg_3DMlv"></div>
-                      <div class="style-module_switchContent_FKoVH">
-                        <div class="style-module_iconWrapper_bAMkc">
-                          <button type="button" class="btn btn-light" @click="sidebarViewd(3)">
-                            <i class="uil uil-trees"></i> </button>
-                        </div>
-                        <div class="style-module_iconWrapper_bAMkc">
-                          <button type="button" class="btn btn-light" @click="sidebarViewd(2)">
-                            <i class="uil uil-trash-alt"></i> </button>
-                        </div>
-                      </div>
-                    </div>
-                  </span>
+                  <div class="header-action-item">
+
+                    <b-button variant="outline-dark" style="
+                                                    border-radius: 8px;
+                                                    border: none;
+                                                    height: 32px;
+                                                    width: 40px;    display: flex;
+                              justify-content: center;
+                              align-items: center;
+                                                  " @click="sidebarViewd(3)">
+                      <i class="uil uil-facebook-messenger-alt font-size-18"></i> </b-button>
+                  </div>
+                  <div class="header-action-item"><b-button variant="outline-dark" style="
+                                                          border-radius: 8px;
+                                                          border: none;
+                                                          height: 32px;
+                                                          width: 40px;    display: flex;
+                                    justify-content: center;
+                                          align-items: center;
+
+                                                              " @click="sidebarViewd(2)">
+                      <i class="uil uil-map-marker-info font-size-19"></i> </b-button>
+                  </div>
                 </div>
               </nav>
             </div>
@@ -544,15 +722,19 @@ export default {
                 <h5>Hi Bro, How are you?</h5>
                 <hr />
                 <div>
-                  <b-img-lazy id="tooltip-button-1" v-bind="mainProps" :src="getImageUrl(1)" alt="Image 1"></b-img-lazy>
-                  <b-img-lazy id="tooltip-button-2" v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy>
-                  <b-img-lazy id="tooltip-button-3" v-bind="mainProps" :src="getImageUrl(3)" alt="Image 3"></b-img-lazy>
-                  <b-img-lazy id="tooltip-button-4" v-bind="mainProps" :src="getImageUrl(85)" alt="Image 4"></b-img-lazy>
-                  <b-img-lazy v-bind="mainProps" :src="getImageUrl(88)" alt="Image 5"></b-img-lazy>
-                  <b-img-lazy v-bind="mainProps" :src="getImageUrl(90)" alt="Image 6"></b-img-lazy>
-                  <b-img-lazy v-bind="mainProps" :src="getImageUrl(92)" alt="Image 7"></b-img-lazy>
-                  <b-img-lazy v-bind="mainProps" :src="getImageUrl(94)" alt="Image 8"></b-img-lazy>
+                  <!-- <b-img-lazy id="tooltip-button-1" v-bind="mainProps" :src="getImageUrl(1)" alt="Image 1"></b-img-lazy>
+                                                        <b-img-lazy id="tooltip-button-2" v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy>
+                                                        <b-img-lazy id="tooltip-button-3" v-bind="mainProps" :src="getImageUrl(3)" alt="Image 3"></b-img-lazy>
+                                                        <b-img-lazy id="tooltip-button-4" v-bind="mainProps" :src="getImageUrl(85)" alt="Image 4"></b-img-lazy> -->
+                  <!-- <b-img-lazy v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy> -->
+                  <div v-for="(image, index) in images"><b-img-lazy :id="image.path" :src="image.url" v-bind="mainProps"
+                      alt="Image 2"></b-img-lazy>
+
+                  </div>
+
+
                 </div>
+
 
                 <div class="col">
                   <div style="font-size: large; font-weight: 600">All commonts (2)</div>
@@ -565,49 +747,34 @@ export default {
                       <vue-editor style="margin-left: 44px; margin-bottom: 20px" v-model="content"
                         :editor-toolbar="customToolbar" />
                       <div class="text-left">
-                        <b-button variant="outline-dark" style="margin: 40px; margin-top: 10px">Send <i class="uil uil-message ml-2"></i></b-button>
+                        <b-button variant="outline-dark" style="margin: 40px; margin-top: 10px">Send <i
+                            class="uil uil-message ml-2"></i></b-button>
                       </div>
                     </div>
                   </div>
+                </div>
               </div>
-            </div>
-              <div class="Rbody" :class="{ active: this.show }">
+              <div class="Rbody " :class="{ active: this.show }">
                 <div style="
-                      text-align: center;
-                      background-color: #fff;
-                      position: sticky;
-                      height: 50px;
-                      border-bottom: 2px solid #edeff4;
-                       padding: 10px;
-                    ">
-                  <h5> Markup comments</h5>
+                                                              text-align: center;
+                                                              background-color: #fff;
+                                                              position: sticky;
+                                                              height: 50px;
+                                                              border-bottom: 2px solid #edeff4;
+                                                               padding: 10px;
+                                                            ">
+                  <h5> comments <strong>({{ images.length }})</strong></h5>
                 </div>
 
-                <div>
-                  <b-tooltip triggers="click" :show.sync="show" target="tooltip-button-1" placement="left" confine="false"
-                  variant="light">
-                  <div>Hello <strong>World!</strong></div>
-                </b-tooltip>
-                <b-tooltip triggers="click" :show.sync="show" target="tooltip-button-2" placement="left" confine="false"
-                  variant="light">
-                  <div>Hello <strong>World!</strong></div>
-                </b-tooltip>
-                <b-tooltip triggers="click" :show.sync="show" target="tooltip-button-3" placement="left" confine="false"
-                  variant="light">
-                  <div id="taskDesk" boundary="scrollParent">
-                    <img class="d-flex mr-3 rounded-circle avatar-sm" src="@assets/images/users/avatar-7.jpg"
-                      alt="Generic placeholder image" />
-                    <div>Hello <strong>World!</strong></div>
-                  </div>
-                </b-tooltip>
-                <b-tooltip triggers="click" :show.sync="show" target="tooltip-button-4" placement="left" confine="false"
-                  variant="light">
-                  <div>Hello <strong>World!</strong></div>
-                </b-tooltip>
+                <div v-for="(image, index) in images">
+                  <b-tooltip triggers="click" :show.sync="show" :target="image.path" placement="left" confine="false"
+                    variant="light">
+                    <div class="tooltip_item"><strong>{{ image.comment }}</strong></div>
+                  </b-tooltip>
+                </div>
               </div>
-            </div>
 
-            <div>
+              <div>
                 <div class="sidebar" :class="{ active: this.Sidebar[0] }">
                   <button class="close" @click="sidebarNotViewd(0)">《《《×》》》</button>
                   <TimeLine />
@@ -617,7 +784,7 @@ export default {
 
                   <div class="media mb-0 mt-5">
                     <!-- <img class="d-flex mr-3 rounded-circle avatar-sm"
-                                                                                                              src="@assets/images/users/avatar-7.jpg" alt="Generic placeholder image" /> -->
+                                                                                                                                                      src="@assets/images/users/avatar-7.jpg" alt="Generic placeholder image" /> -->
                     <div class="media-body">
                       <div class="mb-2">
                         <vue-editor></vue-editor>
@@ -625,207 +792,45 @@ export default {
                     </div>
                   </div>
                   <div class="text-right">
-                    <button type="button" class="btn btn-primary btn-rounded width-sm mt-1">Send <i class="uil uil-message ml-2"></i></button>
+                    <button type="button" class="btn btn-primary btn-rounded width-sm mt-1">Send <i
+                        class="uil uil-message ml-2"></i></button>
                   </div>
                 </div>
               </div>
               <div class="sidebar" :class="{ active: this.Sidebar[2] }">
-                <!-- <div><button class="close" @click="sidebarNotViewd(2)">《《《×》》》</button>
-                                                                                                  <p>3333333</p>
-                                                                                   11111           </div> -->
-
-                <div>
-                  <div>
-                    <b-tabs align="center" fill="true">
-                      <b-tab active>
-                        <template #title>
-                          <!-- <b-spinner type="grow" small></b-spinner> I'm <i>custom</i> -->
-                          <i class="uil uil-apps"></i>
-                        </template>
-                        <p class="p-3">Tab contents 2</p>
+                <div class="card">
+                  <div class="card-body">
+                    <!-- <h5 class="header-title mb-3 mt-0" >Nav Tabs</h5> -->
+                    <b-tabs>
+                      <b-tab title="Home" active>
+                        <p>{{ tabContent }}</p>
+                        <p class="mb-0">{{ content }}</p>
                       </b-tab>
-
-                      <b-tab>
-                        <template #title>
-                          <i class="uil uil-info-circle"></i>
-                        </template>
-                        <div style="padding: 12px 20px 0px 20px" class="docInfoTabContent-module_contentContainer_gsZxS">
-                          <div style="padding: 0px 0px 20px 0px">
-                            <div class="docInfoTabContent-module_infoItem_SOSOp">
-                              <div class="docInfoTabContent-module_infoItemName_QyDuI"><svg width="1em" height="1em"
-                                  viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"
-                                  class="larkui-icon larkui-icon-saveastemplate2 docInfoTabContent-module_infoIcon_1fIbt">
-                                  <g fill="currentColor" fill-rule="evenodd">
-                                    <path
-                                      d="M186 16H70c-16.569 0-30 13.431-30 30v164c0 16.569 13.431 30 30 30h116c16.569 0 30-13.431 30-30V46c0-16.569-13.431-30-30-30ZM70 36h116c5.523 0 10 4.477 10 10v164c0 5.523-4.477 10-10 10H70c-5.523 0-10-4.477-10-10V46c0-5.523 4.477-10 10-10Z"
-                                      fill-rule="nonzero"></path>
-                                    <rect x="80" y="60" width="96" height="20" rx="10"></rect>
-                                    <rect x="80" y="108" width="96" height="20" rx="10"></rect>
-                                    <rect x="80" y="156" width="55" height="20" rx="10"></rect>
-                                  </g>
-                                </svg>Words</div>
-                              <div class="docInfoTabContent-module_infoValueWrapper_STlB+">
-                                <div class="docInfoTabContent-module_infoItemValue_9QlLv">
-                                  1633</div>
-                                <div></div>
-                              </div>
-                            </div>
-                            <div class="docInfoTabContent-module_infoItem_SOSOp">
-                              <div class="docInfoTabContent-module_infoItemName_QyDuI"><svg width="1em" height="1em"
-                                  viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"
-                                  class="larkui-icon larkui-icon-action-version docInfoTabContent-module_infoIcon_1fIbt">
-                                  <g fill="currentColor" fill-rule="nonzero">
-                                    <path
-                                      d="M128 25c56.885 0 103 46.115 103 103s-46.115 103-103 103S25 184.885 25 128c0-5.523 4.477-10 10-10s10 4.477 10 10c0 45.84 37.16 83 83 83s83-37.16 83-83-37.16-83-83-83c-25.335 0-48.78 11.41-64.455 30.702-3.482 4.286-9.78 4.938-14.067 1.455-4.286-3.483-4.937-9.78-1.455-14.067C67.457 39.172 96.577 25 128 25Z">
-                                    </path>
-                                    <path
-                                      d="m123.04 116 42 .171c5.523.023 9.982 4.518 9.96 10.041-.023 5.43-4.367 9.83-9.761 9.956l-.28.003-42-.171c-5.523-.023-9.981-4.518-9.959-10.04.022-5.43 4.367-9.831 9.76-9.957l.28-.003Z">
-                                    </path>
-                                    <path
-                                      d="M122.982 116c5.43-.01 9.856 4.309 10.014 9.702l.004.28.072 40c.01 5.523-4.46 10.008-9.982 10.018-5.43.01-9.856-4.31-10.014-9.702l-.004-.28-.072-40c-.01-5.523 4.46-10.008 9.982-10.018ZM107.693 81.272c-1.247 5.277-6.463 8.58-11.739 7.496l-.293-.065L48.522 77.56c-5.454-1.289-8.764-6.796-7.393-12.19l.08-.294 13.493-47.132c1.52-5.31 7.056-8.382 12.366-6.862 5.213 1.492 8.269 6.856 6.94 12.076l-.079.29-10.608 37.06 36.941 8.733c5.277 1.247 8.58 6.463 7.496 11.74l-.065.292Z">
-                                    </path>
-                                  </g>
-                                </svg>History Versions</div>
-                              <div class="docInfoTabContent-module_infoValueWrapper_STlB+">
-                                <div class="docInfoTabContent-module_infoItemValue_9QlLv">
-                                  <span class="docInfoTabContent-module_boldValue_EIaey">0</span>
-                                </div>
-                                <div></div>
-                              </div>
-                            </div>
-                            <div class="docInfoTabContent-module_infoItem_SOSOp">
-                              <div class="docInfoTabContent-module_infoItemName_QyDuI"><svg width="1em" height="1em"
-                                  viewBox="0 0 256 257" xmlns="http://www.w3.org/2000/svg"
-                                  class="larkui-icon larkui-icon-date docInfoTabContent-module_infoIcon_1fIbt">
-                                  <g fill="currentColor" fill-rule="nonzero">
-                                    <path
-                                      d="M197 35c17.673 0 32 14.327 32 32v130c0 17.673-14.327 32-32 32H59c-17.673 0-32-14.327-32-32V67c0-17.673 14.327-32 32-32h138Zm0 20H59c-6.525 0-11.834 5.209-11.996 11.695L47 67v130c0 6.525 5.209 11.834 11.695 11.996L59 209h138c6.525 0 11.834-5.209 11.996-11.695L209 197V67c0-6.525-5.209-11.834-11.695-11.996L197 55Z">
-                                    </path>
-                                    <path d="M47 90h162v20H47z"></path>
-                                    <rect x="77" y="17" width="20" height="56" rx="10"></rect>
-                                    <rect x="160" y="17" width="20" height="56" rx="10"></rect>
-                                  </g>
-                                </svg>Last updated at</div>
-                              <div class="docInfoTabContent-module_infoValueWrapper_STlB+">
-                                <div class="docInfoTabContent-module_infoItemValue_9QlLv">
-                                  03-11 17:02</div>
-                                <div></div>
-                              </div>
-                            </div>
-                            <div class="docInfoTabContent-module_infoItem_SOSOp">
-                              <div class="docInfoTabContent-module_infoItemName_QyDuI"><svg width="1em" height="1em"
-                                  viewBox="0 0 256 257" xmlns="http://www.w3.org/2000/svg"
-                                  class="larkui-icon larkui-icon-assignee docInfoTabContent-module_infoIcon_1fIbt">
-                                  <path
-                                    d="M128.017 129c27.925.016 52.78 7.159 71.454 19.489 17.435 11.512 28.304 26.962 28.522 41.675l.007 1.548c0 4.346-.335 7.598-1.626 11.45l-.182.53-.173.475c-1.768 4.74-4.76 8.817-9.107 11.828l-.439.298-.13.084-.338.238c-1.953 1.354-4.223 2.54-6.822 3.579l-.656.256-.832.31c-.632.227-1.282.448-1.95.66l-.673.211-.918.273-.466.133-.472.131-.96.256-.488.124-.494.123-1.004.238c-.45.104-.908.206-1.372.305l-.7.148-1.07.214-.542.104-.549.102-1.113.2-1.136.19-1.158.184-1.18.176-1.203.17-1.225.161-1.248.155-1.271.148-1.294.142-1.316.134-1.34.129-1.362.122-1.386.115-2.121.163-1.444.1-1.467.095-2.245.132-1.526.081-1.55.076-1.573.07-1.598.066-1.621.06-2.477.082-2.515.072-2.477.06-1.805.035-2.295.037-3.85.043-3.11.02-6.433.014L128.1 227l-.137-.002-.136.002-11.598.014-6.434-.014-3.11-.02-3.85-.043-2.294-.037-1.806-.036-2.476-.06-2.515-.07-2.478-.082-1.62-.061-1.598-.065-1.574-.071-1.55-.076-1.526-.08-2.244-.133-1.467-.095-1.444-.1-2.122-.163-1.386-.115-1.362-.122-1.34-.129-1.316-.134-1.293-.142-1.271-.148-1.248-.155-1.226-.162-1.202-.169-1.18-.176-1.159-.184-1.135-.19-1.114-.2c-.367-.067-.731-.136-1.091-.206l-1.07-.214a89.329 89.329 0 0 1-2.072-.453l-1.004-.238c-.33-.081-.658-.164-.981-.247l-.96-.256c-.317-.086-.63-.175-.94-.264l-.916-.273a55.46 55.46 0 0 1-2.623-.872l-.832-.309c-2.875-1.098-5.363-2.368-7.478-3.835l-.338-.238-.13-.084c-4.586-3.038-7.72-7.229-9.547-12.126l-.172-.476c-1.443-4.088-1.809-7.435-1.809-11.98l.004-1.096c0-14.848 10.912-30.497 28.525-42.126 18.462-12.19 42.965-19.31 70.503-19.486l1.06-.003Zm-.054 19.999-.866.004c-23.747.149-44.463 6.166-59.622 16.176-12.362 8.162-19.354 18.06-19.54 25.146l-.008.911v.397l.005.747c.034 2.031.212 3.378.664 4.658.4 1.136.947 1.914 1.804 2.514l.203.135.294.186.28.207c.604.443 1.371.869 2.296 1.275l.475.201.501.198.527.195.274.096.565.19.743.233.781.227.654.178.678.175.703.171.726.168.751.164.775.16 1.207.235 1.26.226.869.147.891.142.915.14.937.134 1.447.196.993.126 1.015.122 1.563.176 1.61.167 1.101.107 1.69.153 1.153.096 1.173.093 1.798.132 1.842.122 1.888.113 1.93.104 1.312.064 1.33.06 2.031.082 2.073.073 1.886.057 2.338.061 3.948.08 1.803.027 3.794.04 3.624.02 5.876.008 11.08-.015 11 .015 5.877-.009 3.623-.02 3.794-.039 1.803-.027 3.948-.08 2.338-.061 1.887-.057 2.072-.073 2.03-.082 1.331-.06 1.312-.064 1.93-.104 1.888-.113 1.843-.122 1.797-.132 1.174-.093 1.152-.096 1.69-.153 1.1-.107 1.612-.167 1.562-.176 1.015-.122.993-.126 1.447-.196.938-.135.914-.139.892-.142.868-.147 1.26-.226 1.207-.234.775-.161.75-.164.728-.168.702-.171.678-.175.654-.178.933-.273.591-.187.703-.238.663-.243.501-.198.476-.201c.809-.356 1.497-.726 2.061-1.11l.234-.165.28-.207.294-.186.204-.135c.856-.6 1.403-1.378 1.804-2.514.421-1.194.605-2.447.654-4.261l.009-.397.006-.747-.008-1.308c-.187-7.086-7.178-16.984-19.54-25.146-15.16-10.01-35.876-16.027-59.622-16.176l-.867-.004ZM128 24c25.405 0 46 20.595 46 46s-20.595 46-46 46-46-20.595-46-46 20.595-46 46-46Zm0 20c-14.36 0-26 11.64-26 26s11.64 26 26 26 26-11.64 26-26-11.64-26-26-26Z"
-                                    fill="currentColor" fill-rule="nonzero"></path>
-                                </svg>Authors</div>
-                              <div class="docInfoTabContent-module_infoValueWrapper_STlB+">
-                                <div class="docInfoTabContent-module_infoItemValue_9QlLv">热寂
-                                </div>
-                                <div></div>
-                              </div>
-                            </div>
-                            <hr />
-                            <div class="docInfoTabContent-module_infoItem_SOSOp">
-                              <div class="docInfoTabContent-module_infoItemName_QyDuI"><svg width="1em" height="1em"
-                                  viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"
-                                  class="larkui-icon larkui-icon-nav-book1 docInfoTabContent-module_infoIcon_1fIbt">
-                                  <path
-                                    d="M22 55.923c0-20.374 12.5-34.899 34.209-33.872l7.16.35c21.097 1.105 33.884 3.047 45.317 8.203 7.507 3.385 13.36 7.001 18.113 11.262 2.59-2.381 5.672-4.447 9.245-6.305.39-.202.777-.4 1.164-.592l.581-.286c3.791-1.844 7.755-3.345 14.813-5.762l2.27-.772c13.594-4.554 24.405-6.007 43.589-6.104l1.795-.006C223.044 22.023 234 35.21 234 55.923V183.3c0 18.725-15.066 33.883-33.736 33.883h-39.062c-3.543 0-8.873 1.224-13.46 3.215-4.311 1.872-7.11 4.07-7.58 5.172-1.905 4.485-5.647 8.022-10.87 8.4-1.65.12-3.262-.125-4.745-.685-1.727-.437-3.326-1.274-4.706-2.415-1.771-1.464-3.093-3.331-4.095-5.511-.187-.406-.807-1.134-1.89-1.994-1.366-1.086-3.208-2.167-5.351-3.123-4.274-1.905-9.196-3.058-12.579-3.058h-40.19C37.066 217.184 22 202.024 22 183.3ZM200.27 42.04h-.826c-18.05.05-26.96 1.246-38.765 5.258l-.528.18c-13.463 4.596-18.806 7.229-21.213 10.666l-.017 144.233c6.944-3.227 14.845-5.112 21.832-5.19l.45-.002h39.06c7.598 0 13.737-6.177 13.737-13.884l-.001-127.72c-.064-10.134-3.02-13.548-13.728-13.54Zm-145.358-.024C45.845 41.705 42 46.295 42 55.923V183.3c0 7.707 6.139 13.883 13.736 13.883h40.19c6.781 0 14.423 1.81 21.168 4.949l-.015-141.459c-3.533-4.588-8.243-8.004-16.066-11.588l-.548-.25c-8.458-3.813-19.447-5.482-38.13-6.46l-1.774-.092Z"
-                                    fill="currentColor" fill-rule="nonzero"></path>
-                                </svg>Reads</div>
-                              <div class="docInfoTabContent-module_infoValueWrapper_STlB+">
-                                <div class="docInfoTabContent-module_infoItemValue_9QlLv">
-                                  <span class="docInfoTabContent-module_boldValue_EIaey">0</span>
-                                </div>
-                                <div></div>
-                              </div>
-                            </div>
-                            <div class="docInfoTabContent-module_infoItem_SOSOp">
-                              <div class="docInfoTabContent-module_infoItemName_QyDuI"><svg width="1em" height="1em"
-                                  viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-                                  class="larkui-icon larkui-icon-comment-reply docInfoTabContent-module_infoIcon_1fIbt">
-                                  <path
-                                    d="M8 1.063a6.937 6.937 0 1 1 0 13.874H1.937a.625.625 0 0 1-.526-.961l1.105-1.727-.017-.02a6.91 6.91 0 0 1-1.436-4.177V8A6.938 6.938 0 0 1 8 1.062Zm0 1.25a5.688 5.688 0 0 0-4.245 9.472c.187.21.211.517.06.753l-.735 1.15H8a5.688 5.688 0 0 0 5.687-5.594V8A5.688 5.688 0 0 0 8 2.312Zm.938 6.562a.625.625 0 1 1 0 1.25h-3.75a.625.625 0 1 1 0-1.25h3.75Zm1.874-3a.625.625 0 1 1 0 1.25H5.189a.625.625 0 1 1 0-1.25h5.625Z"
-                                    fill="currentColor" fill-rule="nonzero"></path>
-                                </svg>Comments</div>
-                              <div class="docInfoTabContent-module_infoValueWrapper_STlB+">
-                                <div class="docInfoTabContent-module_infoItemValue_9QlLv">
-                                  <span class="docInfoTabContent-module_boldValue_EIaey">2</span>
-                                </div>
-                                <div></div>
-                              </div>
-                            </div>
-                            <div class="docInfoTabContent-module_infoItem_SOSOp">
-                              <div class="docInfoTabContent-module_infoItemName_QyDuI"><svg width="1em" height="1em"
-                                  viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"
-                                  class="larkui-icon larkui-icon-like docInfoTabContent-module_infoIcon_1fIbt">
-                                  <path
-                                    d="M147.827 20.644c10.18 1.9 18.546 7.8 22.546 17.499 3.302 8.003 3.163 18.086.7 30.171-1.146 5.621-2.777 11.51-4.783 17.579-.19.572-.38 1.14-.573 1.707l-.18.523h41.237c16.403 0 29.732 13.163 29.998 29.503l.004.496c0 2.868-.411 5.722-1.221 8.473l-21.484 72.987c-6.011 20.423-24.757 34.447-46.046 34.447H73c-.256 0-.51-.01-.761-.029H54c-16.569 0-30-13.431-30-30v-87c0-16.569 13.431-30 30-30l28.087-.001c16.584-35.788 30.038-56.442 42.27-63.188 6.293-3.47 15.282-4.694 23.47-3.167Zm-13.812 20.68c-7.531 4.154-20.26 24.271-36.014 58.954L98 214.028h70.025a28 28 0 0 0 26.86-20.093l21.484-72.987a10 10 0 0 0 .407-2.825c0-5.523-4.478-10-10.001-10h-55.706c-6.994 0-11.8-6.98-9.374-13.483l1.016-2.53a248.67 248.67 0 0 0 1.308-3.33 204.313 204.313 0 0 0 3.281-9.163c1.776-5.373 3.203-10.524 4.176-15.296 1.736-8.52 1.827-15.114.409-18.552-1.201-2.91-3.776-4.727-7.726-5.464-3.789-.707-8.07-.124-10.144 1.02ZM78 107H54c-5.43 0-9.848 4.327-9.996 9.72L44 117v87c0 5.523 4.477 10 10 10h24V107Z"
-                                    fill="currentColor" fill-rule="nonzero"></path>
-                                </svg>Likes</div>
-                              <div class="docInfoTabContent-module_infoValueWrapper_STlB+">
-                                <div class="docInfoTabContent-module_infoItemValue_9QlLv">
-                                  <span class="docInfoTabContent-module_boldValue_EIaey">0</span>
-                                </div>
-                                <div></div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="docInfoTabContent-module_operation_7Z9sK">
-                            <div class="docInfoTabContent-module_docStatisticDetail_nJKCP">
-                              <div class="docInfoTabContent-module_detailLeft_f8zrS"><svg width="1em" height="1em"
-                                  viewBox="0 0 24 23" xmlns="http://www.w3.org/2000/svg"
-                                  class="larkui-icon larkui-icon-statistics docInfoTabContent-module_statisticIcon_qcX19">
-                                  <g fill-rule="nonzero" fill="none">
-                                    <path
-                                      d="M12.732 15.07c.996 0 1.813.763 1.9 1.735l.008.173v4.197c0 .382-4.39.691-4.771.691a.692.692 0 0 1-.683-.58l-.009-.111v-4.197c0-.995.762-1.812 1.734-1.9l.174-.007h1.647ZM5.052 11.413c.996 0 1.813.762 1.9 1.734l.008.174v7.854c0 .382-.31.691-.691.691-.344 0-4.71-.25-4.763-.58l-.009-.111V13.32c0-.995.762-1.813 1.734-1.9l.174-.008h1.647ZM20.412 6.388c.996 0 1.813.762 1.9 1.734l.008.174v12.879c0 .382-.31.691-.691.691h-4.08a.692.692 0 0 1-.683-.58l-.009-.111V8.296c0-.995.762-1.812 1.734-1.9l.174-.008h1.647Z"
-                                      fill="#FFF"></path>
-                                    <path
-                                      d="M12.732 15.07c.996 0 1.813.763 1.9 1.735l.008.173v4.197a.692.692 0 0 1-1.374.112l-.009-.112v-4.197a.525.525 0 0 0-.43-.516l-.095-.008h-1.647a.525.525 0 0 0-.516.43l-.009.094v4.197a.692.692 0 0 1-1.374.112l-.009-.112v-4.197c0-.995.762-1.812 1.734-1.9l.174-.007h1.647ZM5.052 11.413c.996 0 1.813.762 1.9 1.734l.008.174v7.854a.692.692 0 0 1-1.374.112l-.009-.112V13.32a.525.525 0 0 0-.43-.516l-.095-.009H3.405a.525.525 0 0 0-.516.43l-.009.095v7.854a.692.692 0 0 1-1.374.112l-.009-.112V13.32c0-.995.762-1.813 1.734-1.9l.174-.008h1.647ZM20.412 6.388c.996 0 1.813.762 1.9 1.734l.008.174v12.879a.692.692 0 0 1-1.374.112l-.009-.112V8.296a.525.525 0 0 0-.43-.516l-.095-.008h-1.647a.525.525 0 0 0-.516.43l-.009.094v12.879a.692.692 0 0 1-1.374.112l-.009-.112V8.296c0-.995.762-1.812 1.734-1.9l.174-.008h1.647Z"
-                                      fill="currentColor"></path>
-                                    <path
-                                      d="M18.48 1.198a.6.6 0 0 1 .934.745l-.068.085-6.088 6.365a3.032 3.032 0 0 1-3.346.708L9.7 9.004 5.985 7.127a1.832 1.832 0 0 0-1.953.19l-.134.116-2.393 2.269a.6.6 0 0 1-.897-.79l.071-.08 2.393-2.27a3.032 3.032 0 0 1 3.25-.6l.204.094 3.715 1.877c.664.336 1.46.234 2.016-.242l.134-.127 6.088-6.366Z"
-                                      fill="#00B96B"></path>
-                                    <path
-                                      d="m17.22.463 2.592.004c.366 0 .669.267.726.617l.01.119.005 2.533a.737.737 0 0 1-1.465.122l-.01-.12-.004-1.798-1.857-.003a.738.738 0 0 1-.727-.619l-.01-.12c.001-.366.27-.67.62-.726l.12-.01Z"
-                                      fill="#00B96B"></path>
-                                    <path
-                                      d="m1.016 20.774 22.221.02a.692.692 0 0 1 .11 1.375l-.111.009-22.22-.021a.692.692 0 0 1-.112-1.374l.112-.01Z"
-                                      fill="currentColor"></path>
-                                  </g>
-                                </svg></div>
-                              <div class="docInfoTabContent-module_detailText_g+hds">
-                                <div class="docInfoTabContent-module_rightTitle_R8UaG">
-                                  Statistics details</div>
-                                <div class="docInfoTabContent-module_rightDesc_TeznL">
-                                  Visitors and more analysis</div>
-                              </div><svg width="1em" height="1em" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"
-                                class="larkui-icon larkui-icon-arrow-right docInfoTabContent-module_detailArrowIcon_CVQ12">
-                                <path
-                                  d="M101.005 198.563c-3.834-3.834-3.904-10.008-.21-13.927l.21-.215 48.99-48.99c3.834-3.834 3.904-10.008.21-13.927l-.21-.215-48.99-48.99c-3.905-3.905-3.905-10.237 0-14.142 3.834-3.834 10.008-3.904 13.927-.21l.215.21 48.99 48.99c11.599 11.598 11.715 30.331.348 42.072l-.348.354-48.99 48.99c-3.905 3.905-10.237 3.905-14.142 0Z"
-                                  fill="currentColor" fill-rule="nonzero"></path>
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
+                      <b-tab title="Profile">
+                        <p>{{ content }}</p>
+                        <feather type="arrow-down-circle" class="icon-dual-dark"></feather>.
+                        <p class="mb-0">{{ tabContent }}</p>
+                      </b-tab>
+                      <b-tab title="Me">
+                        <Overview :items="overviewData" />
                       </b-tab>
                     </b-tabs>
                   </div>
                 </div>
               </div>
               <div class="sidebar" :class="{ active: this.Sidebar[3] }">
-                <button class="close" @click="sidebarNotViewd(3)">《《《×》》》</button>
-                <p>3333333</p>
+                <b-button class="close" variant="outline-dark" style="right:20px" @click="sidebarNotViewd(3)"> [ X
+                  ]</b-button>
+
                 <div id="taskDesk" style="margin-top: 30px">
                   <!-- <div style="float: left;margin-top: 4px;"><img class="d-flex mr-3 rounded-circle avatar-sm"
-                                                  src="@assets/images/users/avatar-1.jpg" alt="Generic placeholder image" />
-                                      </div>  -->
+                                                                                          src="@assets/images/users/avatar-1.jpg" alt="Generic placeholder image" />
+                                                                              </div>  -->
                   <div>
                     <vue-editor style="margin-bottom: 20px" v-model="content" :editor-toolbar="customToolbar" />
                     <div class="text-left">
-                      <b-button variant="outline-dark" style="margin-left: 20px; margin-top: 10px">Send <i class="uil uil-message ml-2"></i></b-button>
+                      <b-button variant="outline-dark" style="margin-left: 20px; margin-top: 10px">Send <i
+                          class="uil uil-message ml-2"></i></b-button>
                     </div>
                   </div>
                 </div>
@@ -835,30 +840,7 @@ export default {
         </div>
         <!-- end inbox-rightbar-->
         <!-- Left sidebar -->
-        <!-- <div class="floating-parent">
-                      <div class="floating-toolbar">
 
-                          <button id="archive-tooltip" type="button" class="btn btn-light" @click="sidebarViewd(0)">
-                               <b-tooltip target="archive-tooltip" placement="left">Archive</b-tooltip> 
-                              <i class="uil uil-archive-alt"></i>
-                          </button>
-
-                          <button id="spam-tooltip" type="button" class="btn btn-light" @click="sidebarViewd(1)">
-                              <b-tooltip target="spam-tooltip" placement="left">Mark as spam</b-tooltip>
-                              <i class="uil uil-exclamation-octagon"></i>
-                          </button>
-                          <button id="delete-tooltip" type="button" class="btn btn-light" @click="sidebarViewd(2)">
-                              <b-tooltip target="delete-tooltip" placement="left">Delete</b-tooltip>
-                              <i class="uil uil-trash-alt"></i>
-                          </button>
-
-                          <button id="elete-tooltip" type="button" class="btn btn-light" @click="sidebarViewd(3)">
-                              <b-tooltip target="elete-tooltip" placement="left">Labels</b-tooltip>
-                              <i class="uil uil-trees"></i>
-                          </button>
-                      </div>
-
-                  </div> -->
 
         <div class="clearfix"></div>
       </div>
@@ -877,6 +859,10 @@ export default {
 <style lang="scss" scoped>
 .quillWrapper>>>.ql-snow.ql-toolbar {
   max-height: 50px;
+}
+
+.vdr-stick {
+  background-color: #007bff;
 }
 
 .camera_outer {
@@ -922,7 +908,7 @@ export default {
       width: 200px;
       height: 200px;
     }
-    
+
 
     .img_btn_camera {
       position: absolute;
@@ -1023,6 +1009,11 @@ export default {
   visibility: visible;
 }
 
+.tooltip_item {
+  width: 270px;
+  height: 180px;
+}
+
 .b-tooltip {
   position: absolute;
   right: 0px;
@@ -1034,7 +1025,7 @@ export default {
   text-align: left;
   box-shadow: 0 1px 4px -2px rgb(0 0 0 / 13%), 0 2px 8px 0 rgb(0 0 0 / 8%),
     0 8px 16px 4px rgb(0 0 0 / 4%);
-  background-color: #ffffff;
+  background-color: #f9fafa;
   border-radius: 8px;
 }
 
@@ -1110,71 +1101,15 @@ export default {
   align-items: center;
 }
 
-.style-module_container_5pQ7D {
-  position: relative;
-  width: 64px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid #bbb6b7;
-}
 
-.style-module_container_5pQ7D .style-module_switchContent_FKoVH {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 3px;
-}
 
-.style-module_container_5pQ7D .style-module_switchContent_FKoVH .style-module_iconWrapper_bAMkc {
-  width: 26px;
-  height: 26px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-  cursor: pointer;
-}
+
 
 .header-action-item {
   padding: 14px 0;
-  margin-left: 16px;
+  margin-left: 10px;
 }
 
-.docInfoTabContent-module_infoItem_SOSOp {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 20px;
-  font-size: 14px;
-  margin-top: 16px;
-}
-
-.docInfoTabContent-module_infoItem_SOSOp .docInfoTabContent-module_infoItemName_QyDuI {
-  display: flex;
-  align-items: center;
-  color: var(--yq-yuque-grey-9);
-}
-
-.docInfoTabContent-module_infoItem_SOSOp .docInfoTabContent-module_infoItemName_QyDuI .docInfoTabContent-module_infoIcon_1fIbt {
-  margin-right: 12px;
-  width: 16px;
-  height: 16px;
-}
-
-.docInfoTabContent-module_operation_7Z9sK .docInfoTabContent-module_docStatisticDetail_nJKCP {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 12px 12px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: #fafafa;
-}
 
 svg {
   width: 24px;
@@ -1198,10 +1133,12 @@ svg {
   height: 12px;
   line-height: 12px;
   margin: 0px 0 10px 20px;
-  font-size: 10px;
+  font-size: 5px;
+  height: 10px;
   color: #a5a5a5;
   text-align: center;
-  display: inline-block;
+  justify-content: center;
+
   vertical-align: middle;
 }
 
@@ -1348,14 +1285,12 @@ nav {
 .ql-editor {
   min-height: 100px;
 }
-.vue-drag-resize-box > .vue-drag-handle {
-  display: none !important;
-}
 
 .vdr.active:before {
   outline: none;
-} 
+}
+
 .p-2 {
-    padding: 0rem !important; 
+  padding: 0rem !important;
 }
 </style>

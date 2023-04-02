@@ -1,6 +1,6 @@
 <script>
 import Layout from '@layouts/default'
-import { authMethods } from '@state/helpers'
+import { authMethods,userInfoMethods } from '@state/helpers'
 import appConfig from '@src/app.config'
 
 /**
@@ -33,17 +33,22 @@ export default {
 	},
 	methods: {
 		...authMethods,
+		...userInfoMethods,
 		// Try to log the user in with the username
 		// and password they provided.
 		tryToLogIn() {
 			this.tryingToLogIn = true
 			// Reset the authError if it existed.
 			this.authError = null
+			
 			return this.logIn({
 				username: this.username,
 				password: this.password,
 			})
 				.then((token) => {
+					this.getDocuments({username:this.username})
+					this.getCalendars({username:this.username})
+					this.getNotifications({username:this.username})
 					this.tryingToLogIn = false
 					this.isAuthError = false
 					// Redirect to the originally requested page, or to the home page

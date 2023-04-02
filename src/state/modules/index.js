@@ -1,6 +1,7 @@
 // Register each file as a corresponding Vuex module. Module nesting
 // will mirror [sub-]directory hierarchy and modules are namespaced
 // as the camelCase equivalent of their file name.
+//这段代码是用于动态注册Vuex模块的代码。它首先导入了lodash库中的camelCase方法，然后定义了一个空的storeData对象，该对象包含一个modules属性，用于存储所有的Vuex模块。接着，它使用webpack的require.context方法来动态地获取所有的Vuex模块文件，并注册它们为Vuex模块。模块的嵌套结构将会反映文件夹层次结构，模块的命名空间将使用驼峰式命名法表示。在模块更新时，它使用热重载来更新模块的定义，并使用getNamespace函数来递归获取模块的命名空间。最后，它导出storeData.modules对象，该对象包含了所有的Vuex模块。
 
 import camelCase from 'lodash/camelCase'
 

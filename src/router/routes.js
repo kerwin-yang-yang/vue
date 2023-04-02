@@ -78,6 +78,7 @@ const authRoutes = [
       authRequired: true,
       beforeResolve(routeTo, routeFrom, next) {
         store.dispatch('auth/logOut')
+        store.dispatch('userInfo/cleanAll')
         const authRequiredOnPreviousRoute = routeFrom.matched.some(
           (route) => route.meta.authRequired
         )
@@ -284,6 +285,7 @@ const pagesRoutes = [
         path: 'profile',
         name: 'Profile',
         component: () => lazyLoadView(import('@views/pages/secondary/profile/')),
+        props: (route) => ({ user: store.state.auth.currentUser || {} }),
       },
       {
         path: 'activity',
@@ -445,13 +447,24 @@ const chartsRoutes = [
 ]
 
 
-// charts
+// Read
 const ReadRoutes = [
   {
     path: '/Read',
     name: 'Read',
-    icon: 'pie-chart',
+    icon: 'book-open',
     component: () => lazyLoadView(import('@views/pages/read/read')),
+    meta: { authRequired: true },
+    props: (route) => ({ user: store.state.auth.currentUser || {} }),
+  },
+]
+// Edit
+const EditRoutes = [
+  {
+    path: '/Edit',
+    name: 'Edit',
+    icon: 'edit',
+    component: () => lazyLoadView(import('@views/pages/read/edit')),
     meta: { authRequired: true },
     props: (route) => ({ user: store.state.auth.currentUser || {} }),
   },
@@ -463,6 +476,7 @@ const authProtectedRoutes = [
   ...pagesRoutes,
   ...emailAppsRoutes,
   ...ReadRoutes,
+  ...EditRoutes,
 
   ...uiRoutes,
   ...formsRoutes,
@@ -479,6 +493,31 @@ const authProtectedRoutes = [
 const allRoutes = [...authRoutes, ...authProtectedRoutes, ...errorPagesRoutes]
 
 export { allRoutes, authProtectedRoutes }
+
+// router.beforeEach((to, from, next) => {
+//   const authRequired = to.matched.some(route => route.meta.authRequired)
+//   const isAdmin = store.state.isAdmin
+
+//   if (authRequired && !store.getters.loggedIn) {
+//     next('/login')
+//   } else if (isAdmin) {
+//     // 添加管理员专属路由
+//     router.addRoutes([
+//       {
+//         path: '/admin',
+//         name: 'admin',
+//         component: Admin,
+//         meta: { authRequired: true, isAdmin: true }
+//       }
+//     ])
+//     next()
+//   } else {
+//     // 删除管理员专属路由
+//     router.removeRoute('admin')
+//     next()
+//   }
+// })
+
 
 // Lazy-loads view components, but with better UX. A loading view
 // will be used if the component takes a while to load, falling

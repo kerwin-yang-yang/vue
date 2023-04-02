@@ -3,11 +3,11 @@
 		<div class="card-body">
 			<div class="text-center mt-3">
 				<img
-					src="@assets/images/users/avatar-7.jpg"
+					:src="user.icon"
 					alt
 					class="avatar-lg rounded-circle"
 				/>
-				<h5 class="mt-2 mb-0">Shreyu N</h5>
+				<h5 class="mt-2 mb-0">{{user.username}}</h5>
 				<h6 class="text-muted font-weight-normal mt-2 mb-0"
 					>User Experience Specialist</h6
 				>
@@ -52,15 +52,16 @@
 						<tbody>
 							<tr>
 								<th scope="row">Email</th>
-								<td>xyz123@gmail.com</td>
+								<td>{{user.email}}</td>
 							</tr>
 							<tr>
 								<th scope="row">Phone</th>
-								<td>(123) 123 1234</td>
+								<td>(123) {{user.phone}}</td>
 							</tr>
 							<tr>
 								<th scope="row">Address</th>
 								<td>
+									<!-- <strong>{{ user.documents[0].description }}</strong> -->
 									1975 Boring Lane, San Francisco, California, United States -
 									94108
 								</td>
@@ -81,3 +82,14 @@
 	</div>
 	<!-- end card -->
 </template>
+<script>
+export default{
+	props: {
+		user: {
+			type: Object,
+			required: false,
+			default: () => ({}),
+		},
+	}
+}
+</script>

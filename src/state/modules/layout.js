@@ -2,7 +2,7 @@ export const state = {
   layoutType: 'vertical',
   layoutWidth: 'default',
   leftSidebarTheme: 'default',
-  leftSidebarType: 'fixed',
+  leftSidebarType: 'default',
 }
 
 export const getters = {}

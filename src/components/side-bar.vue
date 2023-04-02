@@ -90,12 +90,12 @@ export default {
 	<!-- ========== Left Sidebar Start ========== -->
 	<div class="left-side-menu">
 		<div class="media user-profile mt-2 mb-2">
-			<img src="@assets/images/users/avatar-7.jpg" class="avatar-sm rounded-circle mr-2" alt="Shreyu" />
-			<img src="@assets/images/users/avatar-7.jpg" class="avatar-xs rounded-circle mr-2" alt="Shreyu" />
+			<img :src="user.icon" class="avatar-sm rounded-circle mr-2" alt="Shreyu" />
+			<img :src="user.icon" class="avatar-xs rounded-circle mr-2" alt="Shreyu" />
 
 			<div class="media-body">
 				<h6 class="pro-user-name mt-0 mb-0">{{ user.username }}</h6>
-				<span class="pro-user-desc">Administrator</span>
+				<span class="pro-user-desc">{{user.user_role_name}}</span>
 			</div>
 			<b-dropdown variant="black" class="align-self-center" toggle-class="p-0">
 				<template v-slot:button-content>

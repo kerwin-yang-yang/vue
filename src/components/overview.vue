@@ -18,7 +18,7 @@ export default {
 <template>
 	<div class="card">
 		<div class="card-body p-0">
-			<h5 class="card-title header-title border-bottom p-3 mb-0">Overview</h5>
+			<!-- <h5 class="card-title header-title border-bottom p-3 mb-0">Overview</h5> -->
 
 			<div
 				v-for="item in items"

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <video ref="video" autoplay width="160" height="90"></video>
+    <video ref="video" autoplay ></video>
     <button @click="uploadVideo()"> 上传</button>
   </div>
 </template>

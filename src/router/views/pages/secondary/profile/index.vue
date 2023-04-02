@@ -16,8 +16,15 @@ import { activities, messageData, projectData, tasks } from './data-profile'
  */
 export default {
 	page: {
-		title: 'Profile',
+		title: 'UserInformation',
 		meta: [{ name: 'description', content: appConfig.description }],
+	},
+	props: {
+		user: {
+			type: Object,
+			required: false,
+			default: () => ({}),
+		},
 	},
 	components: {
 		Layout,
@@ -31,11 +38,12 @@ export default {
 	},
 	data() {
 		return {
+			// user: this.$store ? this.$store.state.auth.currentUser : {} || {},
 			activities: activities,
 			messageData: messageData,
 			projectData: projectData,
 			tasks: tasks,
-			title: 'Profile',
+			title: 'UserInformation',
 			items: [
 				{
 					text: 'Shreyu',
@@ -46,7 +54,7 @@ export default {
 					href: '/',
 				},
 				{
-					text: 'Profile',
+					text: 'UserInformation',
 					active: true,
 				},
 			],
@@ -60,7 +68,7 @@ export default {
 		<PageHeader :title="title" :items="items" />
 		<div class="row">
 			<div class="col-lg-3">
-				<UserCard />
+				<UserCard :user="user" />
 			</div>
 
 			<div class="col-lg-9">

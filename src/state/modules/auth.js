@@ -42,12 +42,13 @@ export const actions = {
 
   // Logs out the current user.
   logOut({ commit }) {
-
+    
     axios
-      .get('api/logout', { params: state.currentUser })
+      .get('api/logout', { params: { username: state.currentUser.username }  })
       .then((response) => {
       })
     commit('SET_CURRENT_USER', null)
+
   },
 
   // register the user

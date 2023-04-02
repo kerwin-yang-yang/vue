@@ -320,12 +320,12 @@ export default {
 					toggle-class="nav-user mr-0">
 					<template v-slot:button-content>
 						<div class="media user-profile">
-							<img src="@assets/images/users/avatar-7.jpg" alt="user-image"
+							<img :src="user.icon" alt="user-image"
 								class="rounded-circle align-self-center" />
 							<div class="media-body text-left">
 								<h6 class="pro-user-name ml-2 my-0">
 									<span>{{ user.username }}</span>
-									<span class="pro-user-desc text-muted d-block mt-1">Administrator</span>
+									<span class="pro-user-desc text-muted d-block mt-1">{{user.user_role_name}}</span>
 								</h6>
 							</div>
 							<feather type="chevron-down" class="ml-2 align-self-center"></feather>

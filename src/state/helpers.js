@@ -6,6 +6,14 @@ export const authComputed = {
   }),
   ...mapGetters('auth', ['loggedIn']),
 }
+export const userInfoComputed = {
+  ...mapState('userInfo',{
+    Document:(state)=>state.Document,
+    Calendar:(state)=>state.Calendar,
+    Notification:(state)=>state.Notification,
+  }),
+  ...mapGetters('userInfo',['hasDocuments','hasCalendars','hasNotifications'])
+}
 
 export const layoutComputed = {
   ...mapState('layout', {
@@ -15,6 +23,16 @@ export const layoutComputed = {
     layoutWidth: (state) => state.layoutWidth,
   }),
 }
+
+export const userInfoMethods = mapActions('userInfo', [
+  'getDocuments',
+  'getCalendars',
+  'cleanAll',
+  'getNotifications'
+  // 'resetPassword',
+])
+
+
 
 export const authMethods = mapActions('auth', [
   'logIn',
