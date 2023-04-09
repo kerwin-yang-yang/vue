@@ -1,5 +1,6 @@
 import store from '@state/store'
 
+
 // auth related routes
 const authRoutes = [
   {
@@ -253,7 +254,7 @@ const appsRoutes = [
   ...calendarAppsRoutes,
 
   ...projectAppsRoutes,
-  ...taskAppsRoutes
+  
 ]
 
 // pages
@@ -472,18 +473,35 @@ const EditRoutes = [
 
 const authProtectedRoutes = [
   ...dashboardRoutes,
+  ...errorPagesRoutes,
   ...appsRoutes,
+ 
+
   ...pagesRoutes,
+  ...taskAppsRoutes,
   ...emailAppsRoutes,
   ...ReadRoutes,
   ...EditRoutes,
+
 
   ...uiRoutes,
   ...formsRoutes,
   ...chartsRoutes,
   ...tablesRoutes
 ]
-
+const AdminRoutes = [
+  ...dashboardRoutes,
+  ...appsRoutes,
+  ...EditRoutes,
+]
+const UserRoutes = [
+  
+  ...pagesRoutes,
+  ...emailAppsRoutes,
+  ...ReadRoutes,
+  ...taskAppsRoutes,
+  
+]
 // ...uiRoutes,
 // ...formsRoutes,
 // ...chartsRoutes,
@@ -492,31 +510,8 @@ const authProtectedRoutes = [
 
 const allRoutes = [...authRoutes, ...authProtectedRoutes, ...errorPagesRoutes]
 
-export { allRoutes, authProtectedRoutes }
+export { allRoutes, authProtectedRoutes,AdminRoutes,UserRoutes }
 
-// router.beforeEach((to, from, next) => {
-//   const authRequired = to.matched.some(route => route.meta.authRequired)
-//   const isAdmin = store.state.isAdmin
-
-//   if (authRequired && !store.getters.loggedIn) {
-//     next('/login')
-//   } else if (isAdmin) {
-//     // 添加管理员专属路由
-//     router.addRoutes([
-//       {
-//         path: '/admin',
-//         name: 'admin',
-//         component: Admin,
-//         meta: { authRequired: true, isAdmin: true }
-//       }
-//     ])
-//     next()
-//   } else {
-//     // 删除管理员专属路由
-//     router.removeRoute('admin')
-//     next()
-//   }
-// })
 
 
 // Lazy-loads view components, but with better UX. A loading view

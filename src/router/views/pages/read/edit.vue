@@ -1,14 +1,17 @@
 
 <template>
-    <Layout>
     <div id="app">
-        <VueDragResize :isActive="true" :w="200" :h="200" v-on:resizing="resize" v-on:dragging="resize">
-            <h3>Hello World!</h3>
-            <p>{{ top }} х {{ left }} </p>
-            <p>{{ width }} х {{ height }}</p>
-        </VueDragResize>
+        <div>
+            <VueDragResize :isActive="true" :w="200" :h="200" v-on:resizing="resize" v-on:dragging="resize">
+                <h3>Hello World!</h3>
+                <p>{{ top }} х {{ left }} </p>
+                <p>{{ width }} х {{ height }}</p>
+            </VueDragResize>
+        </div>
+<div>
+    
+</div>
     </div>
-    </Layout>
 </template>
 
 <script>
@@ -21,7 +24,7 @@ export default {
         meta: [{ name: 'description', content: appConfig.description }],
     },
     components: {
-        VueDragResize,Layout
+        VueDragResize, Layout
     },
     data() {
         return {

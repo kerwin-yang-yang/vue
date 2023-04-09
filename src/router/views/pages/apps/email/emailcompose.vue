@@ -50,7 +50,7 @@ export default {
         <div class="email-container">
           <!-- Left sidebar -->
           <div class="inbox-leftbar">
-            <router-link to="/email/inbox" class="btn btn-danger btn-block mb-4"
+            <router-link :to="{name:'Inbox'}" class="btn btn-danger btn-block mb-4"
               >Inbox</router-link
             >
             <LeftbarList />

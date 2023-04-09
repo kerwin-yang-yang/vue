@@ -10,7 +10,7 @@ import axios from 'axios'
 import Overview from '@components/overview'
 import appConfig from '@src/app.config'
 import StatChart from '@components/widget-stat-chart'
-
+import { stackedAreaChart } from '../ui/chart/data-chart'
 export default {
   page: {
     title: 'Read Document',
@@ -33,8 +33,18 @@ export default {
     StatChart,
     Overview
   },
+  // watch: {
+  //   // 监听 series 数组中元素数据变化，并更新视图
+  //   'series.0.data': function (newData, oldData) {
+  //     this.$refs.chart.updateSeries([{ data: newData }]);
+  //   }
+  // },
   data() {
     return {
+      series: [
+        { name: 'Number of Eyes', data: [] }
+      ],
+      stackedAreaChart: stackedAreaChart,
       tabContent: `Vakal text here dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.`,
       content: ` Donec pede justo, fringilla vel, aliquet nec, vulputate
                   eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
@@ -114,6 +124,20 @@ export default {
       left: 0,
     }
   },
+  // 监听 chartData 属性变化并更新 ECharts 图表
+  //  watch: {
+  //    series(newValue) { 
+  //     this.$refs.chart.setOption({
+  //        series: [
+  //          {
+  //            type: 'line',
+  //            name: 'test',
+  //            data: newValue,
+  //          },
+  //        ],
+  //      })
+  //    },
+  //  },
   mounted() {
     // this.getCompetence()
     this.screen()
@@ -128,17 +152,20 @@ export default {
       .then((stream) => {
         this.$refs.video.srcObject = stream
       })
-
-    // this.uploadTimer = setInterval(this.uploadVideo, 100);
-
-    axios.get('/api/document/get_images').then((response) => {
+    axios.get('/api/document/get_images', { params: { id: this.$route.query.document_id ? this.$route.query.document_id : 1 } }).then((response) => {
       // this.images = response.data.images // 从Flask后端获取图片数据，并将其添加到images列表中
       this.images = response.data.images.map(image => ({ url: image.data, path: image.path, comment: image.comment }));
       console.log(this.images)
     })
+    // window.addEventListener("resize", () => {this.$refs.chart.resize()});
+    this.uploadTimer = setInterval(this.uploadVideo, 100);
+
+
     this.startTimer()
   },
+
   methods: {
+
     startTimer() {
       this.timerRunning = true;
       const startTime = Date.now();
@@ -152,9 +179,7 @@ export default {
       date.setSeconds(seconds)
       return date.toISOString().substr(11, 8)
     },
-    destroyed() {
-      clearInterval(this.uploadTimer)
-    },
+
     async uploadVideo() {
       const canvas = this.$refs.canvas
       const video = this.$refs.video
@@ -187,10 +212,12 @@ export default {
 
         if (response) {
           console.log(response)
-
-          // 响应回传 JSON 数据必须包含待渲染图形字段、长宽比还有其他可能需要修改项内容.
+          const eye_num = response.eyes_rects
+          // 更新图表展示的数据
+          this.updateData(eye_num);
           if (response.image && response.aspectRatio) {
 
+            // 响应回传 JSON 数据必须包含待渲染图形字段、长宽比还有其他可能需要修改项内容.
             this.renderImageToScreen(response.image, response.aspectRatio)
           }
         }
@@ -198,6 +225,69 @@ export default {
         console.error(e)
       }
     },
+    // updateData(num_eyes) {
+    //   const now = new Date();
+    //   // const timestamp = now.toLocaleTimeString().replace(/^\D*/, '')
+
+    //   const newDataPoint = [now, num_eyes];
+
+    //   const updatedSeriesData = [
+    //     ...this.series[0].data.slice(-50),
+    //     newDataPoint
+    //   ];
+    //   this.$set(this.series[0], 'data', updatedSeriesData); // 可以正常触发响应式更新
+
+    // },
+    updateData(num_eyes) {
+      const now = new Date();
+      // const timestamp = now.toLocaleTimeString().replace(/^\D*/, '')
+
+      // this.$refs.chart.echartsInstance.setOption({
+      //     series: [{ data: this.series[0].data }]
+      //   })
+      // 构造新节点num_eyes, time.
+      let newDataPoint = [now, num_eyes];
+      // this.$refs.chart.resize();
+
+      this.$nextTick(() => {
+        // this.$refs.chart.echartsInstance.setOption({
+        //   series: this.series,
+        // })
+
+        // 获取当前节点数值序列.
+        let seriesData = this.series[0].data;
+
+        if (seriesData.length > 20) {
+          seriesData.shift(); // 移除首项元素.
+        }
+
+        // 向数据源添加新节点.
+        this.$set(this.series[0], 'data', [...seriesData, newDataPoint]);
+
+
+        // 刷新首屏
+        // chart.refresh();
+        // 立即重绘，使得图表更稳定
+        // chart.setOption({
+        //   series: this.series,
+        // });
+
+
+        // this.$refs.chart.setOption({series: [{
+
+        //       data:this.series[0]
+        //     }]})
+        // if(this.$refs.chart){
+        //   this.$refs.chart.resize();
+        // setTimeout(() => {
+        //   this.$refs.chart.resize();
+        // }, 1);
+        // }
+      })
+    },
+
+
+
 
     renderImageToScreen(base64EncodedStr, ratio) {
       const cv = this.$refs.canvas1
@@ -411,7 +501,9 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.interval);
+    clearInterval(this.uploadTimer)
   },
+
 }
 </script>
 
@@ -428,44 +520,47 @@ export default {
             :parent-limitation="true" style="z-index: 1000; position: fixed" :sticks="['tr']">
             <div v-if="isVisible" class="chatbox1 overflow-hidden">
               <!-- <div class="bg-primary p-2">
-                                                                                                                                                                                              <div class="media">
-                                                                                                                                                                                                  <img src="@assets/images/users/avatar-2.jpg" alt class="avatar-sm rounded ml-1 mr-2" />
-                                                                                                                                                                                                  <div class="media-body">
-                                                                                                                                                                                                      <h5 class="font-size-13 text-white m-0">Johnny</h5>
-                                                                                                                                                                                                  <small class="text-white-50">
-                                                                                                                                                                                  <i class="uil uil-circle font-size-11 text-success mr-1"></i>Active Now
-                                                                                                                                                                                  </small>
-                                                                                                                                                                                                  </div>
-                                                                                                                                                                                              <div class="float-right font-size-18 mt-1">
-                                                                                                                                                                                                  <a href="javascript: void(0);" class="text-white mr-2">
-                                                                                                                                                                                                          <i class="uil uil-comment-alt-notes font-size-16"></i>
-                                                                                                                                                                                                      </a>
-                                                                                                                                                                                                      <a class="chat-close text-white mr-2" href="javascript: void(0);" @click="remove">
-                                                                                                                                                                                                          <i class="uil uil-multiply font-size-14"></i>
-                                                                                                                                                                                                      </a>
-                                                                                                                                                                                              </div>
-                                                                                                                                                                                          </div>
-                                                                                                                                                                                          </div> -->
+                                                                                                                                                                                                            <div class="media">
+                                                                                                                                                                                                                <img src="@assets/images/users/avatar-2.jpg" alt class="avatar-sm rounded ml-1 mr-2" />
+                                                                                                                                                                                                                <div class="media-body">
+                                                                                                                                                                                                                    <h5 class="font-size-13 text-white m-0">Johnny</h5>
+                                                                                                                                                                                                                <small class="text-white-50">
+                                                                                                                                                                                                <i class="uil uil-circle font-size-11 text-success mr-1"></i>Active Now
+                                                                                                                                                                                                </small>
+                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                            <div class="float-right font-size-18 mt-1">
+                                                                                                                                                                                                                <a href="javascript: void(0);" class="text-white mr-2">
+                                                                                                                                                                                                                        <i class="uil uil-comment-alt-notes font-size-16"></i>
+                                                                                                                                                                                                                    </a>
+                                                                                                                                                                                                                    <a class="chat-close text-white mr-2" href="javascript: void(0);" @click="remove">
+                                                                                                                                                                                                                        <i class="uil uil-multiply font-size-14"></i>
+                                                                                                                                                                                                                    </a>
+                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        </div> -->
 
               <!-- <div class="chat-conversation p-2">
-                                                      <video id="videoCamera" :width="videoWidth" :height="videoHeight" autoplay></video>
-                                                      <canvas style="display: none" id="canvasCamera" :width="videoWidth" :height="videoHeight"></canvas>
-                                                      <div v-if="imgSrc" class="img_bg_camera">
-                                                        <img :src="imgSrc" alt="" class="tx_img" />
-                                                        </div>
-                                                        <button @click="getCompetence()">打开摄像头</button>
-                                                        <button @click="stopNavigator()">关闭摄像头</button>
-                                                      <button @click="setImage()">拍照</button>
-                                                    </div> -->
+                                                                    <video id="videoCamera" :width="videoWidth" :height="videoHeight" autoplay></video>
+                                                                    <canvas style="display: none" id="canvasCamera" :width="videoWidth" :height="videoHeight"></canvas>
+                                                                    <div v-if="imgSrc" class="img_bg_camera">
+                                                                      <img :src="imgSrc" alt="" class="tx_img" />
+                                                                      </div>
+                                                                      <button @click="getCompetence()">打开摄像头</button>
+                                                                      <button @click="stopNavigator()">关闭摄像头</button>
+                                                                    <button @click="setImage()">拍照</button>
+                                                                  </div> -->
               <video ref="video" autoplay width="640" height="360" style="display: none;"></video>
               <canvas ref="canvas" width="640" height="360" style="display: none;z-index: 100;"></canvas>
               <canvas ref="canvas1" width="304" height="171"></canvas>
               <!-- <button @click="uploadVideo()">上传</button> -->
 
-              <div v-for="stat of statChart" :key="stat.mainTitle" style="width: 100%;height:auto">
-                <StatChart :value="stat.value" :sub-value="stat.subValue" :chart-color="stat.chartColor" />
+              <!-- <div v-for="stat of statChart" :key="stat.mainTitle" style="width: 100%;height:auto">
+                          <StatChart :value="stat.value" :sub-value="stat.subValue" :chart-color="stat.chartColor" />
 
-              </div>
+                        </div> -->
+              <apexchart ref="chart" class="apex-charts" height="150" type="area" :series="this.series"
+                :options="stackedAreaChart.chartOptions"></apexchart>
+
             </div>
           </VueDragResize>
 
@@ -490,8 +585,7 @@ export default {
                         <div class="text-center">
                           <i class="uil-no-entry text-warning display-3"></i>
                           <h4 class="text-danger mt-4">Abnormal Behavior Warning </h4>
-                          <p class="w-75 mx-auto text-muted">Please note that your suspension behavior will be recorded in
-                            the documentation, and any resulting leakage consequences will be borne by you</p>
+                          <p class="w-75 mx-auto text-muted">请注意，你的暂停行为将被记录在文件中，由此产生的任何泄密后果将由你承担</p>
                           <div class="mt-4">
                             <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
                               @click="errorModal = false">
@@ -644,12 +738,12 @@ export default {
                 <div class="header-crumb">
                   <a href="#" class="navbar-brand"> 💁🏻‍♀️ {{ user.username }} </a>
                   <div><b-button variant="outline-dark" size="sm" style="
-                                                                  border-radius: 8px;
-                                                                border: 1px solid #bbb6b7;
-                                                                height: 32px;
-                                                                  width: 56px;
-                                                                " @click="changeLeftSide"><i class="uil font-size-15"
-                        :class="{
+                                                                                border-radius: 8px;
+                                                                              border: 1px solid #bbb6b7;
+                                                                              height: 32px;
+                                                                                width: 56px;
+                                                                              " @click="changeLeftSide"><i
+                        class="uil font-size-15" :class="{
                           'uil-left-arrow-to-left': label,
                           'uil-arrow-to-right': !label,
                         }"></i></b-button>
@@ -661,56 +755,56 @@ export default {
                 <div class="head-action">
                   <div class="header-action-item"><b-button variant="outline-dark" size="sm"
                       style="
-                                                          border-radius: 8px;
-                                                          border: none;
-                                                          height: 32px;
-                                                    width: 40px;    display: flex; justify-content: center;align-items: center; ">
+                                                                        border-radius: 8px;
+                                                                        border: none;
+                                                                        height: 32px;
+                                                                  width: 40px;    display: flex; justify-content: center;align-items: center; " @click="screen">
                       <feather type="music"></feather>
                     </b-button>
                   </div>
                   <div class="header-action-item"><b-button variant="outline-dark" size="sm" style="
-                                                                border-radius: 8px;
-                                                                border: none;
-                                                                height: 32px;
-                                                          width: 40px;    display: flex;
-                                    justify-content: center;
-                                          align-items: center;
-                                                              " @click="Immersion">
+                                                                              border-radius: 8px;
+                                                                              border: none;
+                                                                              height: 32px;
+                                                                        width: 40px;    display: flex;
+                                                  justify-content: center;
+                                                        align-items: center;
+                                                                            " @click="Immersion">
                       <feather type="airplay"></feather>
                     </b-button>
                   </div>
 
                   <div class="header-action-item"><b-button variant="outline-dark" size="sm" style="
-                                                          border-radius: 8px;
-                                                          border: none;
-                                                          height: 32px;
-                                                    width: 40px;    display: flex;
-                              justify-content: center;
-                                align-items: center;
-                                                    " @click="show = !show"><i
+                                                                        border-radius: 8px;
+                                                                        border: none;
+                                                                        height: 32px;
+                                                                  width: 40px;    display: flex;
+                                            justify-content: center;
+                                              align-items: center;
+                                                                  " @click="show = !show"><i
                         class="uil uil-chat-info font-size-18"></i></b-button>
                   </div>
                   <div class="header-action-item">
 
                     <b-button variant="outline-dark" style="
-                                                    border-radius: 8px;
-                                                    border: none;
-                                                    height: 32px;
-                                                    width: 40px;    display: flex;
-                              justify-content: center;
-                              align-items: center;
-                                                  " @click="sidebarViewd(3)">
+                                                                  border-radius: 8px;
+                                                                  border: none;
+                                                                  height: 32px;
+                                                                  width: 40px;    display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                                                " @click="sidebarViewd(3)">
                       <i class="uil uil-facebook-messenger-alt font-size-18"></i> </b-button>
                   </div>
                   <div class="header-action-item"><b-button variant="outline-dark" style="
-                                                          border-radius: 8px;
-                                                          border: none;
-                                                          height: 32px;
-                                                          width: 40px;    display: flex;
-                                    justify-content: center;
-                                          align-items: center;
+                                                                        border-radius: 8px;
+                                                                        border: none;
+                                                                        height: 32px;
+                                                                        width: 40px;    display: flex;
+                                                  justify-content: center;
+                                                        align-items: center;
 
-                                                              " @click="sidebarViewd(2)">
+                                                                            " @click="sidebarViewd(2)">
                       <i class="uil uil-map-marker-info font-size-19"></i> </b-button>
                   </div>
                 </div>
@@ -723,9 +817,9 @@ export default {
                 <hr />
                 <div>
                   <!-- <b-img-lazy id="tooltip-button-1" v-bind="mainProps" :src="getImageUrl(1)" alt="Image 1"></b-img-lazy>
-                                                        <b-img-lazy id="tooltip-button-2" v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy>
-                                                        <b-img-lazy id="tooltip-button-3" v-bind="mainProps" :src="getImageUrl(3)" alt="Image 3"></b-img-lazy>
-                                                        <b-img-lazy id="tooltip-button-4" v-bind="mainProps" :src="getImageUrl(85)" alt="Image 4"></b-img-lazy> -->
+                                                                      <b-img-lazy id="tooltip-button-2" v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy>
+                                                                      <b-img-lazy id="tooltip-button-3" v-bind="mainProps" :src="getImageUrl(3)" alt="Image 3"></b-img-lazy>
+                                                                      <b-img-lazy id="tooltip-button-4" v-bind="mainProps" :src="getImageUrl(85)" alt="Image 4"></b-img-lazy> -->
                   <!-- <b-img-lazy v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy> -->
                   <div v-for="(image, index) in images"><b-img-lazy :id="image.path" :src="image.url" v-bind="mainProps"
                       alt="Image 2"></b-img-lazy>
@@ -737,7 +831,8 @@ export default {
 
 
                 <div class="col">
-                  <div style="font-size: large; font-weight: 600">All commonts (2)</div>
+                  <div style="font-size: large; font-weight: 600">All commonts <strong>({{ images.length }})</strong>
+                  </div>
                   <hr />
                   <div id="taskDesk" style="margin-top: 30px">
                     <div style="float: left; margin-top: 4px"><img class="d-flex mr-3 rounded-circle avatar-sm"
@@ -756,13 +851,13 @@ export default {
               </div>
               <div class="Rbody " :class="{ active: this.show }">
                 <div style="
-                                                              text-align: center;
-                                                              background-color: #fff;
-                                                              position: sticky;
-                                                              height: 50px;
-                                                              border-bottom: 2px solid #edeff4;
-                                                               padding: 10px;
-                                                            ">
+                                                                            text-align: center;
+                                                                            background-color: #fff;
+                                                                            position: sticky;
+                                                                            height: 50px;
+                                                                            border-bottom: 2px solid #edeff4;
+                                                                             padding: 10px;
+                                                                          ">
                   <h5> comments <strong>({{ images.length }})</strong></h5>
                 </div>
 
@@ -784,7 +879,7 @@ export default {
 
                   <div class="media mb-0 mt-5">
                     <!-- <img class="d-flex mr-3 rounded-circle avatar-sm"
-                                                                                                                                                      src="@assets/images/users/avatar-7.jpg" alt="Generic placeholder image" /> -->
+                                                                                                                                                                    src="@assets/images/users/avatar-7.jpg" alt="Generic placeholder image" /> -->
                     <div class="media-body">
                       <div class="mb-2">
                         <vue-editor></vue-editor>
@@ -807,9 +902,14 @@ export default {
                         <p class="mb-0">{{ content }}</p>
                       </b-tab>
                       <b-tab title="Profile">
-                        <p>{{ content }}</p>
-                        <feather type="arrow-down-circle" class="icon-dual-dark"></feather>.
-                        <p class="mb-0">{{ tabContent }}</p>
+                        <!-- <p>{{ content }}</p>
+  
+                                      <p class="mb-0">{{ tabContent }}</p> -->
+
+                        <h4 class="header-title mt-0 mb-3">Stacked Area</h4>
+                        <!-- <apexchart ref="chart" class="apex-charts" height="150" type="area" :series="this.series"
+                                  :options="stackedAreaChart.chartOptions"></apexchart> -->
+
                       </b-tab>
                       <b-tab title="Me">
                         <Overview :items="overviewData" />
@@ -824,8 +924,8 @@ export default {
 
                 <div id="taskDesk" style="margin-top: 30px">
                   <!-- <div style="float: left;margin-top: 4px;"><img class="d-flex mr-3 rounded-circle avatar-sm"
-                                                                                          src="@assets/images/users/avatar-1.jpg" alt="Generic placeholder image" />
-                                                                              </div>  -->
+                                                                                                        src="@assets/images/users/avatar-1.jpg" alt="Generic placeholder image" />
+                                                                                            </div>  -->
                   <div>
                     <vue-editor style="margin-bottom: 20px" v-model="content" :editor-toolbar="customToolbar" />
                     <div class="text-left">

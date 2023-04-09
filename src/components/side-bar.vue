@@ -95,7 +95,7 @@ export default {
 
 			<div class="media-body">
 				<h6 class="pro-user-name mt-0 mb-0">{{ user.username }}</h6>
-				<span class="pro-user-desc">{{user.user_role_name}}</span>
+				<span class="pro-user-desc">{{user.user_role_name}} / {{ user.user_role_description}}</span>
 			</div>
 			<b-dropdown variant="black" class="align-self-center" toggle-class="p-0">
 				<template v-slot:button-content>

@@ -1,6 +1,7 @@
 <script>
 import { authComputed } from '@state/helpers'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import {userInfoComputed} from '@state/helpers'
 
 export default {
 	components: {
@@ -19,15 +20,24 @@ export default {
 	},
 	data() {
 		return {
-			fullscreen: false
+			fullscreen: false,
 		}
 	},
 	computed: {
 		...authComputed,
-		
+		...userInfoComputed
 	},
 
 	methods: {
+		formatTime(timestamp) {
+			const diff = Date.now() - new Date(timestamp.replace(/-/g,'/')).getTime()
+      
+      if (diff <= (1000 * 60)) return '刚刚'
+      else if (diff <= (1000 * 60 * 60)) return Math.floor(diff / (1000 * 60)) + '分钟前'
+      else if (diff <= (1000 * 60 * 60 *24)) return Math.floor(diff / (1000 * 60 * 60)) + '小时前'
+      else return Math.floor(diff / (1000 * 60 * 60 *24)) + '天前'
+    }
+  ,
 		toggleMenu() {
 			this.$parent.toggleMenu()
 		},
@@ -212,12 +222,12 @@ export default {
 				</b-nav-item-dropdown>
 
 				<b-nav-item-dropdown id="bell-notification" right variant="white" class="notification-list"
-					title="8 new unread notifications" menu-class="dropdown-lg">
+					title="8 new unread notifications" menu-class="dropdown-lg"  v-if="Notification">
 					<template v-slot:button-content>
 						<feather type="bell" class="align-middle"></feather>
 						<span class="noti-icon-badge"></span>
 					</template>
-					<b-tooltip target="bell-notification" placement="left">8 new unread notifications</b-tooltip>
+					<b-tooltip target="bell-notification" placement="left">{{ Notification.length }} new unread notifications</b-tooltip>
 					<!-- item-->
 					<b-dropdown-text class="noti-title border-bottom pb-2" tag="div">
 						<h5 class="m-0 font-size-16">
@@ -230,18 +240,19 @@ export default {
 
 					<VuePerfectScrollbar v-once class="noti-scroll">
 						<!-- item-->
-						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom">
-							<div class="notify-icon bg-primary">
-								<i class="uil uil-user-plus"></i>
+						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom"  v-for="notification in Notification" :key="notification.id">
+							<div class="notify-icon">
+								<!-- <i class="uil uil-user-plus"></i> -->
+								<img :src="notification.sender_picture" class="img-fluid rounded-circle" />
 							</div>
 							<p class="notify-details">
-								New user registered.
-								<small class="text-muted">5 hours ago</small>
+								{{notification.content}}
+								<small class="text-muted">{{formatTime(notification.timestamp)}}</small>
 							</p>
 						</b-dropdown-text>
 
-						<!-- item-->
-						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom">
+						
+						<!-- <b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom">
 							<div class="notify-icon">
 								<img src="@assets/images/users/avatar-1.jpg" class="img-fluid rounded-circle" alt />
 							</div>
@@ -251,7 +262,7 @@ export default {
 							</p>
 						</b-dropdown-text>
 
-						<!-- item-->
+						
 						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom">
 							<div class="notify-icon">
 								<img src="@assets/images/users/avatar-2.jpg" class="img-fluid rounded-circle" alt />
@@ -262,7 +273,7 @@ export default {
 							</p>
 						</b-dropdown-text>
 
-						<!-- item-->
+						
 						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom active">
 							<div class="notify-icon bg-success">
 								<i class="uil uil-comment-message"></i>
@@ -275,7 +286,7 @@ export default {
 							</p>
 						</b-dropdown-text>
 
-						<!-- item-->
+						
 						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom">
 							<div class="notify-icon bg-danger">
 								<i class="uil uil-comment-message"></i>
@@ -288,7 +299,7 @@ export default {
 							</p>
 						</b-dropdown-text>
 
-						<!-- item-->
+						
 						<b-dropdown-text href="javascript:void(0);" class="notify-item">
 							<div class="notify-icon bg-primary">
 								<i class="uil uil-heart"></i>
@@ -298,7 +309,7 @@ export default {
 								<b>Admin</b>
 								<small class="text-muted">13 days ago</small>
 							</p>
-						</b-dropdown-text>
+						</b-dropdown-text> -->
 					</VuePerfectScrollbar>
 					<!-- All-->
 					<b-dropdown-text href="javascript:void(0);"

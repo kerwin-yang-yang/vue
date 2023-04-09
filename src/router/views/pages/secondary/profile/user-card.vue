@@ -62,8 +62,7 @@
 								<th scope="row">Address</th>
 								<td>
 									<!-- <strong>{{ user.documents[0].description }}</strong> -->
-									1975 Boring Lane, San Francisco, California, United States -
-									94108
+									{{user.address}}
 								</td>
 							</tr>
 						</tbody>

@@ -14,8 +14,8 @@ export default {
 	components: { Layout },
 	data() {
 		return {
-			username: 'kerwin',
-			password: '11111',
+			username: 'top-admin',
+			password: 'admin',
 			authError: null,
 			tryingToLogIn: false,
 			isAuthError: false,

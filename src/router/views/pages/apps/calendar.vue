@@ -6,10 +6,11 @@ import interactionPlugin from '@fullcalendar/interaction'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import listPlugin from '@fullcalendar/list'
 import { required } from 'vuelidate/lib/validators'
-
+// import axios from 'axios'
 import appConfig from '@src/app.config'
 import Layout from '@layouts/main'
 import PageHeader from '@components/page-header'
+import { userInfoComputed, authComputed, userInfoMethods } from '@state/helpers'
 
 import { calendarEvents, categories } from './data-calendar'
 
@@ -45,7 +46,7 @@ export default {
 				listPlugin,
 			],
 			themeSystem: 'bootstrap',
-			calendarEvents: calendarEvents,
+			calendarEvents: '',
 			createModal: false,
 			showmodal: false,
 			eventModal: false,
@@ -58,17 +59,27 @@ export default {
 			event: {
 				title: '',
 				category: '',
-				start:'',
+				start: '',
 				end: ''
 			},
 			editevent: {
 				editTitle: '',
 			},
 			dateTimePicker: {
-        enableTime: true,
-        // dateFormat: 'd-m-Y H:i',
-      },
+				enableTime: true,
+				// dateFormat: 'd-m-Y H:i',
+			},
 		}
+	},
+	created() {
+		// console.log(this.Calendar)
+		this.calendarEvents = this.Calendar
+		// console.log(this.calendarEvents )
+	},
+	computed: {
+		...userInfoComputed,
+		...authComputed,
+
 	},
 	validations: {
 		event: {
@@ -80,7 +91,8 @@ export default {
 		/**
 		 * Modal form submit
 		 */
-		handleSubmit(e) {
+		...userInfoMethods,
+		async handleSubmit(e) {
 			this.submitted = true
 
 			// stop here if form is invalid
@@ -92,7 +104,9 @@ export default {
 				const category = this.event.category
 				const start = this.event.start
 				const end = this.event.end
-
+				const username = this.currentUser.username
+				// 发送到服务端进行存储操作
+				// await axios.post('/api/addEvents', { title, category, start, end,username  })
 
 				this.calendarEvents = this.calendarEvents.concat({
 					id: this.calendarEvents.length + 1,
@@ -101,6 +115,9 @@ export default {
 					end: end,
 					classNames: [category],
 				})
+				console.log(title)
+				this.createCalendarsEvent({ id: this.calendarEvents.length, title: title, category: category, start: start, end: end, username: username })
+
 
 				this.showmodal = false
 				this.newEventData = {}
@@ -124,6 +141,7 @@ export default {
 			const editTitle = this.editevent.editTitle
 			this.edit.setProp('title', editTitle)
 			this.eventModal = false
+			this.updateCalendarsEvent({id:this.edit.id,title: this.edit.title, category: this.edit.category, start: this.edit.start,  end: this.edit.end})
 		},
 
 		/**
@@ -135,6 +153,7 @@ export default {
 				(x) => '' + x.id !== '' + deleteId
 			)
 			this.eventModal = false
+			this.deleteCalendarsEvent({id:this.edit.id})
 		},
 		/**
 		 * Modal open for add event
@@ -170,17 +189,11 @@ export default {
 					<div class="card-body">
 						<div class="row align-items-center">
 							<div class="col-xl-2 col-lg-3 col-6">
-								<img
-									src="@assets/images/cal.png"
-									class="mr-4 align-self-center img-fluid"
-									alt="cal"
-								/>
+								<img src="@assets/images/cal.png" class="mr-4 align-self-center img-fluid" alt="cal" />
 							</div>
 							<div class="col-xl-10 col-lg-9">
 								<div class="mt-4 mt-lg-0">
-									<h5 class="mt-0 mb-1 font-weight-bold"
-										>Welcome to Your Calendar</h5
-									>
+									<h5 class="mt-0 mb-1 font-weight-bold">Welcome to Your Calendar</h5>
 									<p class="text-muted mb-2">
 										The calendar shows the events synced from all your linked
 										calendars. Click on event to see or edit the details. You
@@ -188,11 +201,7 @@ export default {
 										button or any cell available in calendar below.
 									</p>
 
-									<button
-										id="btn-new-event"
-										class="btn btn-primary mt-2 mr-1"
-										@click="showmodal = true"
-									>
+									<button id="btn-new-event" class="btn btn-primary mt-2 mr-1" @click="showmodal = true">
 										<i class="uil-plus-circle"></i> Create New Event
 									</button>
 									<button class="btn btn-white mt-2">
@@ -215,117 +224,66 @@ export default {
 				<div class="card">
 					<div class="card-body">
 						<div class="app-calendar">
-							<FullCalendar
-								ref="fullCalendar"
-								default-view="dayGridMonth"
-								:header="{
-									left: 'prev,next today',
-									center: 'title',
-									right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-								}"
-								:button-text="{
-									today: 'Today',
-									month: 'Month',
-									week: 'Week',
-									day: 'Day',
-									list: 'List',
-									prev: 'Prev',
-									next: 'Next',
-								}"
-								:bootstrap-font-awesome="false"
-								:editable="true"
-								:droppable="true"
-								:plugins="calendarPlugins"
-								:events="calendarEvents"
-								:weekends="calendarWeekends"
-								:theme-system="themeSystem"
-								@dateClick="dateClicked"
-								@eventClick="editEvent"
-							/>
+							<FullCalendar ref="fullCalendar" default-view="dayGridMonth" :header="{
+								left: 'prev,next today',
+								center: 'title',
+								right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+							}" :button-text="{
+	today: 'Today',
+	month: 'Month',
+	week: 'Week',
+	day: 'Day',
+	list: 'List',
+	prev: 'Prev',
+	next: 'Next',
+}" :bootstrap-font-awesome="false" :editable="true" :droppable="true" :plugins="calendarPlugins"
+								:events="calendarEvents" :weekends="calendarWeekends" :theme-system="themeSystem"
+								@dateClick="dateClicked" @eventClick="editEvent" />
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<b-modal
-			v-model="showmodal"
-			title="Add New Event"
-			title-class="text-black font-18"
-			hide-footer
-		>
+		<b-modal v-model="showmodal" title="Add New Event" title-class="text-black font-18" hide-footer>
 			<form @submit.prevent="handleSubmit">
 				<div class="row">
 					<div class="col-12">
 						<div class="form-group">
 							<label for="name">Event Name</label>
-							<input
-								id="name"
-								v-model="event.title"
-								type="text"
-								class="form-control"
-								placeholder="Enter name"
-								:class="{ 'is-invalid': submitted && $v.event.title.$error }"
-							/>
-							<div
-								v-if="submitted && !$v.event.title.required"
-								class="invalid-feedback"
-								>This value is required.</div
-							>
+							<input id="name" v-model="event.title" type="text" class="form-control" placeholder="Enter name"
+								:class="{ 'is-invalid': submitted && $v.event.title.$error }" />
+							<div v-if="submitted && !$v.event.title.required" class="invalid-feedback">This value is
+								required.</div>
 						</div>
 					</div>
 					<div class="col-12">
 						<div class="form-group">
 							<label for="name">Event Name</label>
-							<flat-pickr
-                v-model="event.start"
-                :config="dateTimePicker"
-                class="form-control"
-                placeholder="Date and Time"
-              ></flat-pickr>
-							<div
-								v-if="submitted && !$v.event.start.required"
-								class="invalid-feedback"
-								>This value is required.</div
-							>
+							<flat-pickr v-model="event.start" :config="dateTimePicker" class="form-control"
+								placeholder="Date and Time"></flat-pickr>
+							<div v-if="submitted && !$v.event.start.required" class="invalid-feedback">This value is
+								required.</div>
 						</div>
 					</div>
 					<div class="col-12">
 						<div class="form-group">
 							<label for="name">Event Name</label>
-							<flat-pickr
-                v-model="event.end"
-                :config="dateTimePicker"
-                class="form-control"
-                placeholder="Date and Time"
-              ></flat-pickr>
-							<div
-								v-if="submitted && !$v.event.end.required && event.end<event.start"
-								class="invalid-feedback"
-								>This value is wrong.</div
-							>
+							<flat-pickr v-model="event.end" :config="dateTimePicker" class="form-control"
+								placeholder="Date and Time"></flat-pickr>
+							<div v-if="submitted && !$v.event.end.required && event.end < event.start"
+								class="invalid-feedback">This value is wrong.</div>
 						</div>
 					</div>
 					<div class="col-12">
 						<div class="form-group">
 							<label class="control-label">Category</label>
-							<select
-								v-model="event.category"
-								class="form-control"
-								name="category"
-								:class="{ 'is-invalid': submitted && $v.event.category.errors }"
-							>
-								<option
-									v-for="option in categories"
-									:key="option.backgroundColor"
-									:value="`${option.value}`"
-									>{{ option.name }}</option
-								>
+							<select v-model="event.category" class="form-control" name="category"
+								:class="{ 'is-invalid': submitted && $v.event.category.errors }">
+								<option v-for="option in categories" :key="option.backgroundColor"
+									:value="`${option.value}`">{{ option.name }}</option>
 							</select>
-							<div
-								v-if="submitted && !$v.event.category.required"
-								class="invalid-feedback"
-								>This value is required.</div
-							>
+							<div v-if="submitted && !$v.event.category.required" class="invalid-feedback">This value is
+								required.</div>
 						</div>
 					</div>
 
@@ -333,30 +291,18 @@ export default {
 
 				<div class="text-right">
 					<button type="submit" class="btn btn-success">Save</button>
-					<b-button class="ml-1" variant="light" @click="hideModal"
-						>Close</b-button
-					>
+					<b-button class="ml-1" variant="light" @click="hideModal">Close</b-button>
 				</div>
 			</form>
 		</b-modal>
 
 		<!-- Edit Modal -->
-		<b-modal
-			v-model="eventModal"
-			title="Edit Event"
-			title-class="text-black font-18"
-			hide-footer
-			body-class="p-0"
-		>
+		<b-modal v-model="eventModal" title="Edit Event" title-class="text-black font-18" hide-footer body-class="p-0">
 			<form @submit.prevent="editSubmit">
 				<div class="p-3">
 					<label>Change event name</label>
 					<div class="input-group m-b-15">
-						<input
-							v-model="editevent.editTitle"
-							class="form-control"
-							type="text"
-						/>
+						<input v-model="editevent.editTitle" class="form-control" type="text" />
 						<span class="input-group-append">
 							<button type="submit" class="btn btn-success btn-md">
 								<i class="fa fa-check"></i> Save
@@ -366,9 +312,7 @@ export default {
 				</div>
 				<div class="text-right p-3">
 					<b-button variant="light" @click="closeModal">Close</b-button>
-					<b-button class="ml-1" variant="danger" @click="deleteEvent"
-						>Delete</b-button
-					>
+					<b-button class="ml-1" variant="danger" @click="deleteEvent">Delete</b-button>
 				</div>
 			</form>
 		</b-modal>

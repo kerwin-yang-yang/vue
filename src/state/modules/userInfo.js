@@ -27,6 +27,27 @@ export const mutations = {
       },
       CACHE_NOTIFICATION(state, Notifications) {
         state.Notification= Notifications
+        saveState('userInfo.Notification', Notifications)
+      },
+      ADD_EVENT(state, event) {
+        state.Calendar.push(event)
+        saveState('userInfo.Calendar', state.Calendar)
+      },
+      DELETE_EVENT(state, id) {
+        state.Calendar = state.Calendar.filter(event => event.id != id)
+        saveState('userInfo.Calendar', state.Calendar)
+      },
+      UPDATE_EVENT(state, events) {
+        const index = state.Calendar.findIndex(event => event.id == events.id)
+        console.log( events)
+
+        if (index !== -1) {
+          state.Calendar[index].title = events.title
+          // state.Calendar[index].category = category
+          // state.Calendar[index].start = start
+          // state.Calendar[index].end = end
+          saveState('userInfo.Calendar', state.Calendar)
+        }
       },
 }
 export const actions = {
@@ -52,7 +73,7 @@ export const actions = {
         })
     },
     getNotifications({ commit,  getters }, { username } = {}){
-      if (getters.hasCalendars) return state.Calendar
+      if (getters.hasNotifications) return state.Notification
       axios
       .get('/api/notification', { params: {username:username} })
       .then((response) => {
@@ -61,6 +82,44 @@ export const actions = {
         
       })
   },
+  createCalendarsEvent({ commit }, { id, title, category, start, end,username }) {
+    try {
+      
+      // make POST request to '/api/events' with event data
+       axios.post('/api/addEvents', { title, category, start, end,username }).then((response)=>{
+        const new_id=response.data.new_id
+        // update store immediately after successful save
+        commit('ADD_EVENT', {  id:new_id , title, category, start, end })
+      })
+
+      
+      
+    } catch (error) {
+        console.error(error)
+    }
+  },
+  deleteCalendarsEvent({ commit }, { id }) {
+    try {
+      // make DELETE request to '/api/events/:id' to delete event
+      axios.delete(`/api/events/${id}`)
+      // update store immediately after successful deletion
+      commit('DELETE_EVENT', id)
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  updateCalendarsEvent({ commit }, { id, title, category, start, end }) {
+    try {
+      // make PUT request to '/api/events/:id' to update event
+      axios.put(`/api/events/${id}`, { title, start, end })
+      // update store immediately after successful update
+      commit('UPDATE_EVENT', { id, title, start, end,category })
+      console.log('ok')
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  
     cleanAll({commit}){
       commit('CACHE_DOCUMENT', null)
       commit('CACHE_CALENDAR', null)

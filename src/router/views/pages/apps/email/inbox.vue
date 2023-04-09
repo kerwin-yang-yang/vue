@@ -40,7 +40,9 @@ export default {
           active: true,
         },
       ],
+
       isVisible: false,
+      errorModal: false,
       unreadEmail: emailData.filter((t) => t.status === 'unread'),
       importantEmail: emailData.filter((t) => t.status === 'important'),
       elseEmail: emailData.filter((t) => t.status === 'else'),
@@ -49,6 +51,14 @@ export default {
   methods: {
     remove() {
       this.isVisible = false
+    },
+    confirmJump() {
+      // 在路由跳转前弹出提示框，询问用户是否确认跳转
+        const id = 1
+        // 用户点击了“确定”按钮，继续执行路由跳转
+        
+        this.$router.push({ name: 'Read', query:{ document_id:id } });
+        this.errorModal= false
     },
   },
 }
@@ -62,7 +72,7 @@ export default {
         <div class="email-container bg-transparent">
           <!-- Left sidebar -->
           <div class="inbox-leftbar card">
-            <router-link to="/email/compose" class="btn btn-danger btn-block mb-4">Compose</router-link>
+            <router-link :to="{name:'Compose Email'}" class="btn btn-danger btn-block mb-4">Compose</router-link>
 
             <LeftbarList />
 
@@ -206,7 +216,36 @@ export default {
             <!-- end chatbox -->
           </div>
           <!-- End Left sidebar -->
-
+          <b-modal
+								v-model="errorModal"
+								centered
+								hide-footer
+								title="重要提醒"
+								title-class="font-18"
+							>
+								<div class="text-center">
+									<i class="uil-no-entry text-warning display-3"></i>
+									<h4 class="text-danger mt-4">阅读行为提醒</h4>
+									<p class="w-75 mx-auto text-muted"
+										>请注意，你的所有阅读行为将会被记录</p
+									>
+                  <p class="w-75 mx-auto text-muted"
+										>产生的任何泄密后果将由你承担</p
+									>
+                  <p class="w-75 mx-auto text-muted"
+										>我们将对你的行为进行实时的监控，需要获取你的摄像头权限，同意则开始文档阅读</p
+									>
+									<div class="mt-4">
+										<a
+											class="btn btn-outline-primary btn-rounded width-md"
+											href="javascript: void(0);"
+											@click="confirmJump"
+										>
+											<i class="uil uil-arrow-right mr-1"></i> 同意
+										</a>
+									</div>
+								</div>
+							</b-modal>
           <!-- start right sidebar -->
           <div class="inbox-rightbar">
             <Toolbar />
@@ -222,7 +261,9 @@ export default {
                     </div>
                     <span class="star-toggle uil uil-star"
                       :class="{ 'text-warning': `${email.star}` === 'true' }"></span>
-                    <a href="/read" class="title">{{ email.title }}</a>
+                      <!-- <router-link :to="{ name: 'Read' }" @click.prevent="beforeRoute">{{ email.title }}</router-link> -->
+                      <a @click="errorModal = true" class="title">{{ email.title }}</a>
+                    <!-- <a href="/read" class="title"></a> -->
                   </div>
                   <div class="col-mail col-mail-2">
                     <a href class="subject">{{ email.subject }}</a>
@@ -241,7 +282,7 @@ export default {
                     </div>
                     <span class="star-toggle uil uil-star"
                       :class="{ 'text-warning': `${email.star}` === 'true' }"></span>
-                    <a href class="title">{{ email.title }}</a>
+                      <a @click="errorModal = true" class="title">{{ email.title }}</a>
                   </div>
                   <div class="col-mail col-mail-2">
                     <a href class="subject">{{ email.subject }}</a>
@@ -260,7 +301,7 @@ export default {
                     </div>
                     <span class="star-toggle uil uil-star"
                       :class="{ 'text-warning': `${email.star}` === 'true' }"></span>
-                    <a href class="title">{{ email.title }}</a>
+                      <a @click="errorModal = true" class="title">{{ email.title }}</a>
                   </div>
                   <div class="col-mail col-mail-2">
                     <a href class="subject">{{ email.subject }}</a>
@@ -281,6 +322,9 @@ export default {
   width: 225px;
 }
 </style>
+
+
+
 <!-- <script>
   function closeMedia() {
             var video = document.getElementById('video');

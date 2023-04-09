@@ -12,7 +12,7 @@ export const userInfoComputed = {
     Calendar:(state)=>state.Calendar,
     Notification:(state)=>state.Notification,
   }),
-  ...mapGetters('userInfo',['hasDocuments','hasCalendars','hasNotifications'])
+  ...mapGetters('userInfo',['hasDocuments','hasCalendars','hasNotifications',])
 }
 
 export const layoutComputed = {
@@ -28,7 +28,10 @@ export const userInfoMethods = mapActions('userInfo', [
   'getDocuments',
   'getCalendars',
   'cleanAll',
-  'getNotifications'
+  'getNotifications',
+  'createCalendarsEvent',
+  'deleteCalendarsEvent',
+  'updateCalendarsEvent'
   // 'resetPassword',
 ])
 
