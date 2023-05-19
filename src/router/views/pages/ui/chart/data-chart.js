@@ -249,11 +249,11 @@ const stackedAreaChart = {
   chartOptions: {
     chart: {
       stacked: true,
-      events: {
-        selection(chart, e) {
-          console.log(new Date(e.xaxis.min))
-        },
-      },
+      // events: {
+      //   selection(chart, e) {
+      //     console.log(new Date(e.xaxis.min))
+      //   },
+      // },
       toolbar: {
         show: false,
       },
@@ -264,7 +264,7 @@ const stackedAreaChart = {
     },
     tooltip: {
       theme: 'dark',
-      x: { show: false },
+      // x: { show: false },
     },
     stroke: {
       width: [3, 3, 3],
@@ -283,11 +283,17 @@ const stackedAreaChart = {
     },
     xaxis: {
       type: 'datetime',
-      axisBorder: {
-        color: '#d6ddea',
+      // axisBorder: {
+      //   color: '#d6ddea',
+      // },
+      // axisTicks: {
+      //   color: '#d6ddea',
+      // },
+      tooltip: {
+        enabled: false,
       },
-      axisTicks: {
-        color: '#d6ddea',
+      axisBorder: {
+        show: false,
       },
     },
   },

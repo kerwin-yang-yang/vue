@@ -89,7 +89,7 @@ export const actions = {
        axios.post('/api/addEvents', { title, category, start, end,username }).then((response)=>{
         const new_id=response.data.new_id
         // update store immediately after successful save
-        commit('ADD_EVENT', {  id:new_id , title, category, start, end })
+        commit('ADD_EVENT', {  id:new_id , title, category:category+' text-white', start, end })
       })
 
       

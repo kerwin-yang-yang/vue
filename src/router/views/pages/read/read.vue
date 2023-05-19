@@ -1,37 +1,29 @@
 <script>
-import LeftbarList from '../apps/email/leftbar-list'
+
 import Layout from '@layouts/main'
 import { VueEditor } from 'vue2-editor'
-import TimeLine from '@views/pages/secondary/starter.vue'
-import ReadTopbar from './edit.vue'
 import Footer from '@components/footer'
 import VueDragResize from 'vue-drag-resize'
 import axios from 'axios'
 import Overview from '@components/overview'
 import appConfig from '@src/app.config'
-import StatChart from '@components/widget-stat-chart'
 import { stackedAreaChart } from '../ui/chart/data-chart'
+import { authComputed } from '@state/helpers'
+
 export default {
   page: {
     title: 'Read Document',
     meta: [{ name: 'description', content: appConfig.description }],
   },
-  props: {
-    user: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-  },
   components: {
-    LeftbarList,
+
     VueEditor,
-    TimeLine,
-    ReadTopbar,
+
+
     Footer,
     VueDragResize,
-    StatChart,
-    Overview
+
+    Overview,
   },
   // watch: {
   //   // 监听 series 数组中元素数据变化，并更新视图
@@ -41,17 +33,24 @@ export default {
   // },
   data() {
     return {
+      startTime: '', // 计时器开始的时间
+      hours: 0, // 小时数
+      minutes: 0, // 分钟数
+      seconds: 0, // 秒数
+      showOverlay: false, // 添加这个新变量
+      lastPauseTime: null, // 添加这个新变量
+      stop_num: 0,
       series: [
-        { name: 'Number of Eyes', data: [] }
+        { name: '画面中眼睛的数目：', data: [] }
       ],
       stackedAreaChart: stackedAreaChart,
       tabContent: `Vakal text here dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.`,
-      content: ` Donec pede justo, fringilla vel, aliquet nec, vulputate
-                  eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
-                  justo. Nullam dictum felis eu pede mollis pretium. Integer
-                  tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean
-                  vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
-                  consequat vitae, eleifend ac, enim.`,
+      // content: ` Donec pede justo, fringilla vel, aliquet nec, vulputate
+      //             eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
+      //             justo. Nullam dictum felis eu pede mollis pretium. Integer
+      //             tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean
+      //             vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
+      //             consequat vitae, eleifend ac, enim.`,
       overviewData: [
         {
           class: 'py-3 border-bottom',
@@ -79,22 +78,21 @@ export default {
         },
       ],
       timer: 0,
+      document_id: this.$route.query.document_id,
       timerRunning: false,
-      statChart: [
-        {
-          mainTitle: 'today revenue',
-          value: 2100,
-          subValue: '10.21%',
-          chartColor: '#5369f8',
-        }],
-      errorModal: false,
+
+      exitModal: false,
+      stopModal: false,
       isVisible: true,
       fullscreen: false,
+      fullmodal: false,
+      outfullscreen: 0,
       videoWidth: 304,
       videoHeight: 171,
       imgSrc: '',
       thisCancas: null,
       images: [],
+      ideas: [],
       thisContext: null,
       thisVideo: null,
       leftSide: true,
@@ -104,15 +102,17 @@ export default {
       mainProps: {
         center: true,
         fluidGrow: true,
+        thumbnail: true,
         blank: true,
         blankColor: '#bbb',
         width: 600,
         height: 400,
         class: 'my-5',
       },
+      Fullrend: false,
       topleft: true,
       label: 1,
-      content: '<h4>Html For Editor</h4>',
+      content: '请写出针对这个文档的你们的修改意见',
       customToolbar: [
         ['bold', 'italic', 'underline'],
         [{ list: 'ordered' }, { list: 'bullet' }],
@@ -123,6 +123,11 @@ export default {
       top: 0,
       left: 0,
     }
+  },
+  computed: {
+
+    ...authComputed,
+
   },
   // 监听 chartData 属性变化并更新 ECharts 图表
   //  watch: {
@@ -138,7 +143,12 @@ export default {
   //      })
   //    },
   //  },
-  mounted() {
+  async mounted() {
+    document.addEventListener('fullscreenchange', this.handleScreenChange);
+    document.addEventListener('webkitfullscreenchange', this.handleScreenChange);
+    document.addEventListener('mozfullscreenchange', this.handleScreenChange);
+    document.addEventListener('MSFullscreenChange', this.handleScreenChange);
+
     // this.getCompetence()
     this.screen()
     navigator.mediaDevices
@@ -152,20 +162,96 @@ export default {
       .then((stream) => {
         this.$refs.video.srcObject = stream
       })
-    axios.get('/api/document/get_images', { params: { id: this.$route.query.document_id ? this.$route.query.document_id : 1 } }).then((response) => {
+    await axios.get('/api/document/get_images', { params: { id: this.document_id ? this.document_id : 1 } }).then((response) => {
       // this.images = response.data.images // 从Flask后端获取图片数据，并将其添加到images列表中
-      this.images = response.data.images.map(image => ({ url: image.data, path: image.path, comment: image.comment }));
-      console.log(this.images)
+      this.images = response.data.images.map(image => ({ url: image.data }));
+      this.ideas = response.data.ideas.map(ideas => ({ paper_id: 'tooltip-button-' + ideas.paper_id, description: ideas.description, user_name: ideas.user_name, icon: ideas.icon }))
     })
     // window.addEventListener("resize", () => {this.$refs.chart.resize()});
     this.uploadTimer = setInterval(this.uploadVideo, 100);
 
 
     this.startTimer()
+
+
   },
 
   methods: {
+    handleScreenChange() {
+      if (document.fullscreenElement || /* alternative standard method */
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement) { // check if in full screen mode
+        this.fullmodal = false
 
+      } else {
+        this.fullmodal = true
+        this.outfullscreen = this.outfullscreen + 1
+
+      }
+    },
+    makeToast(variant = null) {
+      this.$bvToast.toast('你的意见我们会在审核后选择性采纳', {
+        title: ` ${variant || 'default'}`,
+        variant: "success",
+        toaster: 'b-toaster-top-center',
+        solid: true
+      })
+    },
+    Send_ideas() {
+      const idea = { content: this.content, user_id: this.currentUser.id, document_id: this.document_id, }
+      axios.post('/api/document/pullIdeas', { idea })
+        .then(response => {
+          console.log(response.data)
+          this.makeToast('上传成功！')
+          this.content = ''
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    Timer() {
+      this.upTime = setInterval(() => {
+        this.updateTime()
+      }, 1000)
+    },
+    // 格式化数字，保证数字一直占据两位数
+    formatNumber(num) {
+      return num.toString().padStart(2, '0')
+    },
+    // 更新计时器显示的时间
+    updateTime() {
+      const now = new Date() // 获取当前时间
+      const diff = now.getTime() - this.startTime.getTime() // 计算时间差
+
+      // 计算小时数、分钟数和秒数
+      this.hours = Math.floor(diff / (1000 * 60 * 60))
+      this.minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      this.seconds = Math.floor((diff % (1000 * 60)) / 1000)
+    },
+    cover() {
+      this.stop_num += 1
+      this.stopModal = false
+      this.showOverlay = true; // 打开遮罩层
+
+      clearInterval(this.uploadTimer)
+      this.startTime = new Date()
+
+      this.Timer()
+    },
+    hideOverlay() {
+      this.showOverlay = false; // 关闭遮罩层
+      clearInterval(this.upTime)
+      this.uploadTimer = setInterval(this.uploadVideo, 3000);
+    },
+    confirmJump() {
+      // 在路由跳转前弹出提示框，询问用户是否确认跳转
+      const id = 1
+      // 用户点击了“确定”按钮，继续执行路由跳转
+
+      this.$router.push({ name: '文档列表' });
+      this.exitModal = false
+    },
     startTimer() {
       this.timerRunning = true;
       const startTime = Date.now();
@@ -174,7 +260,30 @@ export default {
         const now = Date.now();
         this.timer = Math.floor((now - startTime) / 1000);
       }, 1000);
-    }, formatTime(seconds) {
+    },
+    pauseTimer() {
+      clearInterval(this.interval);
+      this.lastPauseTime = Date.now(); // 记录暂停的时间点
+      this.timerRunning = false;
+    },
+
+    resumeTimer() {
+      const startTime = Date.now();
+      if (this.lastPauseTime) {
+        startTime -= (this.lastPauseTime - this.startTime); // 基于最后一次暂停重新开始
+      } else {
+        startTime -= (this.timer * 1000); // 基于之前记录的总共间隔启动定时器（即从上次开关到现在）
+      }
+
+      this.interval = setInterval(() => {
+        const now = Date.now();
+        this.timer = Math.floor((now - startTime) / 1000);
+      },
+        1000);
+
+      this.timerRunning = true;
+    },
+    formatTime(seconds) {
       const date = new Date(null)
       date.setSeconds(seconds)
       return date.toISOString().substr(11, 8)
@@ -225,36 +334,15 @@ export default {
         console.error(e)
       }
     },
-    // updateData(num_eyes) {
-    //   const now = new Date();
-    //   // const timestamp = now.toLocaleTimeString().replace(/^\D*/, '')
 
-    //   const newDataPoint = [now, num_eyes];
-
-    //   const updatedSeriesData = [
-    //     ...this.series[0].data.slice(-50),
-    //     newDataPoint
-    //   ];
-    //   this.$set(this.series[0], 'data', updatedSeriesData); // 可以正常触发响应式更新
-
-    // },
     updateData(num_eyes) {
       const now = new Date();
-      // const timestamp = now.toLocaleTimeString().replace(/^\D*/, '')
 
-      // this.$refs.chart.echartsInstance.setOption({
-      //     series: [{ data: this.series[0].data }]
-      //   })
-      // 构造新节点num_eyes, time.
       let newDataPoint = [now, num_eyes];
-      // this.$refs.chart.resize();
+
 
       this.$nextTick(() => {
-        // this.$refs.chart.echartsInstance.setOption({
-        //   series: this.series,
-        // })
 
-        // 获取当前节点数值序列.
         let seriesData = this.series[0].data;
 
         if (seriesData.length > 20) {
@@ -264,25 +352,6 @@ export default {
         // 向数据源添加新节点.
         this.$set(this.series[0], 'data', [...seriesData, newDataPoint]);
 
-
-        // 刷新首屏
-        // chart.refresh();
-        // 立即重绘，使得图表更稳定
-        // chart.setOption({
-        //   series: this.series,
-        // });
-
-
-        // this.$refs.chart.setOption({series: [{
-
-        //       data:this.series[0]
-        //     }]})
-        // if(this.$refs.chart){
-        //   this.$refs.chart.resize();
-        // setTimeout(() => {
-        //   this.$refs.chart.resize();
-        // }, 1);
-        // }
       })
     },
 
@@ -316,13 +385,24 @@ export default {
       this.isVisible = false
     },
     Immersion() {
-      this.leftSide = 0
-      this.topleft = 0
-      this.label = 0
-      this.show = 0
-      for (let i = 0; i < this.Sidebar.length; i++) {
-        this.sidebarNotViewd(i)
+      if (this.leftSide != 0 && this.topleft != 0 && this.label != 0 && this.show != 0) {
+        this.leftSide = 0
+        this.topleft = 0
+        this.label = 0
+        this.show = 0
+        for (let i = 0; i < this.Sidebar.length; i++) {
+          this.sidebarNotViewd(i)
+        }
+        this.Fullrend = true
+      } else {
+        this.leftSide = 1
+        this.topleft = 1
+        this.label = 1
+        this.show = 1
+        this.Fullrend = false
       }
+
+
 
     },
     screen() {
@@ -500,8 +580,25 @@ export default {
     },
   },
   beforeDestroy() {
+
     clearInterval(this.interval);
-    clearInterval(this.uploadTimer)
+    clearInterval(this.uploadTimer);
+    clearInterval(this.upTime)
+    // 提交数据到后端
+    const record = { 'read_time': this.formatTime(this.timer), 'stop_num': this.stop_num, 'user_id': this.currentUser.id, 'document_id': this.document_id ? this.document_id : 1, 'create_time': new Date(), 'outfullscreen': this.outfullscreen }
+    axios.post('/api/record/saveRecord', { record })
+      .then(response => {
+        console.log(response.data)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
+    document.removeEventListener('fullscreenchange', this.handleScreenChange);
+    document.removeEventListener('webkitfullscreenchange', this.handleScreenChange);
+    document.removeEventListener('mozfullscreenchange', this.handleScreenChange);
+    document.removeEventListener('MSFullscreenChange', this.handleScreenChange);
+
   },
 
 }
@@ -511,6 +608,8 @@ export default {
   <Layout>
     <!-- :title="title" :items="items"  -->
     <PageHeader />
+
+
     <!-- Right Sidebar -->
     <div class="row">
       <div class="col-lg-12">
@@ -519,53 +618,19 @@ export default {
           <VueDragResize :isActive="true" :w="304" :h="171" :x="1" :y="550" v-on:resizing="resize" v-on:dragging="resize"
             :parent-limitation="true" style="z-index: 1000; position: fixed" :sticks="['tr']">
             <div v-if="isVisible" class="chatbox1 overflow-hidden">
-              <!-- <div class="bg-primary p-2">
-                                                                                                                                                                                                            <div class="media">
-                                                                                                                                                                                                                <img src="@assets/images/users/avatar-2.jpg" alt class="avatar-sm rounded ml-1 mr-2" />
-                                                                                                                                                                                                                <div class="media-body">
-                                                                                                                                                                                                                    <h5 class="font-size-13 text-white m-0">Johnny</h5>
-                                                                                                                                                                                                                <small class="text-white-50">
-                                                                                                                                                                                                <i class="uil uil-circle font-size-11 text-success mr-1"></i>Active Now
-                                                                                                                                                                                                </small>
-                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                            <div class="float-right font-size-18 mt-1">
-                                                                                                                                                                                                                <a href="javascript: void(0);" class="text-white mr-2">
-                                                                                                                                                                                                                        <i class="uil uil-comment-alt-notes font-size-16"></i>
-                                                                                                                                                                                                                    </a>
-                                                                                                                                                                                                                    <a class="chat-close text-white mr-2" href="javascript: void(0);" @click="remove">
-                                                                                                                                                                                                                        <i class="uil uil-multiply font-size-14"></i>
-                                                                                                                                                                                                                    </a>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                        </div> -->
 
-              <!-- <div class="chat-conversation p-2">
-                                                                    <video id="videoCamera" :width="videoWidth" :height="videoHeight" autoplay></video>
-                                                                    <canvas style="display: none" id="canvasCamera" :width="videoWidth" :height="videoHeight"></canvas>
-                                                                    <div v-if="imgSrc" class="img_bg_camera">
-                                                                      <img :src="imgSrc" alt="" class="tx_img" />
-                                                                      </div>
-                                                                      <button @click="getCompetence()">打开摄像头</button>
-                                                                      <button @click="stopNavigator()">关闭摄像头</button>
-                                                                    <button @click="setImage()">拍照</button>
-                                                                  </div> -->
               <video ref="video" autoplay width="640" height="360" style="display: none;"></video>
               <canvas ref="canvas" width="640" height="360" style="display: none;z-index: 100;"></canvas>
               <canvas ref="canvas1" width="304" height="171"></canvas>
-              <!-- <button @click="uploadVideo()">上传</button> -->
-
-              <!-- <div v-for="stat of statChart" :key="stat.mainTitle" style="width: 100%;height:auto">
-                          <StatChart :value="stat.value" :sub-value="stat.subValue" :chart-color="stat.chartColor" />
-
-                        </div> -->
               <apexchart ref="chart" class="apex-charts" height="150" type="area" :series="this.series"
                 :options="stackedAreaChart.chartOptions"></apexchart>
 
             </div>
+
           </VueDragResize>
 
           <div class="inbox-leftbar" :class="{ active: this.leftSide }">
-            <header id="header">
+            
               <div id="logo" data-content-field="site-title">
                 <h1 class="logo image" data-shrink-original-size="26" style="letter-spacing: 0em">
                   <a href="/">
@@ -580,16 +645,18 @@ export default {
                 <nav id="mainNavigation" class="main-nav dropdown-click desktop-nav">
                   <ul>
                     <li class="page-collection active-link">
-                      <a @click="errorModal = true">暂停</a>
-                      <b-modal v-model="errorModal" centered hide-footer title="Behavior Warning" title-class="font-18">
+                      <a @click="stopModal = true"><feather type="pause-circle"></feather><span>暂停</span></a>
+                      
+                      <b-modal v-model="stopModal" centered hide-footer title="暂停警告" title-class="font-18"
+                        no-close-on-backdrop no-close-on-esc>
                         <div class="text-center">
-                          <i class="uil-no-entry text-warning display-3"></i>
-                          <h4 class="text-danger mt-4">Abnormal Behavior Warning </h4>
+                          <i class="uil-no-entry text-danger display-3"></i>
+                          <h4 class="text-danger mt-4">暂停警告 </h4>
                           <p class="w-75 mx-auto text-muted">请注意，你的暂停行为将被记录在文件中，由此产生的任何泄密后果将由你承担</p>
                           <div class="mt-4">
                             <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
-                              @click="errorModal = false">
-                              I know
+                              @click="cover">
+                              暂停阅读
                             </a>
                           </div>
                         </div>
@@ -599,29 +666,26 @@ export default {
                     <li class="page-collection active-link">
                       <div>
                         <div>
-                          <router-link to="/apps/email/inbox" class="" @click="errorModal = true">退出</router-link>
+                          <a @click="exitModal = true" class="">退出</a>
+                          <b-modal v-model="exitModal" centered hide-footer title="Behavior Warning" title-class="font-18"
+                            no-close-on-backdrop no-close-on-esc>
+                            <div class="text-center">
+                              <i class="uil-no-entry text-danger display-3"></i>
+                              <h4 class="text-danger mt-4">退出警告！！</h4>
+                              <p class="w-75 mx-auto text-muted">请注意，你的退出行为将被记录在文件中，由此产生的任何泄密后果将由你承担</p>
+                              <div class="mt-4">
+                                <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
+                                  @click="confirmJump">
+                                  退出阅读
+                                </a>
+                              </div>
+                            </div>
+                          </b-modal>
 
                           <!-- <a-button class="btn btn-danger btn-block mb-4" type="primary">全屏</a-button> -->
                         </div>
                       </div>
                     </li>
-
-                    <li class="page-collection">
-                      <a href="/lifestyle">LIfestyle</a>
-                    </li>
-
-                    <li class="page-collection">
-                      <a href="/automotive-1">Automotive</a>
-                    </li>
-
-                    <li class="gallery-collection">
-                      <a href="/motion">Motion</a>
-                    </li>
-
-                    <li class="page-collection">
-                      <a href="/environmental-1">Environmental</a>
-                    </li>
-
 
                   </ul>
                 </nav>
@@ -639,114 +703,28 @@ export default {
                 </nav>
               </div>
 
-              <div class="sqs-layout sqs-grid-1 columns-1" data-layout-label="Header Content" data-type="block-field"
-                data-updated-on="1544863640479" id="headerBlocks">
-                <div class="row sqs-row">
-                  <div class="col sqs-col-1 span-1">
-                    <div class="sqs-block socialaccountlinks-v2-block sqs-block-socialaccountlinks-v2"
-                      data-block-type="54" id="block-yui_3_17_2_1_1544863524434_5734">
-                      <div class="sqs-block-content">
-                        <div
-                          class="sqs-svg-icon--outer social-icon-alignment-left social-icons-color-black social-icons-size-extra-small social-icons-style-regular">
-                          <nav class="sqs-svg-icon--list">
-                            <a href="http://linkedin.com/pedrontheworld" target="_blank"
-                              class="sqs-svg-icon--wrapper linkedin-unauth" aria-label="LinkedIn">
-                              <div>
-                                <svg class="sqs-svg-icon--social" viewBox="0 0 64 64">
-                                  <use class="sqs-use--icon" xlink:href="#linkedin-unauth-icon"></use>
-                                  <use class="sqs-use--mask" xlink:href="#linkedin-unauth-mask"></use>
-                                </svg>
-                              </div>
-                            </a><a href="http://instagram.com/pedrontheworld" target="_blank"
-                              class="sqs-svg-icon--wrapper instagram-unauth" aria-label="Instagram">
-                              <div>
-                                <svg class="sqs-svg-icon--social" viewBox="0 0 64 64">
-                                  <use class="sqs-use--icon" xlink:href="#instagram-unauth-icon"></use>
-                                  <use class="sqs-use--mask" xlink:href="#instagram-unauth-mask"></use>
-                                </svg>
-                              </div>
-                            </a><a href="https://www.behance.net/pedrontheworld" target="_blank"
-                              class="sqs-svg-icon--wrapper behance" aria-label="Behance">
-                              <div>
-                                <svg class="sqs-svg-icon--social" viewBox="0 0 64 64">
-                                  <use class="sqs-use--icon" xlink:href="#behance-icon"></use>
-                                  <use class="sqs-use--mask" xlink:href="#behance-mask"></use>
-                                </svg>
-                              </div>
-                            </a><a href="http://www.facebook.com/pedrontheworld" target="_blank"
-                              class="sqs-svg-icon--wrapper facebook" aria-label="Pedro Oliveira">
-                              <div>
-                                <svg class="sqs-svg-icon--social" viewBox="0 0 64 64">
-                                  <use class="sqs-use--icon" xlink:href="#facebook-icon"></use>
-                                  <use class="sqs-use--mask" xlink:href="#facebook-mask"></use>
-                                </svg>
-                              </div>
-                            </a>
-                          </nav>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+  
 
-              <div id="footerBlocks-2" class="social-links sqs-svg-icon--list" data-content-field="connected-accounts">
-                <a href="http://linkedin.com/pedrontheworld" target="_blank"
-                  class="sqs-svg-icon--wrapper linkedin-unauth">
-                  <div>
-                    <svg class="sqs-svg-icon--social" viewBox="0 0 64 64">
-                      <use class="sqs-use--icon" xlink:href="#linkedin-unauth-icon"></use>
-                      <use class="sqs-use--mask" xlink:href="#linkedin-unauth-mask"></use>
-                    </svg>
-                  </div>
-                </a>
-
-                <a href="http://instagram.com/pedrontheworld" target="_blank"
-                  class="sqs-svg-icon--wrapper instagram-unauth">
-                  <div>
-                    <svg class="sqs-svg-icon--social" viewBox="0 0 64 64">
-                      <use class="sqs-use--icon" xlink:href="#instagram-unauth-icon"></use>
-                      <use class="sqs-use--mask" xlink:href="#instagram-unauth-mask"></use>
-                    </svg>
-                  </div>
-                </a>
-
-                <a href="https://www.behance.net/pedrontheworld" target="_blank" class="sqs-svg-icon--wrapper behance">
-                  <div>
-                    <svg class="sqs-svg-icon--social" viewBox="0 0 64 64">
-                      <use class="sqs-use--icon" xlink:href="#behance-icon"></use>
-                      <use class="sqs-use--mask" xlink:href="#behance-mask"></use>
-                    </svg>
-                  </div>
-                </a>
-
-                <a href="http://www.facebook.com/pedrontheworld" target="_blank" class="sqs-svg-icon--wrapper facebook">
-                  <div>
-                    <svg class="sqs-svg-icon--social" viewBox="0 0 64 64">
-                      <use class="sqs-use--icon" xlink:href="#facebook-icon"></use>
-                      <use class="sqs-use--mask" xlink:href="#facebook-mask"></use>
-                    </svg>
-                  </div>
-                </a>
-              </div>
-            </header>
+            
           </div>
           <div class="inbox-rightbar">
             <!-- 居中容器 -->
             <div class="top-container" :class="{ active: this.topleft }">
               <nav class="navbar navbar-expand-md bg-light navbar-light sticky-top" style="">
                 <div class="header-crumb">
-                  <a href="#" class="navbar-brand"> 💁🏻‍♀️ {{ user.username }} </a>
-                  <div><b-button variant="outline-dark" size="sm" style="
-                                                                                border-radius: 8px;
-                                                                              border: 1px solid #bbb6b7;
-                                                                              height: 32px;
-                                                                                width: 56px;
-                                                                              " @click="changeLeftSide"><i
-                        class="uil font-size-15" :class="{
-                          'uil-left-arrow-to-left': label,
-                          'uil-arrow-to-right': !label,
-                        }"></i></b-button>
+                  <a href="#" class="navbar-brand"> <img :src="currentUser.icon" alt=""
+                      class="avatar-sm rounded-circle mr-2"> {{ currentUser.username }} </a>
+                  <div><b-button variant="outline-dark" size="sm"
+                      style="
+                                                                                                                                                              border-radius: 8px;
+                                                                                                                                                            border: 1px solid #bbb6b7;
+                                                                                                                                                            height: 32px;
+                                                                                                                                                              width: 56px;
+                                                                                                                                                            "
+                      @click="changeLeftSide"><i class="uil font-size-15" :class="{
+                        'uil-left-arrow-to-left': label,
+                        'uil-arrow-to-right': !label,
+                      }"></i></b-button>
                   </div>
                   <span>{{ formatTime(timer) }}</span>
                 </div>
@@ -755,56 +733,61 @@ export default {
                 <div class="head-action">
                   <div class="header-action-item"><b-button variant="outline-dark" size="sm"
                       style="
-                                                                        border-radius: 8px;
-                                                                        border: none;
-                                                                        height: 32px;
-                                                                  width: 40px;    display: flex; justify-content: center;align-items: center; " @click="screen">
-                      <feather type="music"></feather>
+                                                                                                                                                      border-radius: 8px;
+                                                                                                                                                      border: none;
+                                                                                                                                                      height: 32px;
+                                                                                                                                                width: 40px;    display: flex; justify-content: center;align-items: center; "
+                      @click="screen">
+                      <feather type="pause-circle" height="20"></feather>
                     </b-button>
                   </div>
-                  <div class="header-action-item"><b-button variant="outline-dark" size="sm" style="
-                                                                              border-radius: 8px;
-                                                                              border: none;
-                                                                              height: 32px;
-                                                                        width: 40px;    display: flex;
-                                                  justify-content: center;
-                                                        align-items: center;
-                                                                            " @click="Immersion">
+                  <b-modal v-model="fullmodal" centered hide-footer title="行为警告！！" title-class="font-18 "
+                    no-close-on-backdrop hide-header-close no-close-on-esc>
+                    <div class="text-center">
+                      <i class="uil-no-entry text-danger display-3"></i>
+                      <h4 class="text-danger mt-4 ">警告：你退出了全屏模式 </h4>
+                      <p class="w-75 mx-auto text-muted">请注意，你的行为有严重后果，请进入全屏模式认真阅读，或者选择暂停</p>
+                      <div class="mt-4">
+                        <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
+                          @click="screen">
+                          进入全屏
+                        </a>
+                      </div>
+                    </div>
+                  </b-modal>
+                  <div class="header-action-item"><b-button variant="outline-dark" size="sm"
+                      style="border-radius: 8px;border: none;height: 32px;width: 40px;    display: flex;justify-content: center; align-items: center;"
+                      @click="Immersion">
                       <feather type="airplay"></feather>
                     </b-button>
                   </div>
 
-                  <div class="header-action-item"><b-button variant="outline-dark" size="sm" style="
-                                                                        border-radius: 8px;
-                                                                        border: none;
-                                                                        height: 32px;
-                                                                  width: 40px;    display: flex;
-                                            justify-content: center;
-                                              align-items: center;
-                                                                  " @click="show = !show"><i
+                  <div class="header-action-item"><b-button variant="outline-dark" size="sm"
+                      style="border-radius: 8px;
+                                                                                                                                                      border: none;
+                                                                                                                                                      height: 32px;
+                                                                                                                                                width: 40px;    display: flex;
+                                                                                                                          justify-content: center;
+                                                                                                                            align-items: center;
+                                                                                                                                                " @click="show = !show"><i
                         class="uil uil-chat-info font-size-18"></i></b-button>
                   </div>
                   <div class="header-action-item">
 
-                    <b-button variant="outline-dark" style="
-                                                                  border-radius: 8px;
-                                                                  border: none;
-                                                                  height: 32px;
-                                                                  width: 40px;    display: flex;
-                                            justify-content: center;
-                                            align-items: center;
-                                                                " @click="sidebarViewd(3)">
+                    <b-button variant="outline-dark"
+                      style="
+                                                                                                                                                border-radius: 8px;
+                                                                                                                                                border: none;
+                                                                                                                                                height: 32px;
+                                                                                                                                                width: 40px;    display: flex;
+                                                                                                                          justify-content: center;
+                                                                                                                          align-items: center;
+                                                                                                                                              "
+                      @click="sidebarViewd(3)">
                       <i class="uil uil-facebook-messenger-alt font-size-18"></i> </b-button>
                   </div>
-                  <div class="header-action-item"><b-button variant="outline-dark" style="
-                                                                        border-radius: 8px;
-                                                                        border: none;
-                                                                        height: 32px;
-                                                                        width: 40px;    display: flex;
-                                                  justify-content: center;
-                                                        align-items: center;
-
-                                                                            " @click="sidebarViewd(2)">
+                  <div class="header-action-item"><b-button variant="outline-dark"
+                      style="border-radius: 8px;border: none;height: 32px;width: 40px;    display: flex;justify-content: center;align-items: center;" @click="sidebarViewd(2)">
                       <i class="uil uil-map-marker-info font-size-19"></i> </b-button>
                   </div>
                 </div>
@@ -812,17 +795,17 @@ export default {
             </div>
 
             <div class="readBody">
-              <div class="Lbody">
-                <h5>Hi Bro, How are you?</h5>
-                <hr />
+              <div class="Lbody" :class="{ active: Fullrend }">
+                <!-- <h5>Hi Bro, How are you?</h5> -->
+                <!-- <hr /> -->
                 <div>
                   <!-- <b-img-lazy id="tooltip-button-1" v-bind="mainProps" :src="getImageUrl(1)" alt="Image 1"></b-img-lazy>
-                                                                      <b-img-lazy id="tooltip-button-2" v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy>
-                                                                      <b-img-lazy id="tooltip-button-3" v-bind="mainProps" :src="getImageUrl(3)" alt="Image 3"></b-img-lazy>
-                                                                      <b-img-lazy id="tooltip-button-4" v-bind="mainProps" :src="getImageUrl(85)" alt="Image 4"></b-img-lazy> -->
+                                                                                                                                                    <b-img-lazy id="tooltip-button-2" v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy>
+                                                                                                                                                    <b-img-lazy id="tooltip-button-3" v-bind="mainProps" :src="getImageUrl(3)" alt="Image 3"></b-img-lazy>
+                                                                                                                                                    <b-img-lazy id="tooltip-button-4" v-bind="mainProps" :src="getImageUrl(85)" alt="Image 4"></b-img-lazy> -->
                   <!-- <b-img-lazy v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy> -->
-                  <div v-for="(image, index) in images"><b-img-lazy :id="image.path" :src="image.url" v-bind="mainProps"
-                      alt="Image 2"></b-img-lazy>
+                  <div v-for="(image, index) in images"><b-img-lazy :id="'tooltip-button-' + (index + 1)" :src="image.url"
+                      v-bind="mainProps" alt="Image 2"></b-img-lazy>
 
                   </div>
 
@@ -831,40 +814,50 @@ export default {
 
 
                 <div class="col">
-                  <div style="font-size: large; font-weight: 600">All commonts <strong>({{ images.length }})</strong>
+                  <div style="font-size: large; font-weight: 600">所有意见 <strong>({{ ideas.length }})</strong>
                   </div>
                   <hr />
                   <div id="taskDesk" style="margin-top: 30px">
-                    <div style="float: left; margin-top: 4px"><img class="d-flex mr-3 rounded-circle avatar-sm"
-                        src="@assets/images/users/avatar-1.jpg" alt="Generic placeholder image" />
+                    <div style="float: left; margin-top: 4px"><img style="width:36px;height:36px"
+                        class=" avatar-sm rounded-circle mr-2" :src="currentUser.icon" alt="Generic placeholder image" />
                     </div>
                     <div>
                       <vue-editor style="margin-left: 44px; margin-bottom: 20px" v-model="content"
                         :editor-toolbar="customToolbar" />
                       <div class="text-left">
-                        <b-button variant="outline-dark" style="margin: 40px; margin-top: 10px">Send <i
-                            class="uil uil-message ml-2"></i></b-button>
+                        <b-button variant="outline-dark" style="margin: 40px; margin-top: 10px" @click="Send_ideas">Send
+                          <i class="uil uil-message ml-2"></i></b-button>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="Rbody " :class="{ active: this.show }">
-                <div style="
-                                                                            text-align: center;
-                                                                            background-color: #fff;
-                                                                            position: sticky;
-                                                                            height: 50px;
-                                                                            border-bottom: 2px solid #edeff4;
-                                                                             padding: 10px;
-                                                                          ">
-                  <h5> comments <strong>({{ images.length }})</strong></h5>
+                <div
+                  style="
+                                                                                                                                                          text-align: center;
+                                                                                                                                                          background-color: #fff;
+                                                                                                                                                          position: sticky;
+                                                                                                                                                          height: 50px;
+                                                                                                                                                          border-bottom: 2px solid #edeff4;
+                                                                                                                                                           padding: 10px;
+                                                                                                                                                        ">
+                  <h5> 参考意见 <strong>({{ ideas.length }})</strong></h5>
                 </div>
 
-                <div v-for="(image, index) in images">
-                  <b-tooltip triggers="click" :show.sync="show" :target="image.path" placement="left" confine="false"
-                    variant="light">
-                    <div class="tooltip_item"><strong>{{ image.comment }}</strong></div>
+                <div v-for="(idea, index) in ideas">
+                  <b-tooltip class="toopltip" triggers="click" :show.sync="show" :target="idea.paper_id" placement="left"
+                    confine="false" variant="light">
+
+
+                    <div class="tooltip_item">
+                      <div style="margin-bottom: 10px;"><img :src="idea.icon" class="avatar-sm rounded-circle mr-2" />
+                        <div><strong>{{ idea.user_name }}</strong> </div>
+                      </div>
+
+                      <div><strong>{{ idea.description }}</strong></div>
+
+                    </div>
                   </b-tooltip>
                 </div>
               </div>
@@ -872,22 +865,22 @@ export default {
               <div>
                 <div class="sidebar" :class="{ active: this.Sidebar[0] }">
                   <button class="close" @click="sidebarNotViewd(0)">《《《×》》》</button>
-                  <TimeLine />
+
                 </div>
                 <div class="sidebar" :class="{ active: this.Sidebar[1] }">
                   <button class="close" @click="sidebarNotViewd(1)">《《《×》》》</button>
 
                   <div class="media mb-0 mt-5">
-                    <!-- <img class="d-flex mr-3 rounded-circle avatar-sm"
-                                                                                                                                                                    src="@assets/images/users/avatar-7.jpg" alt="Generic placeholder image" /> -->
+                    
                     <div class="media-body">
                       <div class="mb-2">
                         <vue-editor></vue-editor>
+                        
                       </div>
                     </div>
                   </div>
                   <div class="text-right">
-                    <button type="button" class="btn btn-primary btn-rounded width-sm mt-1">Send <i
+                    <button type="button" class="btn btn-primary btn-rounded width-sm mt-1" @click="Send_ideas">Send <i
                         class="uil uil-message ml-2"></i></button>
                   </div>
                 </div>
@@ -899,16 +892,16 @@ export default {
                     <b-tabs>
                       <b-tab title="Home" active>
                         <p>{{ tabContent }}</p>
-                        <p class="mb-0">{{ content }}</p>
+                        <!-- <p class="mb-0">{{ content }}</p> -->
                       </b-tab>
                       <b-tab title="Profile">
                         <!-- <p>{{ content }}</p>
   
-                                      <p class="mb-0">{{ tabContent }}</p> -->
+                                                                                                                    <p class="mb-0">{{ tabContent }}</p> -->
 
                         <h4 class="header-title mt-0 mb-3">Stacked Area</h4>
                         <!-- <apexchart ref="chart" class="apex-charts" height="150" type="area" :series="this.series"
-                                  :options="stackedAreaChart.chartOptions"></apexchart> -->
+                                                                                                                :options="stackedAreaChart.chartOptions"></apexchart> -->
 
                       </b-tab>
                       <b-tab title="Me">
@@ -923,14 +916,11 @@ export default {
                   ]</b-button>
 
                 <div id="taskDesk" style="margin-top: 30px">
-                  <!-- <div style="float: left;margin-top: 4px;"><img class="d-flex mr-3 rounded-circle avatar-sm"
-                                                                                                        src="@assets/images/users/avatar-1.jpg" alt="Generic placeholder image" />
-                                                                                            </div>  -->
                   <div>
                     <vue-editor style="margin-bottom: 20px" v-model="content" :editor-toolbar="customToolbar" />
                     <div class="text-left">
-                      <b-button variant="outline-dark" style="margin-left: 20px; margin-top: 10px">Send <i
-                          class="uil uil-message ml-2"></i></b-button>
+                      <b-button variant="outline-dark" style="margin-left: 20px; margin-top: 10px"
+                        @click="Send_ideas">Send <i class="uil uil-message ml-2"></i></b-button>
                     </div>
                   </div>
                 </div>
@@ -947,7 +937,50 @@ export default {
 
       <!-- end card -->
     </div>
+    <div class="overlay" :style="{ display: (showOverlay ? 'block' : 'none') }">
+
+
+      <div class="overlay_text">
+
+        <div class="text-center">
+          <h5 class="font-size-20 mb-1 ">暂时 离开</h5>
+        </div>
+
+
+
+        <div class="digital-clock">
+          <div class="digital-clock__item">
+            <div class="digital-clock__number">{{ formatNumber(hours) }}</div>
+          </div>
+          <div class="digital-clock__separator">:</div>
+          <div class="digital-clock__item">
+            <div class="digital-clock__number">{{ formatNumber(minutes) }}</div>
+          </div>
+          <div class="digital-clock__separator">:</div>
+          <div class="digital-clock__item">
+            <div class="digital-clock__number">{{ formatNumber(seconds) }}</div>
+          </div>
+        </div>
+
+
+        <div style="  display: flex;
+                                                                    justify-content: center; /* 水平居中 */
+                                                                    align-items: center;padding-top: 20px; /* 垂直居中 */">
+          <button style="background-color: #333333;
+                                                        width: 180px;
+                                                        height: 70px;  
+                                                        border-radius: 10px;
+                                                        color: #CCCCCC;
+                                                        font-size: 30px;
+                                                        text-align: center;" @click="hideOverlay">返回</button>
+        </div>
+
+      </div>
+      <!-- 展示其他内容 -->
+
+    </div>
     <Footer />
+
     <!-- end Col -->
 
     <!-- End row -->
@@ -957,6 +990,52 @@ export default {
 
 
 <style lang="scss" scoped>
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: o;
+  background: url("https://static.pexels.com/photos/6663/desk-white-black-header.jpg") no-repeat center center fixed;
+  background-size: cover;
+  z-index: 10000;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay_text {
+  background-color: transparent;
+  position: fixed;
+  color: #3c3c3c;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px solid #FFF;
+}
+
+.overlay button {
+
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #111010
+}
+
+.digital-clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+}
+
+.digital-clock__item {
+  margin: 0 10px;
+}
+
+.digital-clock__separator {
+  margin: 0 5px;
+}
+
 .quillWrapper>>>.ql-snow.ql-toolbar {
   max-height: 50px;
 }
@@ -1091,6 +1170,10 @@ export default {
   height: 100%;
 }
 
+.Lbody.active {
+  width: 100%
+}
+
 .Rbody {
   // border: 1px solid #edeff4;
   position: fixed;
@@ -1109,6 +1192,7 @@ export default {
   visibility: visible;
 }
 
+
 .tooltip_item {
   width: 270px;
   height: 180px;
@@ -1123,10 +1207,10 @@ export default {
   margin-left: 110px;
   line-height: 30px;
   text-align: left;
-  box-shadow: 0 1px 4px -2px rgb(0 0 0 / 13%), 0 2px 8px 0 rgb(0 0 0 / 8%),
-    0 8px 16px 4px rgb(0 0 0 / 4%);
+  box-shadow: 10px 10px 10px -5px #888888;
   background-color: #f9fafa;
-  border-radius: 8px;
+  border: 2px solid;
+  border-radius: 15px;
 }
 
 .sidebar {

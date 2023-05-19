@@ -13,7 +13,7 @@ export default {
   components: { Layout, PageHeader, Multiselect },
   data() {
     return {
-      title: 'Advanced Forms',
+      title: '',
       items: [
         {
           text: 'Shreyu',
@@ -131,9 +131,7 @@ export default {
         <div class="card">
           <div class="card-body">
             <h4 class="header-title mt-0 mb-1">Select</h4>
-            <p class="sub-header"
-              >Vue Multiselect - A custom selection solution for Vue JS.</p
-            >
+            <p class="sub-header">Vue Multiselect - A custom selection solution for Vue JS.</p>
 
             <div class="row">
               <div class="col-xl-6 col-sm-6">
@@ -145,11 +143,7 @@ export default {
               <div class="col-xl-6 col-sm-6">
                 <div class="form-group mt-3 mt-sm-0">
                   <label for="default">Multiple select</label>
-                  <multiselect
-                    v-model="value1"
-                    :options="options"
-                    :multiple="true"
-                  ></multiselect>
+                  <multiselect v-model="value1" :options="options" :multiple="true" :closeOnSelect="false"></multiselect>
                 </div>
               </div>
             </div>
@@ -168,47 +162,26 @@ export default {
           <div>
             <div class="form-group mb-3">
               <label>Basic</label>
-              <flat-pickr
-                v-model="date"
-                class="form-control"
-                placeholder="Basic datepicker"
-                name="date"
-              ></flat-pickr>
+              <flat-pickr v-model="date" class="form-control" placeholder="Basic datepicker" name="date"></flat-pickr>
             </div>
             <div class="form-group mb-3">
               <label>Date & Time</label>
-              <flat-pickr
-                v-model="dateTime"
-                :config="dateTimePicker"
-                class="form-control"
-                placeholder="Date and Time"
-              ></flat-pickr>
+              <flat-pickr v-model="dateTime" :config="dateTimePicker" class="form-control"
+                placeholder="Date and Time"></flat-pickr>
             </div>
             <div class="form-group mb-3">
               <label>Human-friendly Dates</label>
-              <flat-pickr
-                v-model="humanFriendly"
-                :config="wrap"
-                class="form-control"
-                placeholder="October 9, 2018"
-              ></flat-pickr>
+              <flat-pickr v-model="humanFriendly" :config="wrap" class="form-control"
+                placeholder="October 9, 2018"></flat-pickr>
             </div>
             <div class="form-group mb-3">
               <label>MinDate and MaxDate</label>
-              <flat-pickr
-                v-model="min"
-                class="form-control"
-                :config="minmax"
-                placeholder="mindate - maxdate"
-              ></flat-pickr>
+              <flat-pickr v-model="min" class="form-control" :config="minmax"
+                placeholder="mindate - maxdate"></flat-pickr>
             </div>
             <div class="form-group mb-3">
               <label>Inline Calendar</label>
-              <flat-pickr
-                v-model="inlinepicker"
-                :config="inline"
-                class="form-control"
-              ></flat-pickr>
+              <flat-pickr v-model="inlinepicker" :config="inline" class="form-control"></flat-pickr>
             </div>
           </div>
         </div>
@@ -222,39 +195,21 @@ export default {
 
             <div class="form-group mb-3">
               <label>Basic</label>
-              <flat-pickr
-                v-model="time"
-                :config="timePicker"
-                class="form-control"
-                placeholder="Basic timepicker"
-              ></flat-pickr>
+              <flat-pickr v-model="time" :config="timePicker" class="form-control"
+                placeholder="Basic timepicker"></flat-pickr>
             </div>
             <div class="form-group mb-3">
               <label>24-hour Time Picker</label>
-              <flat-pickr
-                v-model="format24"
-                :config="format"
-                class="form-control"
-                placeholder="16:21"
-              ></flat-pickr>
+              <flat-pickr v-model="format24" :config="format" class="form-control" placeholder="16:21"></flat-pickr>
             </div>
             <div class="form-group mb-3">
               <label>Time Picker w/ Limits</label>
-              <flat-pickr
-                v-model="limit"
-                :config="timelimit"
-                class="form-control"
-                placeholder="Limits"
-              ></flat-pickr>
+              <flat-pickr v-model="limit" :config="timelimit" class="form-control" placeholder="Limits"></flat-pickr>
             </div>
             <div class="form-group mb-3">
               <label>Preloading Time</label>
-              <flat-pickr
-                v-model="loadtime"
-                :config="preload"
-                class="form-control"
-                placeholder="Pick a time"
-              ></flat-pickr>
+              <flat-pickr v-model="loadtime" :config="preload" class="form-control"
+                placeholder="Pick a time"></flat-pickr>
             </div>
           </div>
         </div>
@@ -274,77 +229,38 @@ export default {
               <form action="#">
                 <div class="form-group">
                   <label>Date</label>
-                  <input
-                    v-model="datemask"
-                    v-mask="'##/##/####'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="datemask" v-mask="'##/##/####'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "DD/MM/YYYY"</span>
                 </div>
                 <div class="form-group">
                   <label>Hour</label>
-                  <input
-                    v-model="hour"
-                    v-mask="'##:##:##'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="hour" v-mask="'##:##:##'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "HH:MM:SS"</span>
                 </div>
                 <div class="form-group">
                   <label>Date & Hour</label>
-                  <input
-                    v-model="datetime"
-                    v-mask="'##/##/#### ##:##:##'"
-                    type="text"
-                    class="form-control"
-                  />
-                  <span class="font-13 text-muted"
-                    >e.g "DD/MM/YYYY HH:MM:SS"</span
-                  >
+                  <input v-model="datetime" v-mask="'##/##/#### ##:##:##'" type="text" class="form-control" />
+                  <span class="font-13 text-muted">e.g "DD/MM/YYYY HH:MM:SS"</span>
                 </div>
                 <div class="form-group">
                   <label>ZIP Code</label>
-                  <input
-                    v-model="zipcode"
-                    v-mask="'#####-###'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="zipcode" v-mask="'#####-###'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "xxxxx-xxx"</span>
                 </div>
                 <div class="form-group">
                   <label>Crazy Zip Code</label>
-                  <input
-                    v-model="crazyzip"
-                    v-mask="'#-##-##-##'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="crazyzip" v-mask="'#-##-##-##'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "x-xx-xx-xx"</span>
                 </div>
                 <div class="form-group">
                   <label>Money</label>
-                  <input
-                    v-model="money"
-                    v-mask="'###.###.###.###.###,##'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="money" v-mask="'###.###.###.###.###,##'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "Your money"</span>
                 </div>
                 <div class="form-group">
                   <label>4 digit Group</label>
-                  <input
-                    v-model="digit"
-                    v-mask="'#,####,####,####'"
-                    type="text"
-                    class="form-control"
-                  />
-                  <span class="font-13 text-muted"
-                    >e.g. "x,xxxx,xxxx,xxxx"</span
-                  >
+                  <input v-model="digit" v-mask="'#,####,####,####'" type="text" class="form-control" />
+                  <span class="font-13 text-muted">e.g. "x,xxxx,xxxx,xxxx"</span>
                 </div>
               </form>
             </div>
@@ -354,74 +270,37 @@ export default {
               <form action="#">
                 <div class="form-group">
                   <label>Telephone</label>
-                  <input
-                    v-model="telephone"
-                    v-mask="'####-####'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="telephone" v-mask="'####-####'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "xxxx-xxxx"</span>
                 </div>
                 <div class="form-group">
                   <label>Telephone with Code Area</label>
-                  <input
-                    v-model="areacode"
-                    v-mask="'(##) ####-####'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="areacode" v-mask="'(##) ####-####'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "(xx) xxxx-xxxx"</span>
                 </div>
                 <div class="form-group">
                   <label>US Telephone</label>
-                  <input
-                    v-model="ustelephone"
-                    v-mask="'(###) ###-####'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="ustelephone" v-mask="'(###) ###-####'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "(xxx) xxx-xxxx"</span>
                 </div>
                 <div class="form-group">
                   <label>São Paulo Celphones</label>
-                  <input
-                    v-model="celphone"
-                    v-mask="'(##) #####-####'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="celphone" v-mask="'(##) #####-####'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "(xx) xxxxx-xxxx"</span>
                 </div>
                 <div class="form-group">
                   <label>CPF</label>
-                  <input
-                    v-model="cpf"
-                    v-mask="'###.###.###-##'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="cpf" v-mask="'###.###.###-##'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "xxx.xxx.xxxx-xx"</span>
                 </div>
                 <div class="form-group">
                   <label>CNPJ</label>
-                  <input
-                    v-model="cnpj"
-                    v-mask="'##.###.###/####-##'"
-                    type="text"
-                    class="form-control"
-                  />
-                  <span class="font-13 text-muted"
-                    >e.g "xx.xxx.xxx/xxxx-xx"</span
-                  >
+                  <input v-model="cnpj" v-mask="'##.###.###/####-##'" type="text" class="form-control" />
+                  <span class="font-13 text-muted">e.g "xx.xxx.xxx/xxxx-xx"</span>
                 </div>
                 <div class="form-group">
                   <label>IP Address</label>
-                  <input
-                    v-model="ipaddress"
-                    v-mask="'###.###.###.###'"
-                    type="text"
-                    class="form-control"
-                  />
+                  <input v-model="ipaddress" v-mask="'###.###.###.###'" type="text" class="form-control" />
                   <span class="font-13 text-muted">e.g "xxx.xxx.xxx.xxx"</span>
                 </div>
               </form>
@@ -435,87 +314,49 @@ export default {
         <div class="card">
           <div class="card-body">
             <h4 class="header-title mt-0 mb-1">MaxLength</h4>
-            <p class="sub-header"
-              >Uses the HTML5 attribute "maxlength" to work.</p
-            >
+            <p class="sub-header">Uses the HTML5 attribute "maxlength" to work.</p>
 
-            <label class="mb-1 font-weight-medium text-muted"
-              >Default usage</label
-            >
-            <p class="text-muted font-13"
-              >The badge will show up by default when the remaining chars are 10
-              or less:</p
-            >
-            <input
-              v-model="maxlen"
-              type="text"
-              class="form-control"
-              :maxlength="10"
-            />
+            <label class="mb-1 font-weight-medium text-muted">Default usage</label>
+            <p class="text-muted font-13">The badge will show up by default when the remaining chars are 10
+              or less:</p>
+            <input v-model="maxlen" type="text" class="form-control" :maxlength="10" />
             <div v-if="maxlen" class="text-center">
-              <p
-                class="badge position-absolute"
-                :class="{
-                  'badge-success': maxlen.length !== 10,
-                  'badge-danger': maxlen.length === 10,
-                }"
-                >{{ maxlen.length }} / 10</p
-              >
+              <p class="badge position-absolute" :class="{
+                'badge-success': maxlen.length !== 10,
+                'badge-danger': maxlen.length === 10,
+              }">{{ maxlen.length }} / 10</p>
             </div>
 
             <div>
-              <label class="mb-1 mt-3 font-weight-medium text-muted"
-                >Threshold value</label
-              >
+              <label class="mb-1 mt-3 font-weight-medium text-muted">Threshold value</label>
               <p class="text-muted font-13">
                 Do you want the badge to show up when there are 20 chars or
                 less? Use the
                 <code>threshold</code>
                 option:
               </p>
-              <input
-                v-model="data"
-                type="text"
-                :maxlength="25"
-                class="form-control"
-              />
+              <input v-model="data" type="text" :maxlength="25" class="form-control" />
               <div class="text-center">
-                <p
-                  v-if="data"
-                  class="badge position-absolute"
-                  :class="{
-                    'badge-success': data.length !== 25,
-                    'badge-danger': data.length === 25,
-                  }"
-                  >{{ data.length }} / 25</p
-                >
+                <p v-if="data" class="badge position-absolute" :class="{
+                  'badge-success': data.length !== 25,
+                  'badge-danger': data.length === 25,
+                }">{{ data.length }} / 25</p>
               </div>
             </div>
 
             <div>
-              <label class="mb-1 mt-3 font-weight-medium text-muted"
-                >All the options</label
-              >
+              <label class="mb-1 mt-3 font-weight-medium text-muted">All the options</label>
               <p class="text-muted font-13">
                 Please note: if the
                 <code>alwaysShow</code> option is enabled, the
                 <code>threshold</code> option is ignored.
               </p>
-              <input
-                v-model="option"
-                type="text"
-                class="form-control"
-                :maxlength="25"
-              />
+              <input v-model="option" type="text" class="form-control" :maxlength="25" />
               <div class="text-center">
-                <p
-                  v-if="option"
-                  class="badge position-absolute"
-                  :class="{
-                    'badge-success': option.length !== 25,
-                    'badge-danger': option.length === 25,
-                  }"
-                >
+                <p v-if="option" class="badge position-absolute" :class="{
+                  'badge-success': option.length !== 25,
+                  'badge-danger': option.length === 25,
+                }">
                   You typed
                   {{ option.length }} out of 25 chars available.
                 </p>
@@ -523,29 +364,16 @@ export default {
             </div>
 
             <div>
-              <label class="mb-1 mt-3 font-weight-medium text-muted"
-                >Textareas</label
-              >
-              <p class="text-muted font-13"
-                >Bootstrap maxlength supports textarea as well as inputs. Even
-                on old IE.</p
-              >
-              <textarea
-                v-model="textarea"
-                class="form-control"
-                :maxlength="225"
-                rows="3"
-                placeholder="This textarea has a limit of 225 chars."
-              ></textarea>
+              <label class="mb-1 mt-3 font-weight-medium text-muted">Textareas</label>
+              <p class="text-muted font-13">Bootstrap maxlength supports textarea as well as inputs. Even
+                on old IE.</p>
+              <textarea v-model="textarea" class="form-control" :maxlength="225" rows="3"
+                placeholder="This textarea has a limit of 225 chars."></textarea>
               <div class="text-center">
-                <p
-                  v-if="textarea"
-                  class="badge position-absolute"
-                  :class="{
-                    'badge-success': textarea.length !== 225,
-                    'badge-danger': textarea.length === 225,
-                  }"
-                >
+                <p v-if="textarea" class="badge position-absolute" :class="{
+                  'badge-success': textarea.length !== 225,
+                  'badge-danger': textarea.length === 225,
+                }">
                   {{ textarea.length }} / 225
                 </p>
               </div>

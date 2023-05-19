@@ -2,6 +2,7 @@ import axios from 'axios'
 
 export const state = {
   currentUser: getSavedState('auth.currentUser'),
+  
 }
 
 export const mutations = {

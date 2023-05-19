@@ -1,343 +1,108 @@
-<script>
-import appConfig from '@src/app.config'
-import Layout from '@layouts/main'
-import PageHeader from '@components/page-header'
+<template>
+  <div>
+    <div style="height:calc(100vh - 50px);">
+      <RelationGraph ref="seeksRelationGraph" :options="graphOptions" :on-node-click="onNodeClick"
+        :on-line-click="onLineClick" />
+    </div>
+  </div>
+</template>
 
+<script>
+// relation-graph也支持在main.js文件中使用Vue.use(RelationGraph);这样，你就不需要下面这一行代码来引入了。
+import RelationGraph from 'relation-graph'
 export default {
-  page: {
-    title: 'Activity/Timeline',
-    meta: [{ name: 'description', content: appConfig.description }],
-  },
-  components: { Layout, PageHeader },
+  name: 'Demo',
+  components: { RelationGraph },
   data() {
     return {
-      title: 'Activity/Timeline',
-      items: [
-        {
-          text: 'Shreyu',
-          href: '/',
-        },
-        {
-          text: 'Pages',
-          href: '/',
-        },
-        {
-          text: 'Activity',
-          active: true,
-        },
-      ],
+      graphOptions: {
+        allowSwitchLineShape: true,
+        allowSwitchJunctionPoint: true,
+        defaultJunctionPoint: 'border'
+        // 这里可以参考"Graph 图谱"中的参数进行设置
+      }
     }
   },
+  mounted() {
+    this.showSeeksGraph()
+  },
+  methods: {
+    showSeeksGraph() {
+      const __graph_json_data = {
+        rootId: 'a',
+        nodes: [
+          { id: 'a', text: '边框颜色', borderColor: 'yellow' },
+          { id: 'a1', text: '无边框', borderWidth: -1, color: '#ff8c00' },
+          { id: 'a1-1', html: '<span style="color:#ff8c00">纯文字节点</span>' },
+          { id: 'a1-2', html: '<img src="https://camo.githubusercontent.com/ede1654f055903cdc39044129d15d5b158f4f3b33ba5b7c21c7407792a506dea/687474703a2f2f72656c6174696f6e2d67726170682e636f6d2f776562736974652f6c6f676f" width="200" style="border:#ff8c00 solid 2px;" />', nodeShape: 1 },
+          { id: 'a1-3', html: '<img src="https://camo.githubusercontent.com/ede1654f055903cdc39044129d15d5b158f4f3b33ba5b7c21c7407792a506dea/687474703a2f2f72656c6174696f6e2d67726170682e636f6d2f776562736974652f6c6f676f" width="100" style="border:#ff8c00 solid 2px;border-radius: 60px;" />', nodeShape: 0 },
+          { id: 'a1-4', html: '<div style="border:#ff8c00 solid 2px;height:80px;width:80px;border-radius: 40px;background-image: url(https://camo.githubusercontent.com/ede1654f055903cdc39044129d15d5b158f4f3b33ba5b7c21c7407792a506dea/687474703a2f2f72656c6174696f6e2d67726170682e636f6d2f776562736974652f6c6f676f);background-position: center center;" />', nodeShape: 0 },
+          { id: 'b', text: '字体颜色', borderWidth: 1, color: '#43a2f1' },
+          { id: 'c', text: '文字颜色', fontColor: 'yellow' },
+          { id: 'd', text: '节点大小', width: 150, height: 150, color: '#ffd700', borderWidth: 1 },
+          { id: 'e', text: '矩形节点', nodeShape: 1 },
+          { id: 'f', text: '矩形节点-固定大小', borderWidth: 1, nodeShape: 1, width: 300, height: 60 },
+          { id: 'f1', text: '固定位置', fixed: true, x: 20, y: 20 },
+          { id: 'g', text: '自定义class实现闪烁', styleClass: 'my-node-style' }
+        ],
+        lines: [
+          { from: 'a', to: 'b' },
+          { from: 'a', to: 'c' },
+          { from: 'a', to: 'a1' },
+          { from: 'a1', to: 'a1-1' },
+          { from: 'a1', to: 'a1-2' },
+          { from: 'a1', to: 'a1-3' },
+          { from: 'a1', to: 'a1-4' },
+          { from: 'a', to: 'f1' },
+          { from: 'a', to: 'd' },
+          { from: 'd', to: 'f' },
+          { from: 'a', to: 'g' },
+          { from: 'a', to: 'e' },
+          { from: 'b', to: 'e' }
+        ]};
+
+      // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置 
+      this.$refs.seeksRelationGraph.setJsonData(__graph_json_data, (seeksRGGraph) => {
+        // Called when the relation-graph is completed 
+      })
+    },
+
+    onLineClick(lineObject, $event) {
+      console.log('onLineClick:', lineObject)
+    },
+    onNodeClick(nodeObject, $event) {
+      console.log('onNodeClick:', nodeObject);
+      const allLinks = this.$refs.seeksRelationGraph.getLinks();
+      allLinks.forEach(link => { // 还原所有样式
+        link.relations.forEach(line => {
+          if (line.data.orignColor) {
+            line.color = line.data.orignColor;
+          }
+          if (line.data.orignFontColor) {
+            line.fontColor = line.data.orignColor;
+          }
+          if (line.data.orignLineWidth) {
+            line.lineWidth = line.data.orignLineWidth;
+          }
+        });
+      });
+      // 让与{nodeObject}相关的所有连线高亮
+      allLinks.filter(link => (link.fromNode === nodeObject || link.toNode === nodeObject)).forEach(link => {
+        link.relations.forEach(line => {
+          // console.log('line:', line);
+          line.data.orignColor = line.color;
+          line.data.orignFontColor = line.fontColor || line.color;
+          line.data.orignLineWidth = line.lineWidth || 1;
+          line.color = '#ff0000';
+          line.fontColor = '#ff0000';
+          line.lineWidth = 3;
+        });
+      });
+      // 有时候更改一些属性后，并不能马上同步到视图，这需要以下方法让视图强制根据数据同步到最新
+      this.$refs.seeksRelationGraph.getInstance().dataUpdated();
+    },
+    
+
+  }
 }
 </script>
-
-<template>
-  <Layout>
-    <PageHeader :title="title" :items="items" />
-
-    <div class="row mt-3">
-      <div class="col-lg-12">
-        <h5 class="mb-5">Left Timeline</h5>
-        <div class="left-timeline pl-4">
-          <ul class="list-unstyled events">
-            <li class="event-list">
-              <div>
-                <div class="media">
-                  <div class="event-date text-center mr-4">
-                    <div class="avatar-sm rounded-circle bg-soft-primary">
-                      <span
-                        class="font-size-16 avatar-title text-primary font-weight-semibold"
-                        >02</span
-                      >
-                    </div>
-                    <p class="mt-2">Jun</p>
-                  </div>
-                  <div class="media-body">
-                    <div class="card d-inline-block">
-                      <div class="card-body">
-                        <h5 class="mt-0">Event One</h5>
-                        <p class="text-muted">
-                          It will be as simple as occidental in fact it will be
-                          Occidental Cambridge friend
-                        </p>
-                        <div>
-                          <a
-                            href="javascript: void(0)"
-                            class="btn btn-primary btn-sm"
-                            >Read more</a
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-
-            <li class="event-list">
-              <div>
-                <div class="media">
-                  <div class="event-date text-center mr-4">
-                    <div class="avatar-sm rounded-circle bg-soft-primary">
-                      <span
-                        class="font-size-16 avatar-title text-primary font-weight-semibold"
-                        >03</span
-                      >
-                    </div>
-                    <p class="mt-2">Jun</p>
-                  </div>
-                  <div class="media-body">
-                    <div class="card d-inline-block">
-                      <div class="card-body">
-                        <h5 class="mt-0">Event Two</h5>
-                        <p class="text-muted">
-                          To an English person, it will seem like simplified
-                          English, as a skeptical Cambridge friend of mine told
-                          me what Occidental
-                        </p>
-
-                        <ul class="text-muted">
-                          <li class="py-1">Sed ut perspiciatis unde</li>
-                          <li class="py-1">Nemo enim ipsam</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li class="event-list">
-              <div>
-                <div class="media">
-                  <div class="event-date text-center mr-4">
-                    <div class="avatar-sm rounded-circle bg-soft-primary">
-                      <span
-                        class="font-size-16 avatar-title text-primary font-weight-semibold"
-                        >04</span
-                      >
-                    </div>
-                    <p class="mt-2">Jun</p>
-                  </div>
-                  <div class="media-body">
-                    <div class="card d-inline-block">
-                      <div class="card-body">
-                        <h5 class="mt-0">Event Three</h5>
-                        <p class="text-muted mb-4">
-                          At vero eos et accusamus et iusto odio dignissimos
-                          ducimus qui blanditiis praesentium deleniti
-                        </p>
-                        <div class="album">
-                          <a href="javascript: void(0)" class="mr-1">
-                            <img alt src="assets/images/small/img-1.jpg" />
-                          </a>
-                          <a href="javascript: void(0)" class="mr-1">
-                            <img alt src="assets/images/small/img-2.jpg" />
-                          </a>
-                          <a href="javascript: void(0)" class="mr-1">
-                            <img alt src="assets/images/small/img-3.jpg" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li class="event-list">
-              <div>
-                <div class="media">
-                  <div class="event-date text-center mr-4">
-                    <div class="avatar-sm rounded-circle bg-soft-primary">
-                      <span
-                        class="font-size-16 avatar-title text-primary font-weight-semibold"
-                        >05</span
-                      >
-                    </div>
-                    <p class="mt-2">Jun</p>
-                  </div>
-                  <div class="media-body">
-                    <div class="card d-inline-block">
-                      <div class="card-body">
-                        <h5 class="mt-0">Event Four</h5>
-                        <p class="text-muted mb-0">
-                          For science, music, sport, etc, Europe uses the same
-                          vocabulary their pronunciation and their most common
-                          words.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- end row -->
-
-    <div class="row mt-5">
-      <div class="col-12">
-        <h5 class="text-center mb-5">Center Timeline</h5>
-        <div class="timeline" dir="ltr">
-          <article class="timeline-item">
-            <h2 class="m-0 d-none">&nbsp;</h2>
-            <div class="time-show mt-0">
-              <a href="javascript: void(0)" class="btn btn-primary width-lg"
-                >Today</a
-              >
-            </div>
-          </article>
-
-          <article class="timeline-item timeline-item-left">
-            <div class="timeline-desk">
-              <div class="timeline-box clearfix">
-                <span class="timeline-icon"></span>
-                <div class="event-date float-right text-center ml-4">
-                  <div class="avatar-sm rounded-circle bg-soft-primary">
-                    <span
-                      class="font-size-16 avatar-title text-primary font-weight-semibold"
-                      >02</span
-                    >
-                  </div>
-                  <p class="mt-2">Jun</p>
-                </div>
-                <div class="overflow-hidden">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="mt-0">Event One</h5>
-                      <p class="text-muted">
-                        At solmen va esser necessi far uniform grammatica,
-                        pronunciation e plu sommun paroles. Ma quande lingues
-                        coalesce li del resultant.
-                      </p>
-                      <p class="text-muted"
-                        >It will be as simple as in fact, it will be
-                        Occidental.</p
-                      >
-                      <div>
-                        <a
-                          href="javascript: void(0)"
-                          class="btn btn-primary btn-sm"
-                          >Read more</a
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <div class="timeline-desk">
-              <div class="timeline-box clearfix">
-                <span class="timeline-icon"></span>
-                <div class="event-date float-left text-center mr-4">
-                  <div class="avatar-sm rounded-circle bg-soft-primary">
-                    <span
-                      class="font-size-16 avatar-title text-primary font-weight-semibold"
-                      >03</span
-                    >
-                  </div>
-                  <p class="mt-2">Jun</p>
-                </div>
-                <div class="overflow-hidden">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="mt-0">Event Two</h5>
-                      <p class="text-muted">
-                        If several languages coalesce, the grammar of the
-                        resulting language is more simple and regular than that
-                        of the individual languages
-                      </p>
-                      <ul class="text-muted mb-0">
-                        <li class="py-1">Sed ut perspiciatis unde</li>
-                        <li class="py-1">Nemo enim ipsam</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="timeline-item timeline-item-left">
-            <div class="timeline-desk">
-              <div class="timeline-box clearfix">
-                <span class="timeline-icon"></span>
-                <div class="event-date float-right text-center ml-4">
-                  <div class="avatar-sm rounded-circle bg-soft-primary">
-                    <span
-                      class="font-size-16 avatar-title text-primary font-weight-semibold"
-                      >04</span
-                    >
-                  </div>
-                  <p class="mt-2">Jun</p>
-                </div>
-                <div class="overflow-hidden">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="mt-0">Event Three</h5>
-                      <p class="text-muted mb-4">
-                        Everyone realizes why a new common language would be
-                        desirable: one could refuse to pay expensive
-                        translators.
-                      </p>
-                      <div class="timeline-album">
-                        <a href="javascript: void(0)" class="mr-1">
-                          <img alt src="@assets/images/small/img-1.jpg" />
-                        </a>
-                        <a href="javascript: void(0)" class="mr-1">
-                          <img alt src="@assets/images/small/img-2.jpg" />
-                        </a>
-                        <a href="javascript: void(0)" class="mr-1">
-                          <img alt src="@assets/images/small/img-3.jpg" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <div class="timeline-desk">
-              <div class="timeline-box clearfix">
-                <span class="timeline-icon"></span>
-                <div class="event-date float-left text-center mr-4">
-                  <div class="avatar-sm rounded-circle bg-soft-primary">
-                    <span
-                      class="font-size-16 avatar-title text-primary font-weight-semibold"
-                      >04</span
-                    >
-                  </div>
-                  <p class="mt-2">Jun</p>
-                </div>
-                <div class="overflow-hidden">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="mt-0">Event One</h5>
-                      <p class="text-muted">
-                        Their separate existence is a myth. For science, music,
-                        sport, etc, Europe uses the same vocabulary. The
-                        languages only differ their pronunciation
-                      </p>
-                      <p class="text-muted mb-0">
-                        To an English person, it will seem like simplified
-                        English as a skeptical Cambridge friend of mine told me
-                        what occidental
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </div>
-    <!-- end row -->
-  </Layout>
-</template>

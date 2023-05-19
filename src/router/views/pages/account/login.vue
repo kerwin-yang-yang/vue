@@ -1,8 +1,8 @@
 <script>
 import Layout from '@layouts/default'
-import { authMethods,userInfoMethods } from '@state/helpers'
+import { authMethods,userInfoMethods,TasksMethods} from '@state/helpers'
 import appConfig from '@src/app.config'
-
+import axios from 'axios'
 /**
  * Login component
  */
@@ -34,6 +34,7 @@ export default {
 	methods: {
 		...authMethods,
 		...userInfoMethods,
+		...TasksMethods,
 		// Try to log the user in with the username
 		// and password they provided.
 		tryToLogIn() {
@@ -49,11 +50,12 @@ export default {
 					this.getDocuments({username:this.username})
 					this.getCalendars({username:this.username})
 					this.getNotifications({username:this.username})
+
 					this.tryingToLogIn = false
 					this.isAuthError = false
 					// Redirect to the originally requested page, or to the home page
 					this.$router.push(
-						this.$route.query.redirectFrom || { name: 'Dashboard' }
+						 { name: '日志管理' }
 					)
 				})
 				.catch((error) => {
@@ -86,7 +88,7 @@ export default {
 
 										<h6 class="h5 mb-0 mt-4">Welcome back!</h6>
 										<p class="text-muted mt-1 mb-4">
-											Enter your email address and password to access admin
+											Enter your email address and password to access 
 											panel.
 										</p>
 
@@ -114,6 +116,20 @@ export default {
 													<div class="input-group-prepend">
 														<span class="input-group-text">
 															<feather type="lock" class="align-middle icon-dual"></feather>
+													</span>
+												</div>
+												<b-form-input id="password" v-model="password" type="password" required
+														placeholder="Enter your password"></b-form-input>
+												</div>
+											</div>
+											<div class="form-group mt-4">
+												<label class="form-control-label">Message</label>
+												<router-link to="forget-password"
+													class="float-right text-muted text-unline-dashed ml-1">Send verification message</router-link>
+												<div class="input-group input-group-merge">
+													<div class="input-group-prepend">
+														<span class="input-group-text">
+															<feather type="check-square" class="align-middle icon-dual"></feather>
 													</span>
 												</div>
 												<b-form-input id="password" v-model="password" type="password" required

@@ -16,13 +16,13 @@ import { calendarEvents, categories } from './data-calendar'
 
 export default {
 	page: {
-		title: 'Calendar',
+		title: '日志管理',
 		meta: [{ name: 'description', content: appConfig.description }],
 	},
 	components: { FullCalendar, Layout, PageHeader },
 	data() {
 		return {
-			title: 'Calendar',
+			title: '日志管理',
 			items: [
 				{
 					text: 'Shreyu',
@@ -141,7 +141,7 @@ export default {
 			const editTitle = this.editevent.editTitle
 			this.edit.setProp('title', editTitle)
 			this.eventModal = false
-			this.updateCalendarsEvent({id:this.edit.id,title: this.edit.title, category: this.edit.category, start: this.edit.start,  end: this.edit.end})
+			this.updateCalendarsEvent({ id: this.edit.id, title: this.edit.title, category: this.edit.category, start: this.edit.start, end: this.edit.end })
 		},
 
 		/**
@@ -153,7 +153,7 @@ export default {
 				(x) => '' + x.id !== '' + deleteId
 			)
 			this.eventModal = false
-			this.deleteCalendarsEvent({id:this.edit.id})
+			this.deleteCalendarsEvent({ id: this.edit.id })
 		},
 		/**
 		 * Modal open for add event
@@ -193,31 +193,31 @@ export default {
 							</div>
 							<div class="col-xl-10 col-lg-9">
 								<div class="mt-4 mt-lg-0">
-									<h5 class="mt-0 mb-1 font-weight-bold">Welcome to Your Calendar</h5>
+									<h5 class="mt-0 mb-1 font-weight-bold">欢迎来到你的日历</h5>
 									<p class="text-muted mb-2">
-										The calendar shows the events synced from all your linked
-										calendars. Click on event to see or edit the details. You
-										can create new event by clicking on "Create New event"
-										button or any cell available in calendar below.
+										日历显示了从你所有链接的日历中同步的事件
+										日历。点击事件来查看或编辑细节。您可以
+										可以通过点击 "创建新事件 "来创建新事件
+										按钮或下面日历中的任何单元格来创建新事件。
 									</p>
 
 									<button id="btn-new-event" class="btn btn-primary mt-2 mr-1" @click="showmodal = true">
-										<i class="uil-plus-circle"></i> Create New Event
+										<i class="uil-plus-circle"></i> 创建新的日志
 									</button>
-									<button class="btn btn-white mt-2">
+									<!-- <button class="btn btn-white mt-2">
 										<i class="uil-sync"></i> Link Calendars
-									</button>
+									</button> -->
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- end card body-->
+
 				</div>
-				<!-- end card -->
+
 			</div>
-			<!-- end col-12 -->
+
 		</div>
-		<!-- end row -->
+
 
 		<div class="row">
 			<div class="col-12">
@@ -225,18 +225,18 @@ export default {
 					<div class="card-body">
 						<div class="app-calendar">
 							<FullCalendar ref="fullCalendar" default-view="dayGridMonth" :header="{
-								left: 'prev,next today',
-								center: 'title',
-								right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-							}" :button-text="{
-	today: 'Today',
-	month: 'Month',
-	week: 'Week',
-	day: 'Day',
-	list: 'List',
-	prev: 'Prev',
-	next: 'Next',
-}" :bootstrap-font-awesome="false" :editable="true" :droppable="true" :plugins="calendarPlugins"
+									left: 'prev,next today',
+									center: 'title',
+									right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+								}" :button-text="{
+			today: 'Today',
+			month: 'Month',
+			week: 'Week',
+			day: 'Day',
+			list: 'List',
+			prev: 'Prev',
+			next: 'Next',
+		}" :bootstrap-font-awesome="false" :editable="true" :droppable="true" :plugins="calendarPlugins"
 								:events="calendarEvents" :weekends="calendarWeekends" :theme-system="themeSystem"
 								@dateClick="dateClicked" @eventClick="editEvent" />
 						</div>

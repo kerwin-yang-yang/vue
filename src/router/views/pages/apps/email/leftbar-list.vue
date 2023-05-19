@@ -1,57 +1,67 @@
 <script>
 export default {
+  props: ['unread','else','important'],
   data() {
     return {
       emailList: [
         {
           icon: 'uil uil-envelope-alt',
-          name: 'Inbox',
-          value: 8,
+          name: '未阅读',
+          value: this.unread,
           text: 'danger',
         },
         {
           icon: 'uil uil-envelope-star',
-          name: 'Starred',
+          name: '重要',
+          value: this.important,
+          text: 'danger',
         },
         {
           icon: 'uil uil-envelope-edit',
-          name: 'Draft',
-          value: 32,
+          name: '其他',
+          value: this.else,
           text: 'info',
         },
-        {
-          icon: 'uil uil-envelope-send',
-          name: 'Sent Mail',
-        },
-        {
-          icon: 'uil uil-trash',
-          name: 'Trash',
-        },
+        // {
+        //   icon: 'uil uil-envelope-send',
+        //   name: '存在隐患',
+        //   value: 8,
+        //   text: 'danger',
+        // },
+        // {
+        //   icon: 'uil uil-trash',
+        //   name: 'Trash',
+        //   value: 8,
+        //   text: 'success',
+        // },
       ],
       emailLabel: [
         {
           text: 'primary',
-          name: 'Web App',
+          name: '公告',
         },
         {
           text: 'success',
-          name: 'Recharge',
-        },
-        {
-          text: 'success',
-          name: 'Wallet Balance',
+          name: '意见',
         },
         {
           text: 'warning',
-          name: 'Friends',
+          name: '通告',
+        },
+        {
+          text: 'success',
+          name: '议案',
         },
         {
           text: 'secondary',
-          name: 'Family',
+          name: '请示',
         },
       ],
     }
   },
+  // created () {
+  //   this.emailList[0]
+  // }
 }
 </script>
 
@@ -61,25 +71,27 @@ export default {
     <div v-for="list in emailList" :key="list.icon" class="mail-list">
       <a
         href="javascript: void(0);"
-        class="list-group-item border-0"
-        :class="{ 'text-danger font-weight-bold': `${list.text}` === 'danger' }"
+        class="list-group-item border-0 font-weight-bold"
+
       >
-        <i :class="`${list.icon} font-size-15`"></i>
+              <!-- :class="{ 'text-danger font-weight-bold': `${list.text}` === 'danger','text-info font-weight-bold':`${list.text}` === 'info','text-success ':`${list.text}` === 'success'}" -->
+        <i :class="`${list.icon} `"></i>
         {{ list.name }}
         <span
-          class="badge bagde-danger float-right ml-2 mt-1"
-          :class="{
-            'badge-danger': `${list.text}` === 'danger',
-            'badge-info': `${list.text}` === 'info',
-          }"
+          class="badge bagde-danger float-right ml-2 mt-1 badge-dark"
+
           >{{ list.value }}</span
         >
+        <!-- :class="{
+            'badge-danger': `${list.text}` === 'danger',
+            'badge-dark': `${list.text}` === 'info',
+          }" -->
       </a>
     </div>
     <!-- End list -->
 
     <!-- Label -->
-    <h6 class="mt-4">Labels</h6>
+    <h5 class="mt-4" style="border-bottom: 1px dashed;">标签</h5>
     <div
       v-for="label in emailLabel"
       :key="label.name"

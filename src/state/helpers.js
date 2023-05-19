@@ -6,6 +6,14 @@ export const authComputed = {
   }),
   ...mapGetters('auth', ['loggedIn']),
 }
+export const TaskComputed = {
+  ...mapState('documentTask', {
+    Tasks: (state) => state.Tasks,
+    DetailTask:(state)=>state.DetailTask
+  }),
+  ...mapGetters('documentTask', ['hasTasks','hasDetailTask']),
+}
+
 export const userInfoComputed = {
   ...mapState('userInfo',{
     Document:(state)=>state.Document,
@@ -35,7 +43,14 @@ export const userInfoMethods = mapActions('userInfo', [
   // 'resetPassword',
 ])
 
-
+export const TasksMethods = mapActions('documentTask', [
+  'getTasks',
+  'createTask',
+  'cleanAll',
+  'getTasksDetail',
+  'deleteTasks',
+  'updateTasks',
+])
 
 export const authMethods = mapActions('auth', [
   'logIn',

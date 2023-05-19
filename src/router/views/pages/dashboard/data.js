@@ -1,8 +1,9 @@
+
 function getDaysInMonth(month, year) {
   const date = new Date(year, month, 1)
   const days = []
   let idx = 0
-  while (date.getMonth() === month && idx < 15) {
+  while (date.getMonth() === month && idx < 16) {
     const d = new Date(date)
     days.push(d.getDate() + ' ' + d.toLocaleString('en-us', { month: 'short' }))
     date.setDate(date.getDate() + 1)
@@ -38,10 +39,10 @@ const revenueAreaChart = {
     },
     colors: ['#43d39e'],
     xaxis: {
-      type: 'string',
-      categories: labels,
+      type: 'datetime',
+      // categories:100,
       tooltip: {
-        enabled: false,
+        enabled: true,
       },
       axisBorder: {
         show: false,
@@ -50,7 +51,7 @@ const revenueAreaChart = {
     yaxis: {
       labels: {
         formatter(val) {
-          return val + 'k'
+          return val + '条'
         },
       },
     },
@@ -66,20 +67,12 @@ const revenueAreaChart = {
       },
     },
   },
-  series: [
-    {
-      name: 'Revenue',
-      data: [10, 20, 5, 15, 10, 20, 15, 25, 20, 30, 25, 40, 30, 50, 35],
-    },
-  ],
+
 }
 
 const targetsBarChart = {
   chartOptions: {
-    colors: ['#5369f8', '#43d39e', '#f77e53', '#ffbe0b'],
     chart: {
-      type: 'bar',
-      stacked: true,
       toolbar: {
         show: false,
       },
@@ -87,7 +80,8 @@ const targetsBarChart = {
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '45%',
+        endingShape: 'rounded',
+        columnWidth: '55%',
       },
     },
     dataLabels: {
@@ -98,38 +92,59 @@ const targetsBarChart = {
       width: 2,
       colors: ['transparent'],
     },
+    colors: [ '#ff5c75', '#ffbe0b','#43d39e' ],
     xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      type: 'datetime',
       axisBorder: {
-        show: false,
+        color: '#d6ddea',
+      },
+      tooltip: {
+        enabled: true,
+      },
+      axisTicks: {
+        color: '#d6ddea',
       },
     },
     legend: {
-      show: false,
+      offsetY: -10,
+    },
+    yaxis: {
+      title: {
+        text: '风险记录条数',
+      },
+    },
+    fill: {
+      opacity: 1,
     },
     grid: {
       row: {
         colors: ['transparent', 'transparent'], // takes an array which will be repeated on columns
         opacity: 0.2,
       },
-      borderColor: '#f3f4f7',
+      borderColor: '#f1f3fa',
     },
     tooltip: {
       y: {
-        formatter: function(val) {
-          return '$ ' + val + ' thousands'
+        formatter(val) {
+          return  + val + ' 条'
         },
       },
+      theme: 'dark',
+      x: { show: false },
     },
   },
   series: [
     {
-      name: 'Net Profit',
-      data: [35, 44, 55, 57, 56, 61],
+      name: '高风险',
+      data: null,
     },
     {
-      name: 'Revenue',
-      data: [52, 76, 85, 101, 98, 87],
+      name: '中风险',
+      data: null,
+    },
+    {
+      name: '低风险',
+      data: null,
     },
   ],
 }
@@ -144,7 +159,7 @@ const salesDonutChart = {
         expandOnClick: false,
       },
     },
-    colors: ['#5369f8', '#43d39e', '#f77e53', '#ffbe0b'],
+    colors: [ '#43d39e', '#ffbe0b', '#ff5c75'],
     legend: {
       show: true,
       position: 'right',
@@ -154,7 +169,7 @@ const salesDonutChart = {
         vertical: 3,
       },
     },
-    labels: ['Clothes 44k', 'Smartphons 55k', 'Electronics 41k', 'Other 17k'],
+    labels: ['低风险记录', '中风险记录 ', '高风险记录', ],
     responsive: [
       {
         breakpoint: 480,
@@ -168,7 +183,7 @@ const salesDonutChart = {
     tooltip: {
       y: {
         formatter: (value) => {
-          return value + 'k'
+          return value + '条'
         },
       },
     },
@@ -176,42 +191,6 @@ const salesDonutChart = {
   series: [44, 55, 41, 17],
 }
 
-const ordersData = [
-  {
-    id: '#98754',
-    product: 'ASOS Ridley High',
-    name: 'Otto B',
-    price: '$79.49',
-    status: 'Pending',
-  },
-  {
-    id: '#98753',
-    product: 'Marco Lightweight Shirt',
-    name: 'Mark P',
-    price: '$125.49',
-    status: 'Delivered',
-  },
-  {
-    id: '#98752',
-    product: 'Half Sleeve Shirt',
-    name: 'Dave B',
-    price: '$35.49',
-    status: 'Declined',
-  },
-  {
-    id: '#98751',
-    product: 'Lightweight Jacket',
-    name: 'Shreyu N',
-    price: '$49.49',
-    status: 'Delivered',
-  },
-  {
-    id: '#98750',
-    product: 'Marco Shoes',
-    name: 'Rik N',
-    price: '$69.49',
-    status: 'Declined',
-  },
-]
 
-export { revenueAreaChart, targetsBarChart, salesDonutChart, ordersData }
+
+export { revenueAreaChart, targetsBarChart, salesDonutChart}

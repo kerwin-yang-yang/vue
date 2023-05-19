@@ -80,6 +80,7 @@ const authRoutes = [
       beforeResolve(routeTo, routeFrom, next) {
         store.dispatch('auth/logOut')
         store.dispatch('userInfo/cleanAll')
+        store.dispatch('documentTask/cleanAll')
         const authRequiredOnPreviousRoute = routeFrom.matched.some(
           (route) => route.meta.authRequired
         )
@@ -121,7 +122,7 @@ const errorPagesRoutes = [
 const dashboardRoutes = [
   {
     path: '/',
-    name: 'Dashboard',
+    name: '数据统计',
     header: 'Navigation',
     icon: 'home',
     badge: {
@@ -138,7 +139,7 @@ const dashboardRoutes = [
 const calendarAppsRoutes = [
   {
     path: '/apps/calendar',
-    name: 'Calendar',
+    name: '日志管理',
     header: 'Apps',
     icon: 'calendar',
     component: () => lazyLoadView(import('@views/pages/apps/calendar')),
@@ -150,7 +151,7 @@ const calendarAppsRoutes = [
 const emailAppsRoutes = [
   {
     path: '/apps/email',
-    name: 'Email',
+    name: '所有文档',
     icon: 'inbox',
     meta: { authRequired: true },
     // create a container component
@@ -162,26 +163,26 @@ const emailAppsRoutes = [
     props: (route) => ({ user: store.state.auth.currentUser || {} }),
     children: [
       {
-        name: 'Inbox',
+        name: '文档列表',
         path: 'inbox',
         meta: { authRequired: true },
         component: () =>
           lazyLoadView(import('@views/pages/apps/email/inbox')),
       },
-      {
-        path: 'read',
-        name: 'Read Email',
-        meta: { authRequired: true },
-        component: () =>
-          lazyLoadView(import('@views/pages/apps/email/reademail')),
-      },
-      {
-        path: 'compose',
-        name: 'Compose Email',
-        meta: { authRequired: true },
-        component: () =>
-          lazyLoadView(import('@views/pages/apps/email/emailcompose')),
-      },
+      // {
+      //   path: 'read',
+      //   name: 'Read Email',
+      //   meta: { authRequired: true },
+      //   component: () =>
+      //     lazyLoadView(import('@views/pages/apps/email/reademail')),
+      // },
+      // {
+      //   path: 'compose',
+      //   name: 'Compose Email',
+      //   meta: { authRequired: true },
+      //   component: () =>
+      //     lazyLoadView(import('@views/pages/apps/email/emailcompose')),
+      // },
     ],
   }
 ];
@@ -189,7 +190,7 @@ const emailAppsRoutes = [
 const projectAppsRoutes = [
   {
     path: '/apps/project',
-    name: 'Management',
+    name: '文档项目管理',
     icon: 'briefcase',
     meta: { authRequired: true },
     // create a container component
@@ -202,17 +203,29 @@ const projectAppsRoutes = [
     children: [
       {
         path: 'list',
-        name: 'List',
+        name: '所有任务',
         meta: { authRequired: true },
         component: () =>
           lazyLoadView(import('@views/pages/apps/project/list')),
       },
       {
         path: 'detail',
-        name: 'Detail',
+        name: '任务详情',
         meta: { authRequired: true },
         component: () =>
           lazyLoadView(import('@views/pages/apps/project/detail')),
+      },
+      {
+        path: 'uploads',
+        name: '文件上传',
+        meta: { authRequired: true },
+        component: () => lazyLoadView(import('@views/pages/ui/forms/uploads')),
+      },
+      {
+        path: 'water',
+        name: '水印验证',
+        meta: { authRequired: true },
+        component: () => lazyLoadView(import('@views/pages/ui/forms/water')),
       },
     ],
   }
@@ -298,6 +311,11 @@ const pagesRoutes = [
         path: 'pricing',
         name: 'Pricing',
         component: () => lazyLoadView(import('@views/pages/secondary/pricing')),
+      },
+      {
+        path: 'test',
+        name: 'test',
+        component: () => lazyLoadView(import('@views/pages/secondary/test')),
       },
     ],
   },
@@ -452,28 +470,35 @@ const chartsRoutes = [
 const ReadRoutes = [
   {
     path: '/Read',
-    name: 'Read',
+    name: '阅读',
     icon: 'book-open',
     component: () => lazyLoadView(import('@views/pages/read/read')),
     meta: { authRequired: true },
-    props: (route) => ({ user: store.state.auth.currentUser || {} }),
+    // props: (route) => ({ user: store.state.auth.currentUser || {} }),
   },
 ]
 // Edit
 const EditRoutes = [
+  // {
+  //   path: '/Edit',
+  //   name: '编辑',
+  //   icon: 'edit',
+  //   component: () => lazyLoadView(import('@views/pages/read/edit')),
+  //   meta: { authRequired: true },
+  //   props: (route) => ({ user: store.state.auth.currentUser || {} }),
+  // },
   {
-    path: '/Edit',
-    name: 'Edit',
+    path: '/profile',
     icon: 'edit',
-    component: () => lazyLoadView(import('@views/pages/read/edit')),
-    meta: { authRequired: true },
+    name: '用户信息',
+    component: () => lazyLoadView(import('@views/pages/secondary/profile/')),
     props: (route) => ({ user: store.state.auth.currentUser || {} }),
   },
 ]
 
 const authProtectedRoutes = [
   ...dashboardRoutes,
-  ...errorPagesRoutes,
+  // ...errorPagesRoutes,
   ...appsRoutes,
  
 
@@ -491,15 +516,18 @@ const authProtectedRoutes = [
 ]
 const AdminRoutes = [
   ...dashboardRoutes,
+  // ...pagesRoutes,
   ...appsRoutes,
+  ...emailAppsRoutes,
   ...EditRoutes,
 ]
 const UserRoutes = [
-  
-  ...pagesRoutes,
+  ...calendarAppsRoutes,
+  // ...pagesRoutes,
   ...emailAppsRoutes,
   ...ReadRoutes,
   ...taskAppsRoutes,
+  ...EditRoutes
   
 ]
 // ...uiRoutes,

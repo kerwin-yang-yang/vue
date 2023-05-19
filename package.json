@@ -43,10 +43,11 @@
     "feather-icons": "^4.24.1",
     "lodash": "4.17.11",
     "metismenujs": "^1.1.0",
+    "relation-graph": "^2.0.26",
     "tinymce": "5.1.0",
     "v-click-outside": "^2.1.3",
     "v-mask": "^2.0.2",
-    "vue": "^2.6.10",
+    "vue": "2.7",
     "vue-apexcharts": "^1.5.0",
     "vue-drag-resize": "^1.5.4",
     "vue-draggable-resizable": "^2.3.0",
@@ -95,7 +96,7 @@
     "stylelint-config-recess-order": "2.0.x",
     "stylelint-config-standard": "18.3.x",
     "stylelint-scss": "3.6.x",
-    "vue-template-compiler": "2.6.10",
+    "vue-template-compiler": "^2.7.14",
     "vuepress": "0.14.x"
   },
   "engines": {

@@ -4,36 +4,37 @@ import vue2Dropzone from 'vue2-dropzone'
 import appConfig from '@src/app.config'
 import Layout from '@layouts/main'
 import PageHeader from '@components/page-header'
-
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 export default {
 	page: {
-		title: 'File Upload',
+		title: '文档上传',
 		meta: [{ name: 'description', content: appConfig.description }],
 	},
 	components: { Layout, PageHeader, vueDropzone: vue2Dropzone },
 	data() {
 		return {
-			title: 'File Upload',
+			title: '文档上传',
 			items: [
 				{
 					text: 'Shreyu',
 					href: '/',
 				},
 				{
-					text: 'Forms',
+					text: 'Management',
 					href: '/',
 				},
 				{
-					text: 'File Upload',
+					text: 'Document Upload',
 					active: true,
 				},
 			],
 			dropzoneOptions: {
-				url: 'https://httpbin.org/post',
+				url: 'http://127.0.0.1:5001/api/document/uploadDocument',
 				thumbnailWidth: 150,
-				maxFilesize: 0.5,
+				maxFilesize: 30,
 				headers: { content: 'header value' },
 			},
+			// 其中包含上传文件的相关配置，如上传地址、缩略图宽度、最大文件大小等
 		}
 	},
 }
@@ -46,10 +47,9 @@ export default {
 			<div class="col-12">
 				<div class="card">
 					<div class="card-body">
-						<h4 class="vue-editor mt-0 mb-1">Dropzone File Upload</h4>
+						<h4 class="vue-editor mt-0 mb-1">上传文档并指定机密等级</h4>
 						<p class="text-muted font-13 m-b-30"
-							>DropzoneJS is an open source library that provides drag’n’drop
-							file uploads with image previews.</p
+							>Upload documents and specify confidentiality level</p
 						>
 						<!-- file upload -->
 						<vue-dropzone
@@ -60,10 +60,9 @@ export default {
 						>
 							<div class="text-center">
 								<i class="h1 text-muted uil-cloud-upload"></i>
-								<h3>Drop files here or click to upload.</h3>
+								<h3>上传完整文档</h3>
 								<span class="text-muted font-size-13">
-									(This is just a demo dropzone. Selected files are
-									<strong>not</strong> actually uploaded.)
+									(文档将会被加密传输并进行jpeg保存)
 								</span>
 							</div>
 						</vue-dropzone>

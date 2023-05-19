@@ -25,7 +25,8 @@ export default {
     if (this.currentUser.role_id == 0) {
       this.menuItems = authProtectedRoutes
     }
-    else if (this.currentUser.role_id <= 3) {
+    else 
+    if (this.currentUser.role_id <= 3) {
       this.menuItems = AdminRoutes
     }
     else {
