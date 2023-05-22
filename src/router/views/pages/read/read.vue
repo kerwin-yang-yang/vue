@@ -630,82 +630,93 @@ export default {
           </VueDragResize>
 
           <div class="inbox-leftbar" :class="{ active: this.leftSide }">
-            
-              <div id="logo" data-content-field="site-title">
-                <h1 class="logo image" data-shrink-original-size="26" style="letter-spacing: 0em">
-                  <a href="/">
-                    <img
-                      src="//images.squarespace-cdn.com/content/v1/5c0a0a92b27e3986f51e5eb0/1611794977300-EITI1LJ5WJJJAUCKRQKP/pedro-04.jpg?format=750w"
-                      alt="Pedrontheworld" />
-                  </a>
-                </h1>
-              </div>
 
-              <div id="topNav" data-content-field="navigation">
-                <nav id="mainNavigation" class="main-nav dropdown-click desktop-nav">
-                  <ul>
-                    <li class="page-collection active-link">
-                      <a @click="stopModal = true"><feather type="pause-circle"></feather><span>暂停</span></a>
-                      
-                      <b-modal v-model="stopModal" centered hide-footer title="暂停警告" title-class="font-18"
-                        no-close-on-backdrop no-close-on-esc>
-                        <div class="text-center">
-                          <i class="uil-no-entry text-danger display-3"></i>
-                          <h4 class="text-danger mt-4">暂停警告 </h4>
-                          <p class="w-75 mx-auto text-muted">请注意，你的暂停行为将被记录在文件中，由此产生的任何泄密后果将由你承担</p>
-                          <div class="mt-4">
-                            <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
-                              @click="cover">
-                              暂停阅读
-                            </a>
-                          </div>
-                        </div>
-                      </b-modal>
-                    </li>
+            <div id="logo" data-content-field="site-title">
+              <h1 class="logo image" data-shrink-original-size="26" style="letter-spacing: 0em">
+                <a href="/">
+                  <img
+                    src="//images.squarespace-cdn.com/content/v1/5c0a0a92b27e3986f51e5eb0/1611794977300-EITI1LJ5WJJJAUCKRQKP/pedro-04.jpg?format=750w"
+                    alt="Pedrontheworld" />
+                  <!-- <img src="@src/state/logo.jpg" alt="Pedrontheworld" /> -->
+                </a>
+              </h1>
+            </div>
 
-                    <li class="page-collection active-link">
-                      <div>
-                        <div>
-                          <a @click="exitModal = true" class="">退出</a>
-                          <b-modal v-model="exitModal" centered hide-footer title="Behavior Warning" title-class="font-18"
-                            no-close-on-backdrop no-close-on-esc>
-                            <div class="text-center">
-                              <i class="uil-no-entry text-danger display-3"></i>
-                              <h4 class="text-danger mt-4">退出警告！！</h4>
-                              <p class="w-75 mx-auto text-muted">请注意，你的退出行为将被记录在文件中，由此产生的任何泄密后果将由你承担</p>
-                              <div class="mt-4">
-                                <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
-                                  @click="confirmJump">
-                                  退出阅读
-                                </a>
-                              </div>
-                            </div>
-                          </b-modal>
+            <div id="topNav" data-content-field="navigation">
+              <nav id="mainNavigation" class="main-nav dropdown-click desktop-nav">
+                <ul>
+                  <li class="page-collection active-link">
+                    <a @click="stopModal = true">
 
-                          <!-- <a-button class="btn btn-danger btn-block mb-4" type="primary">全屏</a-button> -->
+                      <span style="height:100%;    
+  align-items: center;;display:flex">
+                        <feather type="pause-circle" style="margin:0 20px;"></feather>暂停
+                      </span>
+                    </a>
+
+                    <b-modal v-model="stopModal" modal-class="Mymodal" centered hide-footer title="暂停警告"
+                      title-class="font-18" no-close-on-backdrop no-close-on-esc>
+                      <div class="text-center">
+                        <i class=" uil-stopwatch-slash text-danger display-3"></i>
+ 
+                        <h4 class="text-danger mt-4">暂停警告 </h4>
+                        <p >请注意，你的暂停行为将被记录在文件中</p>
+                        <p>由此产生的任何泄密后果将由你承担</p>
+                        <div class="mt-4">
+                          <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);"
+                            @click="cover">
+                            暂停阅读
+                          </a>
                         </div>
                       </div>
-                    </li>
+                    </b-modal>
+                  </li>
 
-                  </ul>
-                </nav>
+                  <li class="page-collection active-link">
+                    <div>
+                      <div>
+                        <a @click="exitModal = true">
+                          <span style="height:100%;   
+  align-items: center; ;display:flex">
+                            <feather type="log-out" style="margin:0 20px;"></feather>退出
+                          </span></a>
+                          <!-- uil-webcam  uil-shield-slash  
+                        uil-shield-exclamation
+                        uil-focus-target -->
+                        <b-modal v-model="exitModal" centered hide-footer title="退出警告" title-class="font-18"
+                          no-close-on-backdrop no-close-on-esc>
+                          <div class="text-center">
+                            <i class="uil-shield-exclamation text-danger display-3"></i>
+                            <h4 class="text-danger mt-4">退出警告</h4>
+                            <p >请注意，你的退出行为将被记录在文件中</p>
+                            <p>由此产生的任何泄密后果将由你承担</p>
+                            <div class="mt-4">
+                              <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);"
+                                @click="confirmJump">
+                                退出阅读
+                              </a>
+                            </div>
+                          </div>
+                        </b-modal>
+                      </div>
+                    </div>
+                  </li>
+                  <!-- <li class="page-collection">
+                    <a href="/tearsheet-1">Tear</a>
+                  </li>
 
-                <nav id="secondaryNavigation" class="main-nav dropdown-click desktop-nav">
-                  <ul>
-                    <li class="page-collection">
-                      <a href="/tearsheet-1">Tear</a>
-                    </li>
+                  <li class="page-collection">
+                    <a href="/contact">Contact/About</a>
+                  </li> -->
 
-                    <li class="page-collection">
-                      <a href="/contact">Contact/About</a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
+                </ul>
+              </nav>
 
-  
 
-            
+
+
+            </div>
+
           </div>
           <div class="inbox-rightbar">
             <!-- 居中容器 -->
@@ -719,7 +730,7 @@ export default {
                                                                                                                                                               border-radius: 8px;
                                                                                                                                                             border: 1px solid #bbb6b7;
                                                                                                                                                             height: 32px;
-                                                                                                                                                              width: 56px;
+                                                                                                                                                              width: 56px;margin-right: 20px;
                                                                                                                                                             "
                       @click="changeLeftSide"><i class="uil font-size-15" :class="{
                         'uil-left-arrow-to-left': label,
@@ -737,18 +748,19 @@ export default {
                                                                                                                                                       border: none;
                                                                                                                                                       height: 32px;
                                                                                                                                                 width: 40px;    display: flex; justify-content: center;align-items: center; "
-                      @click="screen">
+                      @click="stopModal = true">
                       <feather type="pause-circle" height="20"></feather>
                     </b-button>
                   </div>
-                  <b-modal v-model="fullmodal" centered hide-footer title="行为警告！！" title-class="font-18 "
+                  <b-modal v-model="fullmodal" centered hide-footer title="行为警告" title-class="font-18 "
                     no-close-on-backdrop hide-header-close no-close-on-esc>
                     <div class="text-center">
-                      <i class="uil-no-entry text-danger display-3"></i>
+                      <i class="uil-focus-target text-danger display-3"></i>
                       <h4 class="text-danger mt-4 ">警告：你退出了全屏模式 </h4>
-                      <p class="w-75 mx-auto text-muted">请注意，你的行为有严重后果，请进入全屏模式认真阅读，或者选择暂停</p>
+                      <p >请注意，你的行为有严重后果</p>
+                      <p>请进入全屏模式认真阅读，或者选择暂停</p>
                       <div class="mt-4">
-                        <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
+                        <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);"
                           @click="screen">
                           进入全屏
                         </a>
@@ -787,7 +799,8 @@ export default {
                       <i class="uil uil-facebook-messenger-alt font-size-18"></i> </b-button>
                   </div>
                   <div class="header-action-item"><b-button variant="outline-dark"
-                      style="border-radius: 8px;border: none;height: 32px;width: 40px;    display: flex;justify-content: center;align-items: center;" @click="sidebarViewd(2)">
+                      style="border-radius: 8px;border: none;height: 32px;width: 40px;    display: flex;justify-content: center;align-items: center;"
+                      @click="sidebarViewd(2)">
                       <i class="uil uil-map-marker-info font-size-19"></i> </b-button>
                   </div>
                 </div>
@@ -871,11 +884,11 @@ export default {
                   <button class="close" @click="sidebarNotViewd(1)">《《《×》》》</button>
 
                   <div class="media mb-0 mt-5">
-                    
+
                     <div class="media-body">
                       <div class="mb-2">
                         <vue-editor></vue-editor>
-                        
+
                       </div>
                     </div>
                   </div>
@@ -1409,15 +1422,28 @@ svg {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   line-height: 2em;
-  font-size: 12px;
+  font-size: 18px;
   display: block;
   padding: 0.2em;
+
 }
 
-.main-nav a,
+.main-nav li {
+  margin-top: 10px;
+  border: #040404 2px solid;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+}
+
 .main-nav a:active,
-.main-nav .folder li a:hover {
-  color: #000;
+.main-nav li a:hover {
+  color: #fff;
+  // background-color: #000;
+  border-radius: 20px;
+  background: linear-gradient(to bottom, #000 0%, #f2f2f2 100%);
+  //  transform: perspective(800px) rotateX(30deg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 nav ul,
@@ -1476,5 +1502,11 @@ nav {
 
 .p-2 {
   padding: 0rem !important;
+}
+
+.Mymodal {
+
+  background-color: rgba(0, 0, 0, 1);
+  /* 完全黑色，不透明 */
 }
 </style>

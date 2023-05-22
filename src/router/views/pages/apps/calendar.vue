@@ -25,7 +25,7 @@ export default {
 			title: '日志管理',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{
@@ -225,18 +225,18 @@ export default {
 					<div class="card-body">
 						<div class="app-calendar">
 							<FullCalendar ref="fullCalendar" default-view="dayGridMonth" :header="{
-									left: 'prev,next today',
-									center: 'title',
-									right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-								}" :button-text="{
-			today: 'Today',
-			month: 'Month',
-			week: 'Week',
-			day: 'Day',
-			list: 'List',
-			prev: 'Prev',
-			next: 'Next',
-		}" :bootstrap-font-awesome="false" :editable="true" :droppable="true" :plugins="calendarPlugins"
+								left: 'prev,next today',
+								center: 'title',
+								right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+							}" :button-text="{
+	today: 'Today',
+	month: 'Month',
+	week: 'Week',
+	day: 'Day',
+	list: 'List',
+	prev: 'Prev',
+	next: 'Next',
+}" :bootstrap-font-awesome="false" :editable="true" :droppable="true" :plugins="calendarPlugins"
 								:events="calendarEvents" :weekends="calendarWeekends" :theme-system="themeSystem"
 								@dateClick="dateClicked" @eventClick="editEvent" />
 						</div>

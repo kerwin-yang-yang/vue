@@ -49,7 +49,7 @@ export default {
 			title: 'Widgets',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{
@@ -167,7 +167,7 @@ export default {
 				{
 					image: require('@assets/images/users/avatar-7.jpg'),
 					text: 'Senior Sales Guy',
-					name: 'Shreyu N',
+					name: 'officeShield N',
 				},
 				{
 					image: require('@assets/images/users/avatar-9.jpg'),
@@ -223,12 +223,12 @@ export default {
 					id: 2,
 				},
 				{
-					title: 'Write a release note for Shreyu',
+					title: 'Write a release note for officeShield',
 					text: 'Due on 22 Aug, 2019',
 					id: 3,
 				},
 				{
-					title: 'Invite Greeva to a project shreyu admin',
+					title: 'Invite Greeva to a project officeShield admin',
 					text: 'Due on 21 Aug, 2019',
 					id: 4,
 				},
@@ -249,7 +249,7 @@ export default {
 				{
 					id: 2,
 					image: require('@assets/images/users/avatar-7.jpg'),
-					name: 'Shreyu',
+					name: 'officeShield',
 					message: 'Hi, How are you? What about our next meeting?',
 					time: '10:01',
 				},
@@ -263,7 +263,7 @@ export default {
 				{
 					id: 4,
 					image: require('@assets/images/users/avatar-7.jpg'),
-					name: 'Shreyu',
+					name: 'officeShield',
 					message: 'Awesome! let me know if we can talk in 20 min',
 					time: '10:02',
 				},
@@ -279,55 +279,25 @@ export default {
 		<PageHeader :title="title" :items="items" />
 		<div class="row">
 			<div v-for="stat of statData" :key="stat.title" class="col-md-6 col-xl-3">
-				<Stat
-					:title="stat.title"
-					:value="stat.value"
-					:icon="stat.icon"
-					:color="stat.color"
-				/>
+				<Stat :title="stat.title" :value="stat.value" :icon="stat.icon" :color="stat.color" />
 			</div>
 		</div>
 		<div class="row">
-			<div
-				v-for="item of statProgress"
-				:key="item.title"
-				class="col-md-6 col-xl-3"
-			>
-				<StatProgress
-					:title="item.title"
-					:value="item.value"
-					:progress="item.progress"
-					:text="item.text"
-					:color="item.color"
-				/>
+			<div v-for="item of statProgress" :key="item.title" class="col-md-6 col-xl-3">
+				<StatProgress :title="item.title" :value="item.value" :progress="item.progress" :text="item.text"
+					:color="item.color" />
 			</div>
 		</div>
 		<div class="row">
-			<div
-				v-for="stat of statChart"
-				:key="stat.mainTitle"
-				class="col-md-6 col-xl-3"
-			>
-				<StatChart
-					:main-title="stat.mainTitle"
-					:value="stat.value"
-					:sub-value="stat.subValue"
-					:chart-color="stat.chartColor"
-				/>
+			<div v-for="stat of statChart" :key="stat.mainTitle" class="col-md-6 col-xl-3">
+				<StatChart :main-title="stat.mainTitle" :value="stat.value" :sub-value="stat.subValue"
+					:chart-color="stat.chartColor" />
 			</div>
 		</div>
 		<div class="row">
-			<div
-				v-for="chart of chartData"
-				:key="chart.subValue"
-				class="col-md-6 col-xl-4"
-			>
-				<StatChart2
-					:chart-color="chart.chartColor"
-					:main-title="chart.mainTitle"
-					:sub-value="chart.subValue"
-					:chart-data="chart.data"
-				/>
+			<div v-for="chart of chartData" :key="chart.subValue" class="col-md-6 col-xl-4">
+				<StatChart2 :chart-color="chart.chartColor" :main-title="chart.mainTitle" :sub-value="chart.subValue"
+					:chart-data="chart.data" />
 			</div>
 		</div>
 
@@ -355,11 +325,7 @@ export default {
 					<div class="card-body pt-2">
 						<h6 class="header-title mb-4">Team Members</h6>
 						<div v-for="member of membersData" :key="member.name">
-							<Member
-								:image="member.image"
-								:name="member.name"
-								:text="member.text"
-							/>
+							<Member :image="member.image" :name="member.name" :text="member.text" />
 						</div>
 					</div>
 				</div>
@@ -369,11 +335,7 @@ export default {
 			</div>
 
 			<div class="col-xl-4">
-				<Chat
-					:chat-window-height="maxHeight"
-					:messages="chatMessages"
-					title="Team Chat"
-				/>
+				<Chat :chat-window-height="maxHeight" :messages="chatMessages" title="Team Chat" />
 			</div>
 		</div>
 
@@ -385,11 +347,7 @@ export default {
 			<div class="col-md-6 col-xl-4">
 				<div class="card">
 					<div class="card-body pt-2 pb-3">
-						<router-link
-							to="/task/list"
-							class="btn btn-primary btn-sm mt-2 float-right"
-							>View All</router-link
-						>
+						<router-link to="/task/list" class="btn btn-primary btn-sm mt-2 float-right">View All</router-link>
 						<h6 class="header-title mb-4">Tasks</h6>
 						<div v-for="task in tasksData" :key="task.id">
 							<Task :id="task.id" :text="task.text" :title="task.title" />

@@ -18,7 +18,7 @@ export default {
 		},
 		messages: {
 			type: Array,
-			default: function() {
+			default: function () {
 				return []
 			},
 		},
@@ -56,7 +56,7 @@ export default {
 				this.messages.push({
 					image: require('@assets/images/users/avatar-7.jpg'),
 					id: id + 1,
-					name: 'Shreyu',
+					name: 'officeShield',
 					message,
 					time: currentDate.getHours() + ':' + currentDate.getMinutes(),
 				})
@@ -71,12 +71,7 @@ export default {
 <template>
 	<div class="card">
 		<div class="card-body pt-2">
-			<b-dropdown
-				class="mt-2 float-right"
-				variant="black"
-				right
-				toggle-class="p-0 arrow-none text-muted"
-			>
+			<b-dropdown class="mt-2 float-right" variant="black" right toggle-class="p-0 arrow-none text-muted">
 				<template v-slot:button-content>
 					<i class="uil uil-ellipsis-v"></i>
 				</template>
@@ -100,12 +95,7 @@ export default {
 			<VuePerfectScrollbar :style="`max-height:${chatWindowHeight}`">
 				<div class="chat-conversation">
 					<ul class="conversation-list">
-						<li
-							v-for="(chat, index) in messages"
-							:key="chat.id"
-							:class="{ odd: index % 2 }"
-							class="clearfix"
-						>
+						<li v-for="(chat, index) in messages" :key="chat.id" :class="{ odd: index % 2 }" class="clearfix">
 							<div class="chat-avatar">
 								<img :src="`${chat.image}`" alt="male" />
 								<i>{{ chat.time }}</i>
@@ -123,26 +113,15 @@ export default {
 			<form @submit.prevent="saveMessage">
 				<div class="row mt-3">
 					<div class="col-lg-9">
-						<input
-							id="message"
-							v-model="chats.message"
-							type="text"
-							class="form-control"
-							placeholder="Enter your text"
-							name="message"
-							:class="{ 'is-invalid': submitform && $v.chats.message.$error }"
-						/>
-						<div
-							v-if="submitform && !$v.chats.message.required"
-							class="invalid-feedback"
-							>This value is required.</div
-						>
+						<input id="message" v-model="chats.message" type="text" class="form-control"
+							placeholder="Enter your text" name="message"
+							:class="{ 'is-invalid': submitform && $v.chats.message.$error }" />
+						<div v-if="submitform && !$v.chats.message.required" class="invalid-feedback">This value is
+							required.</div>
 					</div>
 
 					<div class="col-lg-3">
-						<button type="submit" class="btn btn-danger chat-send btn-block"
-							>Send</button
-						>
+						<button type="submit" class="btn btn-danger chat-send btn-block">Send</button>
 					</div>
 				</div>
 				<!-- end row -->

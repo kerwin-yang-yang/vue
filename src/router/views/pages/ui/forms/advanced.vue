@@ -16,7 +16,7 @@ export default {
       title: '',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {

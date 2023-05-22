@@ -25,7 +25,7 @@ export default {
       title: '所有文档',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {
@@ -112,7 +112,7 @@ export default {
           <div class="inbox-leftbar card">
             <!-- <router-link :to="{ name: 'Compose Email' }" class="btn btn-danger btn-block mb-4">Compose</router-link> -->
             <h5 style="border-bottom: 1px dashed;"> 文档统计</h5>
-            
+
             <LeftbarList :unread="unreadEmail.length" :else="elseEmail.length" :important="importantEmail.length" />
 
             <!-- <div class="mt-4 border-bottom pb-2 mb-2">
@@ -123,7 +123,7 @@ export default {
                   </div>
                 </div>
                 <div class="media-body overflow-hidden">
-                  <h5 class="font-size-14 mt-1 mb-0">Shreyu</h5>
+                  <h5 class="font-size-14 mt-1 mb-0">officeShield</h5>
                   <small class="text-muted">
                     <i class="uil uil-circle font-size-11 text-success"></i>
                     Active Now

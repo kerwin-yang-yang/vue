@@ -1,7 +1,7 @@
 <script>
 import { authComputed } from '@state/helpers'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import {userInfoComputed} from '@state/helpers'
+import { userInfoComputed } from '@state/helpers'
 
 export default {
 	components: {
@@ -30,14 +30,14 @@ export default {
 
 	methods: {
 		formatTime(timestamp) {
-			const diff = Date.now() - new Date(timestamp.replace(/-/g,'/')).getTime()
-      
-      if (diff <= (1000 * 60)) return '刚刚'
-      else if (diff <= (1000 * 60 * 60)) return Math.floor(diff / (1000 * 60)) + '分钟前'
-      else if (diff <= (1000 * 60 * 60 *24)) return Math.floor(diff / (1000 * 60 * 60)) + '小时前'
-      else return Math.floor(diff / (1000 * 60 * 60 *24)) + '天前'
-    }
-  ,
+			const diff = Date.now() - new Date(timestamp.replace(/-/g, '/')).getTime()
+
+			if (diff <= (1000 * 60)) return '刚刚'
+			else if (diff <= (1000 * 60 * 60)) return Math.floor(diff / (1000 * 60)) + '分钟前'
+			else if (diff <= (1000 * 60 * 60 * 24)) return Math.floor(diff / (1000 * 60 * 60)) + '小时前'
+			else return Math.floor(diff / (1000 * 60 * 60 * 24)) + '天前'
+		}
+		,
 		toggleMenu() {
 			this.$parent.toggleMenu()
 		},
@@ -82,7 +82,7 @@ export default {
 			<a href="/" class="navbar-brand mr-0 mr-md-2 logo">
 				<span class="logo-lg">
 					<img src="@assets/images/logo.png" alt height="24" />
-					<span class="d-inline h5 ml-2 text-logo">Shreyu</span>
+					<span class="d-inline h5 ml-2 text-logo">officeShield</span>
 				</span>
 				<span class="logo-sm">
 					<img src="@assets/images/logo.png" alt height="24" />
@@ -101,27 +101,27 @@ export default {
 
 			<ul class="navbar-nav flex-row ml-auto d-flex list-unstyled topnav-menu float-right mb-0">
 				<li class="d-none d-sm-block">
-				<div class="app-search">
-					<form>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search..." />
-							<feather type="search" class="align-middle"></feather>
-						</div>
-					</form>
-				</div>
-			</li>
+					<div class="app-search">
+						<form>
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Search..." />
+								<feather type="search" class="align-middle"></feather>
+							</div>
+						</form>
+					</div>
+				</li>
 
-			<li class="dropdown d-none d-lg-block" id="fullscreen-tooltip">
-				<a href="javascript:void(0);" class="nav-link right-bar-toggle toggle-right" @click="screen">
-					<b-tooltip target="fullscreen-tooltip" placement="left">Full screen</b-tooltip>
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-						stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-						class="feather feather-maximize">
-						<path
-							d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
-						</path>
-					</svg></a>
-			</li>
+				<li class="dropdown d-none d-lg-block" id="fullscreen-tooltip">
+					<a href="javascript:void(0);" class="nav-link right-bar-toggle toggle-right" @click="screen">
+						<b-tooltip target="fullscreen-tooltip" placement="left">Full screen</b-tooltip>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+							class="feather feather-maximize">
+							<path
+								d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+							</path>
+						</svg></a>
+				</li>
 				<b-nav-item-dropdown id="project-tooltip" right variant="black" class="dropdown d-none d-lg-block" no-caret>
 					<template v-slot:button-content>
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -144,21 +144,22 @@ export default {
 								<div class="col">
 									<a class="dropdown-icon-item" href="#">
 										<img src="@assets/images/brands/slack.png" alt="slack">
-										<br/>
+										<br />
 										<span>Slack</span>
 									</a>
 								</div>
 								<div class="col">
-									<a class="dropdown-icon-item" target="_blank" href="https://github.com/kerwin-yang-yang/vue">
-										<img src="@assets/images/brands/github.png"  alt="Github">
-										<br/>
+									<a class="dropdown-icon-item" target="_blank"
+										href="https://github.com/kerwin-yang-yang/vue">
+										<img src="@assets/images/brands/github.png" alt="Github">
+										<br />
 										<span>GitHub</span>
 									</a>
 								</div>
 								<div class="col">
 									<a class="dropdown-icon-item" href="#">
 										<img src="@assets/images/brands/dribbble.png" alt="dribbble">
-										<br/>
+										<br />
 										<span>Dribbble</span>
 									</a>
 								</div>
@@ -222,12 +223,13 @@ export default {
 				</b-nav-item-dropdown>
 
 				<b-nav-item-dropdown id="bell-notification" right variant="white" class="notification-list"
-					title="8 new unread notifications" menu-class="dropdown-lg"  v-if="Notification">
+					title="8 new unread notifications" menu-class="dropdown-lg" v-if="Notification">
 					<template v-slot:button-content>
 						<feather type="bell" class="align-middle"></feather>
 						<span class="noti-icon-badge"></span>
 					</template>
-					<b-tooltip target="bell-notification" placement="left">{{ Notification.length }} new unread notifications</b-tooltip>
+					<b-tooltip target="bell-notification" placement="left">{{ Notification.length }} new unread
+						notifications</b-tooltip>
 					<!-- item-->
 					<b-dropdown-text class="noti-title border-bottom pb-2" tag="div">
 						<h5 class="m-0 font-size-16">
@@ -240,18 +242,19 @@ export default {
 
 					<VuePerfectScrollbar v-once class="noti-scroll">
 						<!-- item-->
-						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom"  v-for="notification in Notification" :key="notification.id">
+						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom"
+							v-for="notification in Notification" :key="notification.id">
 							<div class="notify-icon">
 								<!-- <i class="uil uil-user-plus"></i> -->
 								<img :src="notification.sender_picture" class="img-fluid rounded-circle" />
 							</div>
 							<p class="notify-details">
-								{{notification.content}}
-								<small class="text-muted">{{formatTime(notification.timestamp)}}</small>
+								{{ notification.content }}
+								<small class="text-muted">{{ formatTime(notification.timestamp) }}</small>
 							</p>
 						</b-dropdown-text>
 
-						
+
 						<!-- <b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom">
 							<div class="notify-icon">
 								<img src="@assets/images/users/avatar-1.jpg" class="img-fluid rounded-circle" alt />
@@ -331,12 +334,11 @@ export default {
 					toggle-class="nav-user mr-0">
 					<template v-slot:button-content>
 						<div class="media user-profile">
-							<img :src="user.icon" alt="user-image"
-								class="rounded-circle align-self-center" />
+							<img :src="user.icon" alt="user-image" class="rounded-circle align-self-center" />
 							<div class="media-body text-left">
 								<h6 class="pro-user-name ml-2 my-0">
 									<span>{{ user.username }}</span>
-									<span class="pro-user-desc text-muted d-block mt-1">{{user.user_role_name}}</span>
+									<span class="pro-user-desc text-muted d-block mt-1">{{ user.user_role_name }}</span>
 								</h6>
 							</div>
 							<feather type="chevron-down" class="ml-2 align-self-center"></feather>
@@ -399,20 +401,20 @@ export default {
 
 .dropdown-icon-item {
 
-    border-radius: 3px;
-    line-height: 34px;
-    text-align: center;
-    padding: 15px 0 9px;
+	border-radius: 3px;
+	line-height: 34px;
+	text-align: center;
+	padding: 15px 0 9px;
 
-    border: 1px solid transparent;
-    color: #4b4b5a;
+	border: 1px solid transparent;
+	color: #4b4b5a;
 	display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
+
 .col img {
-    width: 24px;
+	width: 24px;
 	height: 24px;
-}
-</style>
+}</style>

@@ -17,7 +17,7 @@ export default {
 			title: 'Advanced Tables',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{
@@ -85,29 +85,18 @@ export default {
 								<div id="tickets-table_length" class="dataTables_length">
 									<label class="d-inline-flex align-items-center">
 										Show&nbsp;
-										<b-form-select
-											v-model="perPage"
-											size="sm"
-											:options="pageOptions"
-										></b-form-select
-										>&nbsp;entries
+										<b-form-select v-model="perPage" size="sm"
+											:options="pageOptions"></b-form-select>&nbsp;entries
 									</label>
 								</div>
 							</div>
 							<!-- Search -->
 							<div class="col-sm-12 col-md-6">
-								<div
-									id="tickets-table_filter"
-									class="dataTables_filter text-md-right"
-								>
+								<div id="tickets-table_filter" class="dataTables_filter text-md-right">
 									<label class="d-inline-flex align-items-center">
 										Search:
-										<b-form-input
-											v-model="filter"
-											type="search"
-											placeholder="Search..."
-											class="form-control form-control-sm ml-2"
-										></b-form-input>
+										<b-form-input v-model="filter" type="search" placeholder="Search..."
+											class="form-control form-control-sm ml-2"></b-form-input>
 									</label>
 								</div>
 							</div>
@@ -115,31 +104,17 @@ export default {
 						</div>
 						<!-- Table -->
 						<div class="table-responsive mb-0">
-							<b-table
-								:items="tableData"
-								:fields="fields"
-								responsive="sm"
-								:per-page="perPage"
-								:current-page="currentPage"
-								:sort-by.sync="sortBy"
-								:sort-desc.sync="sortDesc"
-								:filter="filter"
-								:filter-included-fields="filterOn"
-								@filtered="onFiltered"
-							></b-table>
+							<b-table :items="tableData" :fields="fields" responsive="sm" :per-page="perPage"
+								:current-page="currentPage" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc"
+								:filter="filter" :filter-included-fields="filterOn" @filtered="onFiltered"></b-table>
 						</div>
 						<div class="row">
 							<div class="col">
-								<div
-									class="dataTables_paginate paging_simple_numbers float-right"
-								>
+								<div class="dataTables_paginate paging_simple_numbers float-right">
 									<ul class="pagination pagination-rounded mb-0">
 										<!-- pagination -->
-										<b-pagination
-											v-model="currentPage"
-											:total-rows="rows"
-											:per-page="perPage"
-										></b-pagination>
+										<b-pagination v-model="currentPage" :total-rows="rows"
+											:per-page="perPage"></b-pagination>
 									</ul>
 								</div>
 							</div>

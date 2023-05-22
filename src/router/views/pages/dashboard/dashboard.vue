@@ -52,7 +52,7 @@ export default {
 				{
 					image: require('@assets/images/users/avatar-7.jpg'),
 					text: 'Senior Sales Guy',
-					name: 'Shreyu N',
+					name: 'officeShield N',
 				},
 				{
 					image: require('@assets/images/users/avatar-9.jpg'),
@@ -88,7 +88,7 @@ export default {
 				{
 					id: 2,
 					image: require('@assets/images/users/avatar-7.jpg'),
-					name: 'Shreyu',
+					name: 'officeShield',
 					message: 'Hi, How are you? What about our next meeting?',
 					time: '10:01',
 				},
@@ -102,7 +102,7 @@ export default {
 				{
 					id: 4,
 					image: require('@assets/images/users/avatar-7.jpg'),
-					name: 'Shreyu',
+					name: 'officeShield',
 					message: 'Awesome! let me know if we can talk in 20 min',
 					time: '10:02',
 				},

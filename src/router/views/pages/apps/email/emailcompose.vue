@@ -21,7 +21,7 @@ export default {
       title: 'Compose Email',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {
@@ -50,9 +50,7 @@ export default {
         <div class="email-container">
           <!-- Left sidebar -->
           <div class="inbox-leftbar">
-            <router-link :to="{name:'Inbox'}" class="btn btn-danger btn-block mb-4"
-              >Inbox</router-link
-            >
+            <router-link :to="{ name: 'Inbox' }" class="btn btn-danger btn-block mb-4">Inbox</router-link>
             <LeftbarList />
           </div>
           <!-- End Left sidebar -->
@@ -65,11 +63,7 @@ export default {
                 </div>
 
                 <div class="form-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Subject"
-                  />
+                  <input type="text" class="form-control" placeholder="Subject" />
                 </div>
 
                 <div class="form-group">
@@ -103,7 +97,7 @@ export default {
 </template>
 
 <style scoped>
-.quillWrapper >>> .ql-snow.ql-toolbar {
+.quillWrapper>>>.ql-snow.ql-toolbar {
   max-height: 50px;
 }
 </style>

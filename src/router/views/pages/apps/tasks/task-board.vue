@@ -22,7 +22,7 @@ export default {
 			title: 'Project Tasks Board',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{
@@ -60,49 +60,31 @@ export default {
 						<div class="row align-items-center">
 							<div class="col">
 								<label class="font-weight-bold d-inline mr-2">
-									<feather
-										type="hard-drive"
-										class="icon-dual icon-xs mr-2 align-middle"
-									></feather
-									>Project:
+									<feather type="hard-drive" class="icon-dual icon-xs mr-2 align-middle"></feather>
+									Project:
 								</label>
-								<b-dropdown
-									class="d-inline"
-									variant="link"
-									toggle-class="font-weight-bold p-0 align-middle"
-								>
+								<b-dropdown class="d-inline" variant="link"
+									toggle-class="font-weight-bold p-0 align-middle">
 									<template v-slot:button-content>
-										Shreyu Design
+										officeShield Design
 										<i class="uil uil-angle-down font-size-16 align-middle"></i>
 									</template>
 									<a class="dropdown-item" href="#">
-										<feather
-											class="icon-dual icon-xs mr-2 align-middle"
-											type="hard-drive"
-										></feather
-										>Shreyu Design
+										<feather class="icon-dual icon-xs mr-2 align-middle" type="hard-drive"></feather>
+										officeShield Design
 									</a>
 									<a class="dropdown-item" href="#">
-										<feather
-											class="icon-dual icon-xs mr-2 align-middle"
-											type="briefcase"
-										></feather
-										>Development
+										<feather class="icon-dual icon-xs mr-2 align-middle" type="briefcase"></feather>
+										Development
 									</a>
 									<div class="dropdown-divider"></div>
 									<a class="dropdown-item" href="#">
-										<feather
-											class="icon-dual icon-xs mr-2 align-middle"
-											type="folder-plus"
-										></feather
-										>Shreyu Angular
+										<feather class="icon-dual icon-xs mr-2 align-middle" type="folder-plus"></feather>
+										officeShield Angular
 									</a>
 									<a class="dropdown-item" href="#">
-										<feather
-											class="icon-dual icon-xs mr-2 align-middle"
-											type="folder-plus"
-										></feather
-										>Shreyu React
+										<feather class="icon-dual icon-xs mr-2 align-middle" type="folder-plus"></feather>
+										officeShield React
 									</a>
 								</b-dropdown>
 							</div>
@@ -125,8 +107,8 @@ export default {
 				<div class="board">
 					<!-- todo tasks -->
 					<div class="tasks border">
-						<h5 class="mt-0 task-header header-title"
-							>Todo <span class="font-size-13">({{ todoTasks.length }})</span>
+						<h5 class="mt-0 task-header header-title">Todo <span class="font-size-13">({{ todoTasks.length
+						}})</span>
 						</h5>
 
 						<div id="task-list-one" class="task-list-items">
@@ -143,8 +125,7 @@ export default {
 
 					<!-- in progress tasks -->
 					<div class="tasks border">
-						<h5 class="mt-0 task-header header-title"
-							>In Progress
+						<h5 class="mt-0 task-header header-title">In Progress
 							<span class="font-size-13">({{ inProgressTasks.length }})</span>
 						</h5>
 
@@ -162,8 +143,7 @@ export default {
 
 					<!-- review tasks -->
 					<div class="tasks border">
-						<h5 class="mt-0 task-header header-title"
-							>Review
+						<h5 class="mt-0 task-header header-title">Review
 							<span class="font-size-13">({{ reviewTasks.length }})</span>
 						</h5>
 
@@ -181,8 +161,7 @@ export default {
 
 					<!-- done tasks -->
 					<div class="tasks border">
-						<h5 class="mt-0 task-header header-title"
-							>Done
+						<h5 class="mt-0 task-header header-title">Done
 							<span class="font-size-13">({{ doneTasks.length }})</span>
 						</h5>
 

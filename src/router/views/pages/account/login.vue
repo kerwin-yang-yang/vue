@@ -1,6 +1,6 @@
 <script>
 import Layout from '@layouts/default'
-import { authMethods,userInfoMethods,TasksMethods} from '@state/helpers'
+import { authMethods, userInfoMethods, TasksMethods } from '@state/helpers'
 import appConfig from '@src/app.config'
 import axios from 'axios'
 /**
@@ -41,21 +41,21 @@ export default {
 			this.tryingToLogIn = true
 			// Reset the authError if it existed.
 			this.authError = null
-			
+
 			return this.logIn({
 				username: this.username,
 				password: this.password,
 			})
 				.then((token) => {
-					this.getDocuments({username:this.username})
-					this.getCalendars({username:this.username})
-					this.getNotifications({username:this.username})
+					this.getDocuments({ username: this.username })
+					this.getCalendars({ username: this.username })
+					this.getNotifications({ username: this.username })
 
 					this.tryingToLogIn = false
 					this.isAuthError = false
 					// Redirect to the originally requested page, or to the home page
 					this.$router.push(
-						 { name: '日志管理' }
+						{ name: '日志管理' }
 					)
 				})
 				.catch((error) => {
@@ -81,15 +81,14 @@ export default {
 									<div class="col-md-6 p-5">
 										<div class="mx-auto mb-5">
 											<a routerLink="/">
-												<img src="@assets/images/logo.png" alt height="24" />
-												<h3 class="d-inline align-middle ml-1 text-logo">Shreyu</h3>
+												<img src="@src/state/login1 (2).png" alt height="30" />
+												<h3 class="d-inline align-middle ml-1 text-logo">officeShield</h3>
 											</a>
 										</div>
 
-										<h6 class="h5 mb-0 mt-4">Welcome back!</h6>
+										<h6 class="h5 mb-0 mt-4">欢迎回来</h6>
 										<p class="text-muted mt-1 mb-4">
-											Enter your email address and password to access 
-											panel.
+											填入账号信息，获取绑定的隐藏手机验证执行登录
 										</p>
 
 										<b-alert v-model="isAuthError" variant="danger" dismissible>{{ authError
@@ -97,7 +96,9 @@ export default {
 
 										<b-form class="authentication-form" @submit.prevent="tryToLogIn">
 											<div class="form-group">
+												<label class="form-control-label">账号</label>
 												<div class="input-group input-group-merge">
+
 													<div class="input-group-prepend">
 														<span class="input-group-text">
 															<feather type="mail" class="align-middle icon-dual"></feather>
@@ -108,31 +109,31 @@ export default {
 												</div>
 											</div>
 											<div class="form-group mt-4">
-												<label class="form-control-label">Password</label>
+												<label class="form-control-label">密码</label>
 												<router-link to="forget-password"
-													class="float-right text-muted text-unline-dashed ml-1">Forgot your
-													password?</router-link>
+													class="float-right text-muted text-unline-dashed ml-1">忘记密码</router-link>
 												<div class="input-group input-group-merge">
 													<div class="input-group-prepend">
 														<span class="input-group-text">
 															<feather type="lock" class="align-middle icon-dual"></feather>
-													</span>
-												</div>
-												<b-form-input id="password" v-model="password" type="password" required
+														</span>
+													</div>
+													<b-form-input id="password" v-model="password" type="password" required
 														placeholder="Enter your password"></b-form-input>
 												</div>
 											</div>
 											<div class="form-group mt-4">
-												<label class="form-control-label">Message</label>
+												<label class="form-control-label">手机验证码</label>
 												<router-link to="forget-password"
-													class="float-right text-muted text-unline-dashed ml-1">Send verification message</router-link>
+													class="float-right text-muted text-unline-dashed ml-1">发送验证码</router-link>
 												<div class="input-group input-group-merge">
 													<div class="input-group-prepend">
 														<span class="input-group-text">
-															<feather type="check-square" class="align-middle icon-dual"></feather>
-													</span>
-												</div>
-												<b-form-input id="password" v-model="password" type="password" required
+															<feather type="check-square" class="align-middle icon-dual">
+															</feather>
+														</span>
+													</div>
+													<b-form-input id="password" v-model="hhhh" required
 														placeholder="Enter your password"></b-form-input>
 												</div>
 											</div>
@@ -146,11 +147,10 @@ export default {
 												</div>
 											</div>
 											<b-form-group id="button-group" class="mt-4 mb-1">
-												<b-button type="submit" variant="primary" class="btn-block">Log
-													In</b-button>
+												<b-button type="submit" variant="primary" class="btn-block">登录</b-button>
 											</b-form-group>
 										</b-form>
-										<div class="py-3 text-center">
+										<!-- <div class="py-3 text-center">
 											<span class="font-size-16 font-weight-bold">Or</span>
 										</div>
 										<div class="row">
@@ -166,16 +166,16 @@ export default {
 													Facebook
 												</a>
 											</div>
-										</div>
+										</div> -->
 									</div>
 									<div class="col-lg-6 d-none d-md-inline-block">
 										<div class="auth-page-sidebar">
 											<div class="overlay"></div>
 											<div class="auth-user-testimonial">
-												<p class="font-size-24 font-weight-bold text-white mb-1">I simply love it!
+												<p class="font-size-24 font-weight-bold text-white mb-1">officeShield
 												</p>
-												<p class="lead">"It's a elegent templete. I love it very much!"</p>
-												<p>- Admin User</p>
+												<p class="lead">基于抗屏摄文档暗水印和分级异常行为检测技术的涉密文件协同远程办公系统</p>
+												<p> ~</p>
 											</div>
 										</div>
 									</div>
@@ -188,17 +188,17 @@ export default {
 						<div class="row mt-3">
 							<div class="col-12 text-center">
 								<p class="text-muted">
-									Don't have an account?
+									没有账号？
 									<router-link tag="a" to="/register" class="text-primary font-weight-bold ml-1">
-										<b>Sign Up</b>
+										<b>注册账号</b>
 									</router-link>
 									<!-- <a
 	                    routerLink="/account/signup"
 	                    class="text-primary font-weight-bold ml-1"
-	                  >Sign Up</a>-->
+	                  >Sign Up</a> -->
 								</p>
 							</div>
-							<!-- end col -->
+
 						</div>
 						<!-- end row -->
 					</div>

@@ -1,13 +1,13 @@
 const activities = [
   {
     time: '02 hours ago',
-    title: 'Designing Shreyu Admin',
-    text: 'Shreyu Admin - A responsive admin and dashboard template',
+    title: 'Designing officeShield Admin',
+    text: 'officeShield Admin - A responsive admin and dashboard template',
   },
   {
     time: '21 hours ago',
-    title: 'UX and UI for Shreyu Admin',
-    text: 'Shreyu Admin - A responsive admin and dashboard template',
+    title: 'UX and UI for officeShield Admin',
+    text: 'officeShield Admin - A responsive admin and dashboard template',
   },
   {
     time: '22 hours ago',

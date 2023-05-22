@@ -19,7 +19,7 @@ export default {
 			title: 'Forms Wizard',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{
@@ -64,33 +64,21 @@ export default {
 										<div class="form-group row mb-3">
 											<label class="col-md-3 col-form-label">User name</label>
 											<div class="col-md-9">
-												<input
-													type="text"
-													class="form-control"
-													name="userName"
-													value="Coderthemes"
-												/>
+												<input type="text" class="form-control" name="userName"
+													value="Coderthemes" />
 											</div>
 										</div>
 										<div class="form-group row mb-3">
 											<label class="col-md-3 col-form-label">Password</label>
 											<div class="col-md-9">
-												<input
-													type="password"
-													class="form-control"
-													value="123456789"
-												/>
+												<input type="password" class="form-control" value="123456789" />
 											</div>
 										</div>
 
 										<div class="form-group row mb-3">
 											<label class="col-md-3 col-form-label">Re Password</label>
 											<div class="col-md-9">
-												<input
-													type="password"
-													class="form-control"
-													value="123456789"
-												/>
+												<input type="password" class="form-control" value="123456789" />
 											</div>
 										</div>
 									</div>
@@ -102,43 +90,23 @@ export default {
 								<div class="row">
 									<div class="col-12">
 										<div class="form-group row mb-3">
-											<label class="col-md-3 col-form-label" for="name"
-												>First name</label
-											>
+											<label class="col-md-3 col-form-label" for="name">First name</label>
 											<div class="col-md-9">
-												<input
-													type="text"
-													name="name"
-													class="form-control"
-													value="Francis"
-												/>
+												<input type="text" name="name" class="form-control" value="Francis" />
 											</div>
 										</div>
 										<div class="form-group row mb-3">
-											<label class="col-md-3 col-form-label" for="surname"
-												>Last name</label
-											>
+											<label class="col-md-3 col-form-label" for="surname">Last name</label>
 											<div class="col-md-9">
-												<input
-													type="text"
-													name="surname"
-													class="form-control"
-													value="Brinkman"
-												/>
+												<input type="text" name="surname" class="form-control" value="Brinkman" />
 											</div>
 										</div>
 
 										<div class="form-group row mb-3">
-											<label class="col-md-3 col-form-label" for="email"
-												>Email</label
-											>
+											<label class="col-md-3 col-form-label" for="email">Email</label>
 											<div class="col-md-9">
-												<input
-													type="email"
-													name="email"
-													class="form-control"
-													value="cory1979@hotmail.com"
-												/>
+												<input type="email" name="email" class="form-control"
+													value="cory1979@hotmail.com" />
 											</div>
 										</div>
 									</div>
@@ -163,14 +131,9 @@ export default {
 
 											<div class="mb-3">
 												<div class="custom-control custom-checkbox">
-													<input
-														id="customCheck1"
-														type="checkbox"
-														class="custom-control-input"
-													/>
-													<label class="custom-control-label" for="customCheck1"
-														>I agree with the Terms and Conditions</label
-													>
+													<input id="customCheck1" type="checkbox" class="custom-control-input" />
+													<label class="custom-control-label" for="customCheck1">I agree with the
+														Terms and Conditions</label>
 												</div>
 											</div>
 										</div>
@@ -188,16 +151,10 @@ export default {
 					<div class="card-body">
 						<h4 class="header-title mt-0 mb-1">Validation</h4>
 						<form-wizard color="#5369f8" error-color="#ff5c75">
-							<tab-content
-								title="Account"
-								:before-change="() => validateStep('step1')"
-							>
+							<tab-content title="Account" :before-change="() => validateStep('step1')">
 								<Step1 ref="step1" @on-validate="mergePartialModels" />
 							</tab-content>
-							<tab-content
-								title="Profile"
-								:before-change="() => validateStep('step2')"
-							>
+							<tab-content title="Profile" :before-change="() => validateStep('step2')">
 								<Step2 ref="step2" @on-validate="mergePartialModels" />
 							</tab-content>
 							<tab-content title="Finish">
@@ -217,14 +174,9 @@ export default {
 
 											<div class="mb-3">
 												<div class="custom-control custom-checkbox">
-													<input
-														id="customCheck1"
-														type="checkbox"
-														class="custom-control-input"
-													/>
-													<label class="custom-control-label" for="customCheck1"
-														>I agree with the Terms and Conditions</label
-													>
+													<input id="customCheck1" type="checkbox" class="custom-control-input" />
+													<label class="custom-control-label" for="customCheck1">I agree with the
+														Terms and Conditions</label>
 												</div>
 											</div>
 										</div>

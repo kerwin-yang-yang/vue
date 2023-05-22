@@ -69,16 +69,17 @@ export default {
 										<div class="mx-auto mb-5">
 											<a href="/">
 												<img src="@assets/images/logo.png" alt height="24" />
-												<h3 class="d-inline align-middle ml-1 text-logo">Shreyu</h3>
+												<h3 class="d-inline align-middle ml-1 text-logo">officeShield</h3>
 											</a>
 										</div>
 
-										<h6 class="h5 mb-0 mt-4">Create your account</h6>
-										<p class="text-muted mt-0 mb-4">Create a free account and start using Shreyu</p>
+										<h6 class="h5 mb-0 mt-4">创建你的账号</h6>
+										<p class="text-muted mt-0 mb-4">开始使用 officeShield
+										</p>
 
 										<form class="authentication-form" @submit.prevent="tryToRegisterIn">
 											<div class="form-group">
-												<label class="form-control-label">Name</label>
+												<label class="form-control-label">姓名</label>
 												<div class="input-group input-group-merge">
 													<div class="input-group-prepend">
 														<span class="input-group-text">
@@ -91,7 +92,7 @@ export default {
 											</div>
 
 											<div class="form-group">
-												<label class="form-control-label">Email Address</label>
+												<label class="form-control-label">邮箱地址</label>
 												<div class="input-group input-group-merge">
 													<div class="input-group-prepend">
 														<span class="input-group-text">
@@ -102,9 +103,20 @@ export default {
 														placeholder="hello@coderthemes.com" />
 												</div>
 											</div>
-
 											<div class="form-group">
-												<label class="form-control-label">Password</label>
+												<label class="form-control-label">绑定手机</label>
+												<div class="input-group input-group-merge">
+													<div class="input-group-prepend">
+														<span class="input-group-text">
+															<feather type="phone" class="icon-dual"></feather>
+														</span>
+													</div>
+													<input id="email" v-model="phone"  class="form-control"
+														placeholder="phoneNumber" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="form-control-label">密码</label>
 												<div class="input-group input-group-merge">
 													<div class="input-group-prepend">
 														<span class="input-group-text">
@@ -116,15 +128,27 @@ export default {
 												</div>
 											</div>
 											<div class="form-group">
-												<label class="form-control-label">Rewrite Password</label>
+												<label class="form-control-label">验证密码</label>
 												<div class="input-group input-group-merge">
 													<div class="input-group-prepend">
 														<span class="input-group-text">
-															<feather type="lock" class="icon-dual"></feather>
+															<feather type="user-check" class="icon-dual"></feather>
 														</span>
 													</div>
 													<input id="repassword" v-model="repassword" type="password"
 														class="form-control" placeholder="Rewrite your password" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="form-control-label">系统接入编码</label>
+												<div class="input-group input-group-merge">
+													<div class="input-group-prepend">
+														<span class="input-group-text">
+															<feather type="alert-circle" class="icon-dual"></feather>
+														</span>
+													</div>
+													<input id="repassword" v-model="message" type="password"
+														class="form-control" placeholder="System access code" />
 												</div>
 											</div>
 
@@ -133,14 +157,14 @@ export default {
 													<input id="checkbox-signup" type="checkbox" class="custom-control-input"
 														checked />
 													<label class="custom-control-label" for="checkbox-signup">
-														I accept
-														<a href="javascript: void(0);">Terms and Conditions</a>
+														我同意
+														<a href="javascript: void(0);">系统使用规范协议</a>
 													</label>
 												</div>
 											</div>
 
 											<div class="form-group mb-0 text-center">
-												<button class="btn btn-primary btn-block" type="submit">Sign Up</button>
+												<button class="btn btn-primary btn-block" type="submit">注册</button>
 											</div>
 										</form>
 									</div>
@@ -149,10 +173,12 @@ export default {
 										<div class="auth-page-sidebar">
 											<div class="overlay"></div>
 											<div class="auth-user-testimonial">
-												<p class="font-size-24 font-weight-bold text-white mb-1">I simply love it!
+												<p class="font-size-24 font-weight-bold text-white mb-1">I officeShield
+
+
 												</p>
-												<p class="lead">"It's a elegent templete. I love it very much!"</p>
-												<p>- Admin User</p>
+												<p class="lead">基于抗屏摄文档暗水印和分级异常行为检测技术的涉密文件协同远程办公系统</p>
+												<p>~</p>
 											</div>
 										</div>
 									</div>

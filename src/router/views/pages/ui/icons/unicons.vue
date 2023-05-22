@@ -14,7 +14,7 @@ export default {
       title: 'Unicons',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {

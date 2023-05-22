@@ -14,7 +14,7 @@ export default {
       title: 'Feather Icons',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {
@@ -2034,10 +2034,8 @@ export default {
             <h5 class="mt-0 mb-1 header-title">Two Tone Icons</h5>
             <p class="mb-3">
               Use
-              <code
-                >&lt;feather type="activity"
-                class="icon-dual"&gt;&lt;/feather&gt;</code
-              >.
+              <code>&lt;feather type="activity"
+                  class="icon-dual"&gt;&lt;/feather&gt;</code>.
             </p>
 
             <div class="row icons-list">
@@ -2169,10 +2167,7 @@ export default {
 
               <div class="col-xl-3 col-lg-4 col-sm-6">
                 <div class="icon-item">
-                  <feather
-                    type="arrow-right-circle"
-                    class="icon-dual"
-                  ></feather>
+                  <feather type="arrow-right-circle" class="icon-dual"></feather>
                   <span>arrow-right-circle</span>
                 </div>
               </div>
@@ -4031,10 +4026,8 @@ export default {
             <h5 class="mt-0 mb-1 header-title">Sizes</h5>
             <p class="mb-3">
               Use
-              <code
-                >&lt;feather type="activity"
-                class="icons-**"&gt;&lt;/feather&gt;</code
-              >. Available sizes
+              <code>&lt;feather type="activity"
+                  class="icons-**"&gt;&lt;/feather&gt;</code>. Available sizes
               <code>xs,lg,xl,xxl</code>
             </p>
 
@@ -4087,10 +4080,8 @@ export default {
             <h5 class="mt-0 mb-1 header-title">Two Tones Color Icons</h5>
             <p class="mb-3">
               Use
-              <code
-                >&lt;feather type="activity"
-                class="icon-dual-**"&gt;&lt;/feather&gt;</code
-              >.
+              <code>&lt;feather type="activity"
+                  class="icon-dual-**"&gt;&lt;/feather&gt;</code>.
             </p>
 
             <div class="row icons-list">
@@ -4110,30 +4101,21 @@ export default {
 
               <div class="col-xl-3 col-lg-4 col-sm-6">
                 <div class="icon-item">
-                  <feather
-                    type="alert-circle"
-                    class="icon-dual-danger"
-                  ></feather>
+                  <feather type="alert-circle" class="icon-dual-danger"></feather>
                   <span>alert-circle</span>
                 </div>
               </div>
 
               <div class="col-xl-3 col-lg-4 col-sm-6">
                 <div class="icon-item">
-                  <feather
-                    type="alert-octagon"
-                    class="icon-dual-info"
-                  ></feather>
+                  <feather type="alert-octagon" class="icon-dual-info"></feather>
                   <span>alert-octagon</span>
                 </div>
               </div>
 
               <div class="col-xl-3 col-lg-4 col-sm-6">
                 <div class="icon-item">
-                  <feather
-                    type="alert-triangle"
-                    class="icon-dual-warning"
-                  ></feather>
+                  <feather type="alert-triangle" class="icon-dual-warning"></feather>
                   <span>alert-triangle</span>
                 </div>
               </div>

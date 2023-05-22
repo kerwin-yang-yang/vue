@@ -14,7 +14,7 @@ export default {
       title: 'Basic Forms',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {
@@ -57,123 +57,42 @@ export default {
             <b-form class="form-horizontal">
               <div class="row">
                 <div class="col">
-                  <b-form-group
-                    label-cols-sm="10"
-                    label-cols-lg="2"
-                    label="Text"
-                    label-for="input-horizontal"
-                  >
-                    <b-form-input
-                      id="input-horizontal"
-                      value="Some text value..."
-                    ></b-form-input>
+                  <b-form-group label-cols-sm="10" label-cols-lg="2" label="Text" label-for="input-horizontal">
+                    <b-form-input id="input-horizontal" value="Some text value..."></b-form-input>
                   </b-form-group>
 
-                  <b-form-group
-                    label-cols-sm="10"
-                    label-cols-lg="2"
-                    label="Email"
-                    label-for="example-email"
-                  >
-                    <b-form-input
-                      id="example-email"
-                      type="email"
-                      placeholder="Email"
-                    ></b-form-input>
+                  <b-form-group label-cols-sm="10" label-cols-lg="2" label="Email" label-for="example-email">
+                    <b-form-input id="example-email" type="email" placeholder="Email"></b-form-input>
                   </b-form-group>
 
-                  <b-form-group
-                    label-cols-sm="10"
-                    label-cols-lg="2"
-                    label="Password"
-                    label-for="example-password"
-                  >
-                    <b-form-input
-                      id="example-password"
-                      type="password"
-                      value="password"
-                    ></b-form-input>
+                  <b-form-group label-cols-sm="10" label-cols-lg="2" label="Password" label-for="example-password">
+                    <b-form-input id="example-password" type="password" value="password"></b-form-input>
                   </b-form-group>
 
-                  <b-form-group
-                    label-cols-sm="10"
-                    label-cols-lg="2"
-                    label="Placeholder"
-                    label-for="example-placeholder"
-                  >
-                    <b-form-input
-                      id="example-placeholder"
-                      type="text"
-                      placeholder="placeholder"
-                    ></b-form-input>
+                  <b-form-group label-cols-sm="10" label-cols-lg="2" label="Placeholder" label-for="example-placeholder">
+                    <b-form-input id="example-placeholder" type="text" placeholder="placeholder"></b-form-input>
                   </b-form-group>
 
-                  <b-form-group
-                    label-cols-sm="10"
-                    label-cols-lg="2"
-                    label="Text area"
-                    label-for="example-textarea"
-                  >
-                    <b-form-textarea
-                      id="example-textarea"
-                      size="lg"
-                      rows="4"
-                    ></b-form-textarea>
+                  <b-form-group label-cols-sm="10" label-cols-lg="2" label="Text area" label-for="example-textarea">
+                    <b-form-textarea id="example-textarea" size="lg" rows="4"></b-form-textarea>
                   </b-form-group>
 
-                  <b-form-group
-                    label-cols-sm="10"
-                    label-cols-lg="2"
-                    label="Readonly"
-                    label-for="example-Readonly"
-                  >
-                    <b-form-input
-                      id="example-Readonly"
-                      type="text"
-                      readonly
-                      value="Readonly value"
-                    ></b-form-input>
+                  <b-form-group label-cols-sm="10" label-cols-lg="2" label="Readonly" label-for="example-Readonly">
+                    <b-form-input id="example-Readonly" type="text" readonly value="Readonly value"></b-form-input>
                   </b-form-group>
 
-                  <b-form-group
-                    label-cols-sm="10"
-                    label-cols-lg="2"
-                    label="Disabled"
-                    label-for="example-Disabled"
-                  >
-                    <b-form-input
-                      id="example-Disabled"
-                      type="text"
-                      disabled
-                      value="Disabled value"
-                    ></b-form-input>
+                  <b-form-group label-cols-sm="10" label-cols-lg="2" label="Disabled" label-for="example-Disabled">
+                    <b-form-input id="example-Disabled" type="text" disabled value="Disabled value"></b-form-input>
                   </b-form-group>
 
-                  <b-form-group
-                    label-cols-sm="10"
-                    label-cols-lg="2"
-                    label="Static control"
-                    label-for="example-static"
-                  >
-                    <b-form-input
-                      id="example-static"
-                      type="text"
-                      plaintext
-                      value="email@example.com"
-                    ></b-form-input>
+                  <b-form-group label-cols-sm="10" label-cols-lg="2" label="Static control" label-for="example-static">
+                    <b-form-input id="example-static" type="text" plaintext value="email@example.com"></b-form-input>
                   </b-form-group>
 
                   <div class="form-group row">
-                    <label class="col-lg-2 col-form-label" for="example-helping"
-                      >Helping text</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-helping">Helping text</label>
                     <div class="col-lg-10">
-                      <input
-                        id="example-helping"
-                        type="text"
-                        class="form-control"
-                        placeholder="Helping text"
-                      />
+                      <input id="example-helping" type="text" class="form-control" placeholder="Helping text" />
                       <span class="help-block">
                         <small>
                           A block of help text that breaks onto a new line and
@@ -198,87 +117,44 @@ export default {
                 </div>
                 <div class="col">
                   <div class="form-group row">
-                    <label
-                      class="col-lg-2 col-form-label"
-                      for="example-fileinput"
-                      >Default file input</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-fileinput">Default file input</label>
                     <div class="col-lg-10">
-                      <input
-                        id="example-fileinput"
-                        type="file"
-                        class="form-control"
-                      />
+                      <input id="example-fileinput" type="file" class="form-control" />
                     </div>
                   </div>
 
                   <div class="form-group row">
-                    <label class="col-lg-2 col-form-label" for="example-date"
-                      >Date</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-date">Date</label>
                     <div class="col-lg-10">
-                      <input
-                        id="example-date"
-                        class="form-control"
-                        type="date"
-                        name="date"
-                      />
+                      <input id="example-date" class="form-control" type="date" name="date" />
                     </div>
                   </div>
 
                   <div class="form-group row">
-                    <label class="col-lg-2 col-form-label" for="example-month"
-                      >Month</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-month">Month</label>
                     <div class="col-lg-10">
-                      <input
-                        id="example-month"
-                        class="form-control"
-                        type="month"
-                        name="month"
-                      />
+                      <input id="example-month" class="form-control" type="month" name="month" />
                     </div>
                   </div>
 
                   <div class="form-group row">
-                    <label class="col-lg-2 col-form-label" for="example-time"
-                      >Time</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-time">Time</label>
                     <div class="col-lg-10">
-                      <input
-                        id="example-time"
-                        class="form-control"
-                        type="time"
-                        name="time"
-                      />
+                      <input id="example-time" class="form-control" type="time" name="time" />
                     </div>
                   </div>
 
                   <div class="form-group row">
-                    <label class="col-lg-2 col-form-label" for="example-week"
-                      >Week</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-week">Week</label>
                     <div class="col-lg-10">
-                      <input
-                        id="example-week"
-                        class="form-control"
-                        type="week"
-                        name="week"
-                      />
+                      <input id="example-week" class="form-control" type="week" name="week" />
                     </div>
                   </div>
 
                   <div class="form-group row">
-                    <label class="col-lg-2 col-form-label" for="example-number"
-                      >Number</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-number">Number</label>
                     <div class="col-lg-10">
-                      <input
-                        id="example-number"
-                        class="form-control"
-                        type="number"
-                        name="number"
-                      />
+                      <input id="example-number" class="form-control" type="number" name="number" />
                     </div>
                   </div>
 
@@ -304,32 +180,16 @@ export default {
                   </div>
 
                   <div class="form-group row">
-                    <label class="col-lg-2 col-form-label" for="example-color"
-                      >Color</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-color">Color</label>
                     <div class="col-lg-10">
-                      <input
-                        id="example-color"
-                        class="form-control"
-                        type="color"
-                        name="color"
-                        value="#5369f8"
-                      />
+                      <input id="example-color" class="form-control" type="color" name="color" value="#5369f8" />
                     </div>
                   </div>
 
                   <div class="form-group row mb-0">
-                    <label class="col-lg-2 col-form-label" for="example-range"
-                      >Range</label
-                    >
+                    <label class="col-lg-2 col-form-label" for="example-range">Range</label>
                     <div class="col-lg-10">
-                      <b-form-input
-                        id="range-1"
-                        :v-model="5"
-                        type="range"
-                        min="0"
-                        max="10"
-                      ></b-form-input>
+                      <b-form-input id="range-1" :v-model="5" type="range" min="0" max="10"></b-form-input>
                     </div>
                   </div>
                 </div>
@@ -397,35 +257,20 @@ export default {
           <div class="card-body">
             <h4 class="header-title mt-0">Checkboxes</h4>
             <div class="mt-3">
-              <b-form-checkbox v-model="checkedBox"
-                >Check this custom checkbox</b-form-checkbox
-              >
-              <b-form-checkbox class="mt-2"
-                >Check this custom checkbox</b-form-checkbox
-              >
+              <b-form-checkbox v-model="checkedBox">Check this custom checkbox</b-form-checkbox>
+              <b-form-checkbox class="mt-2">Check this custom checkbox</b-form-checkbox>
             </div>
 
             <h4 class="font-size-15 mt-3">Radios</h4>
             <div class>
               <div class="custom-control custom-radio mb-2">
-                <input
-                  id="customRadio1"
-                  type="radio"
-                  name="customRadio"
-                  class="custom-control-input"
-                />
+                <input id="customRadio1" type="radio" name="customRadio" class="custom-control-input" />
                 <label class="custom-control-label" for="customRadio1">
                   Toggle this custom radio
                 </label>
               </div>
               <div class="custom-control custom-radio">
-                <input
-                  id="customRadio2"
-                  type="radio"
-                  name="customRadio"
-                  class="custom-control-input"
-                  checked
-                />
+                <input id="customRadio2" type="radio" name="customRadio" class="custom-control-input" checked />
                 <label class="custom-control-label" for="customRadio2">
                   Or toggle this other custom radio
                 </label>
@@ -433,9 +278,7 @@ export default {
             </div>
 
             <h4 class="font-size-15 mt-3">Disabled</h4>
-            <b-form-checkbox class="mb-2" disabled
-              >Check this custom checkbox</b-form-checkbox
-            >
+            <b-form-checkbox class="mb-2" disabled>Check this custom checkbox</b-form-checkbox>
             <b-form-radio disabled>
               Toggle this custom radio
             </b-form-radio>
@@ -452,36 +295,18 @@ export default {
             <h4 class="mb-3 header-title mt-0">Basic Example</h4>
 
             <form>
-              <b-form-group
-                id="input-group-1"
-                label="Email address"
-                label-for="input-1"
-                description="We'll never share your email with anyone else."
-              >
-                <b-form-input
-                  id="input-1"
-                  type="email"
-                  required
-                  placeholder="Enter email"
-                ></b-form-input>
+              <b-form-group id="input-group-1" label="Email address" label-for="input-1"
+                description="We'll never share your email with anyone else.">
+                <b-form-input id="input-1" type="email" required placeholder="Enter email"></b-form-input>
               </b-form-group>
               <b-form-group label="Password">
-                <b-form-input
-                  type="password"
-                  placeholder="Password"
-                ></b-form-input>
+                <b-form-input type="password" placeholder="Password"></b-form-input>
               </b-form-group>
 
               <div class="form-group mb-3">
                 <div class="custom-control custom-checkbox">
-                  <input
-                    id="checkmeout0"
-                    type="checkbox"
-                    class="custom-control-input"
-                  />
-                  <label class="custom-control-label" for="checkmeout0"
-                    >Check me out !</label
-                  >
+                  <input id="checkmeout0" type="checkbox" class="custom-control-input" />
+                  <label class="custom-control-label" for="checkmeout0">Check me out !</label>
                 </div>
               </div>
               <button type="submit" class="btn btn-primary">Submit</button>
@@ -504,10 +329,7 @@ export default {
                   <label for="inputEmail3">Email</label>
                 </b-col>
                 <b-col sm="9">
-                  <b-form-input
-                    id="inputEmail3"
-                    placeholder="Email"
-                  ></b-form-input>
+                  <b-form-input id="inputEmail3" placeholder="Email"></b-form-input>
                 </b-col>
               </b-row>
               <b-row class="mb-3">
@@ -515,11 +337,7 @@ export default {
                   <label for="inputPassword3">Password</label>
                 </b-col>
                 <b-col sm="9">
-                  <b-form-input
-                    id="inputPassword3"
-                    type="password"
-                    placeholder="Password"
-                  ></b-form-input>
+                  <b-form-input id="inputPassword3" type="password" placeholder="Password"></b-form-input>
                 </b-col>
               </b-row>
               <b-row class="mb-3">
@@ -527,24 +345,14 @@ export default {
                   <label for="inputPassword5">Re Password</label>
                 </b-col>
                 <b-col sm="9">
-                  <b-form-input
-                    id="inputPassword5"
-                    type="password"
-                    placeholder="Retype Password"
-                  ></b-form-input>
+                  <b-form-input id="inputPassword5" type="password" placeholder="Retype Password"></b-form-input>
                 </b-col>
               </b-row>
               <div class="form-group row mb-3 justify-content-end">
                 <div class="col-9">
                   <div class="custom-control custom-checkbox">
-                    <input
-                      id="checkmeout"
-                      type="checkbox"
-                      class="custom-control-input"
-                    />
-                    <label class="custom-control-label" for="checkmeout"
-                      >Check me out !</label
-                    >
+                    <input id="checkmeout" type="checkbox" class="custom-control-input" />
+                    <label class="custom-control-label" for="checkmeout">Check me out !</label>
                   </div>
                 </div>
               </div>
@@ -582,51 +390,27 @@ export default {
             <form class="form-inline">
               <div class="form-group mr-3">
                 <label for="staticEmail2" class="sr-only">Email</label>
-                <input
-                  id="staticEmail2"
-                  type="text"
-                  readonly
-                  class="form-control-plaintext"
-                  value="email@example.com"
-                />
+                <input id="staticEmail2" type="text" readonly class="form-control-plaintext" value="email@example.com" />
               </div>
               <div class="form-group mr-3">
                 <label for="inputPassword2" class="sr-only">Password</label>
-                <input
-                  id="inputPassword2"
-                  type="password"
-                  class="form-control"
-                  placeholder="Password"
-                />
+                <input id="inputPassword2" type="password" class="form-control" placeholder="Password" />
               </div>
-              <button type="submit" class="btn btn-primary"
-                >Confirm identity</button
-              >
+              <button type="submit" class="btn btn-primary">Confirm identity</button>
             </form>
 
             <h6 class="font-13 mt-3">Auto-sizing</h6>
 
             <b-form inline>
               <label class="sr-only" for="inline-form-input-name">Name</label>
-              <b-input
-                id="inline-form-input-name"
-                class="mb-2 mr-sm-2 mb-sm-0"
-                placeholder="Jane Doe"
-              ></b-input>
+              <b-input id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" placeholder="Jane Doe"></b-input>
 
-              <label class="sr-only" for="inline-form-input-username"
-                >Username</label
-              >
+              <label class="sr-only" for="inline-form-input-username">Username</label>
               <b-input-group prepend="@" class="mb-2 mr-sm-2 mb-sm-0">
-                <b-input
-                  id="inline-form-input-username"
-                  placeholder="Username"
-                ></b-input>
+                <b-input id="inline-form-input-username" placeholder="Username"></b-input>
               </b-input-group>
 
-              <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0"
-                >Remember me</b-form-checkbox
-              >
+              <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0">Remember me</b-form-checkbox>
 
               <b-button variant="primary">Submit</b-button>
             </b-form>

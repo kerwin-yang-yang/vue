@@ -14,12 +14,7 @@ export default {
 <template>
 	<div class="card">
 		<div class="card-body pt-2">
-			<b-dropdown
-				class="mt-2 float-right"
-				variant="black"
-				right
-				toggle-class="p-0 arrow-none text-muted"
-			>
+			<b-dropdown class="mt-2 float-right" variant="black" right toggle-class="p-0 arrow-none text-muted">
 				<template v-slot:button-content>
 					<i class="uil uil-ellipsis-v"></i>
 				</template>
@@ -62,19 +57,16 @@ export default {
 							<p class="text-muted mb-0 font-size-13">
 								<i class="uil uil-calender mr-1"></i>12:15 PM - 02:00 PM
 							</p>
-							<h6 class="mt-1 font-size-16">Shreyu v4 Brainstorming</h6>
+							<h6 class="mt-1 font-size-16">officeShield v4 Brainstorming</h6>
 						</li>
 						<li class="mb-4">
 							<p class="text-muted mb-0 font-size-13">
 								<i class="uil uil-calender mr-1"></i>5:30 PM - 06:15 PM
 							</p>
-							<h6 class="mt-1 font-size-16">Shreyu React Planning</h6>
+							<h6 class="mt-1 font-size-16">officeShield React Planning</h6>
 						</li>
 						<li>
-							<a
-								href="javascript: void(0);"
-								class="btn btn-primary btn-block w-75 mb-0"
-							>
+							<a href="javascript: void(0);" class="btn btn-primary btn-block w-75 mb-0">
 								<i class="uil uil-focus-add mr-2"></i>Add Event
 							</a>
 						</li>

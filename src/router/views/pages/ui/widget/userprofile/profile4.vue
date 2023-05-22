@@ -3,30 +3,18 @@
     <div class="card">
       <div class="row no-gutters">
         <div class="col-md-4">
-          <img
-            src="@assets/images/users/avatar-7.jpg"
-            class="card-img"
-            alt="shreyu"
-          />
+          <img src="@assets/images/users/avatar-7.jpg" class="card-img" alt="officeShield" />
         </div>
         <div class="col-md-8">
           <div class="card-body">
-            <h5 class="card-title mb-1">Shreyu N</h5>
-            <h6 class="text-muted font-weight-normal mt-0 mb-3"
-              >New York, USA</h6
-            >
+            <h5 class="card-title mb-1">officeShield N</h5>
+            <h6 class="text-muted font-weight-normal mt-0 mb-3">New York, USA</h6>
             <div class="card-text row text-center">
               <div class="col">
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm btn-block mr-1"
-                  >Follow</button
-                >
+                <button type="button" class="btn btn-primary btn-sm btn-block mr-1">Follow</button>
               </div>
               <div class="col">
-                <button type="button" class="btn btn-white btn-sm btn-block"
-                  >Message</button
-                >
+                <button type="button" class="btn btn-white btn-sm btn-block">Message</button>
               </div>
             </div>
           </div>
@@ -37,15 +25,11 @@
     <div class="card">
       <div class="card-body p-3">
         <div class="media">
-          <img
-            src="@assets/images/users/avatar-7.jpg"
-            class="mr-3 avatar-lg rounded"
-            alt="shreyu"
-          />
+          <img src="@assets/images/users/avatar-7.jpg" class="mr-3 avatar-lg rounded" alt="officeShield" />
           <div class="media-body">
-            <h5 class="mt-1 mb-0">Shreyu N</h5>
+            <h5 class="mt-1 mb-0">officeShield N</h5>
             <h6 class="font-weight-normal mt-1 mb-1">
-              <a href>@shreyu</a>
+              <a href>@officeShield</a>
             </h6>
             <p class="text-muted">Designer | Creative | Thinker</p>
           </div>
@@ -87,14 +71,10 @@
         </div>
         <div class="row mt-3 text-center">
           <div class="col">
-            <button type="button" class="btn btn-primary btn-sm btn-block mr-1"
-              >Follow</button
-            >
+            <button type="button" class="btn btn-primary btn-sm btn-block mr-1">Follow</button>
           </div>
           <div class="col">
-            <button type="button" class="btn btn-white btn-sm btn-block"
-              >Message</button
-            >
+            <button type="button" class="btn btn-white btn-sm btn-block">Message</button>
           </div>
         </div>
       </div>

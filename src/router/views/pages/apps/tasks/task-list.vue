@@ -18,7 +18,7 @@ export default {
       title: 'Tasks List',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {
@@ -61,22 +61,13 @@ export default {
                   </div>
                   <div class="col-sm-9">
                     <div class="float-sm-right mt-3 mt-sm-0">
-                      <div
-                        class="task-search d-inline-block mb-3 mb-sm-0 mr-sm-3"
-                      >
+                      <div class="task-search d-inline-block mb-3 mb-sm-0 mr-sm-3">
                         <form>
                           <div class="input-group">
-                            <input
-                              type="text"
-                              class="form-control search-input"
-                              placeholder="Search..."
-                            />
+                            <input type="text" class="form-control search-input" placeholder="Search..." />
                             <span class="uil uil-search icon-search"></span>
                             <div class="input-group-append">
-                              <button
-                                class="btn btn-soft-primary"
-                                type="button"
-                              >
+                              <button class="btn btn-soft-primary" type="button">
                                 <i class="uil uil-file-search-alt"></i>
                               </button>
                             </div>
@@ -98,39 +89,21 @@ export default {
 
                 <div class="row mt-4">
                   <div class="col">
-                    <a
-                      v-b-toggle.todayTasks
-                      class="text-dark"
-                      href="javascript: void(0);"
-                      aria-controls="todayTasks"
-                    >
+                    <a v-b-toggle.todayTasks class="text-dark" href="javascript: void(0);" aria-controls="todayTasks">
                       <h5 class="mb-0">
                         <i class="uil uil-angle-down font-size-18"></i>Today
-                        <span class="text-muted font-size-14"
-                          >({{ todayTasks.length }})</span
-                        >
+                        <span class="text-muted font-size-14">({{ todayTasks.length }})</span>
                       </h5>
                     </a>
                     <b-collapse id="todayTasks" visible>
                       <div class="card mb-0 shadow-none">
                         <div class="card-body pt-0">
-                          <div
-                            v-for="(task, index) of todayTasks"
-                            :key="index"
-                            class="row justify-content-sm-between border-bottom mt-2 pt-2"
-                          >
+                          <div v-for="(task, index) of todayTasks" :key="index"
+                            class="row justify-content-sm-between border-bottom mt-2 pt-2">
                             <div class="col-lg-6 mb-2 mb-lg-0">
                               <div class="custom-control custom-checkbox">
-                                <input
-                                  :id="`task-${index}`"
-                                  type="checkbox"
-                                  class="custom-control-input"
-                                />
-                                <label
-                                  class="custom-control-label"
-                                  :for="`task-${index}`"
-                                  >{{ task.title }}</label
-                                >
+                                <input :id="`task-${index}`" type="checkbox" class="custom-control-input" />
+                                <label class="custom-control-label" :for="`task-${index}`">{{ task.title }}</label>
                               </div>
                               <!-- end checkbox -->
                             </div>
@@ -138,47 +111,32 @@ export default {
                             <div class="col-lg-6">
                               <div class="d-sm-flex justify-content-between">
                                 <div>
-                                  <img
-                                    v-b-tooltip.hover
-                                    :title="`Assigned to ${task.assigned_to}`"
-                                    :src="`${task.assignee_avatar}`"
-                                    alt="image"
-                                    class="avatar-xs rounded-circle"
-                                  />
+                                  <img v-b-tooltip.hover :title="`Assigned to ${task.assigned_to}`"
+                                    :src="`${task.assignee_avatar}`" alt="image" class="avatar-xs rounded-circle" />
                                 </div>
                                 <div class="mt-3 mt-sm-0">
                                   <ul class="list-inline font-13 text-sm-right">
                                     <li class="list-inline-item pr-1">
-                                      <i
-                                        class="uil uil-schedule font-16 mr-1"
-                                      ></i>
+                                      <i class="uil uil-schedule font-16 mr-1"></i>
                                       {{ task.due_date }}
                                     </li>
                                     <li class="list-inline-item pr-1">
-                                      <i
-                                        class="uil uil-align-alt font-16 mr-1"
-                                      ></i>
+                                      <i class="uil uil-align-alt font-16 mr-1"></i>
                                       {{ task.checklists.length }}
                                     </li>
                                     <li class="list-inline-item pr-2">
-                                      <i
-                                        class="uil uil-comment-message font-16 mr-1"
-                                      ></i>
+                                      <i class="uil uil-comment-message font-16 mr-1"></i>
                                       {{ task.comments.length }}
                                     </li>
                                     <li class="list-inline-item">
-                                      <span
-                                        class="badge p-1"
-                                        :class="{
-                                          'badge-soft-danger':
-                                            `${task.priority}` === 'High',
-                                          'badge-soft-info':
-                                            `${task.priority}` === 'Medium',
-                                          'badge-soft-success':
-                                            `${task.priority}` === 'Low',
-                                        }"
-                                        >{{ task.priority }}</span
-                                      >
+                                      <span class="badge p-1" :class="{
+                                        'badge-soft-danger':
+                                          `${task.priority}` === 'High',
+                                        'badge-soft-info':
+                                          `${task.priority}` === 'Medium',
+                                        'badge-soft-success':
+                                          `${task.priority}` === 'Low',
+                                      }">{{ task.priority }}</span>
                                     </li>
                                   </ul>
                                 </div>
@@ -197,40 +155,23 @@ export default {
                     </b-collapse>
 
                     <div class="mt-4">
-                      <a
-                        v-b-toggle.upcomingTask
-                        class="text-dark"
-                        href="javascript: void(0);"
-                        aria-controls="upcomingTask"
-                      >
+                      <a v-b-toggle.upcomingTask class="text-dark" href="javascript: void(0);"
+                        aria-controls="upcomingTask">
                         <h5 class="mb-0">
-                          <i class="uil uil-angle-down font-size-18"></i
-                          >Upcoming
-                          <span class="text-muted font-size-14"
-                            >({{ upcomingTask.length }})</span
-                          >
+                          <i class="uil uil-angle-down font-size-18"></i>Upcoming
+                          <span class="text-muted font-size-14">({{ upcomingTask.length }})</span>
                         </h5>
                       </a>
                       <b-collapse id="upcomingTask" visible>
                         <div class="card mb-0 shadow-none">
                           <div class="card-body pt-0">
-                            <div
-                              v-for="(task, index) of upcomingTask"
-                              :key="index"
-                              class="row justify-content-sm-between border-bottom mt-2 pt-2"
-                            >
+                            <div v-for="(task, index) of upcomingTask" :key="index"
+                              class="row justify-content-sm-between border-bottom mt-2 pt-2">
                               <div class="col-lg-6 mb-2 mb-lg-0">
                                 <div class="custom-control custom-checkbox">
-                                  <input
-                                    :id="`task-upcoming-${index}`"
-                                    type="checkbox"
-                                    class="custom-control-input"
-                                  />
-                                  <label
-                                    class="custom-control-label"
-                                    :for="`task-upcoming-${index}`"
-                                    >{{ task.title }}</label
-                                  >
+                                  <input :id="`task-upcoming-${index}`" type="checkbox" class="custom-control-input" />
+                                  <label class="custom-control-label" :for="`task-upcoming-${index}`">{{ task.title
+                                  }}</label>
                                 </div>
                                 <!-- end checkbox -->
                               </div>
@@ -238,49 +179,32 @@ export default {
                               <div class="col-lg-6">
                                 <div class="d-sm-flex justify-content-between">
                                   <div>
-                                    <img
-                                      v-b-tooltip.hover
-                                      :title="`Assigned to ${task.assigned_to}`"
-                                      :src="`${task.assignee_avatar}`"
-                                      alt="image"
-                                      class="avatar-xs rounded-circle"
-                                    />
+                                    <img v-b-tooltip.hover :title="`Assigned to ${task.assigned_to}`"
+                                      :src="`${task.assignee_avatar}`" alt="image" class="avatar-xs rounded-circle" />
                                   </div>
                                   <div class="mt-3 mt-sm-0">
-                                    <ul
-                                      class="list-inline font-13 text-sm-right"
-                                    >
+                                    <ul class="list-inline font-13 text-sm-right">
                                       <li class="list-inline-item pr-1">
-                                        <i
-                                          class="uil uil-schedule font-16 mr-1"
-                                        ></i>
+                                        <i class="uil uil-schedule font-16 mr-1"></i>
                                         {{ task.due_date }}
                                       </li>
                                       <li class="list-inline-item pr-1">
-                                        <i
-                                          class="uil uil-align-alt font-16 mr-1"
-                                        ></i>
+                                        <i class="uil uil-align-alt font-16 mr-1"></i>
                                         {{ task.checklists.length }}
                                       </li>
                                       <li class="list-inline-item pr-2">
-                                        <i
-                                          class="uil uil-comment-message font-16 mr-1"
-                                        ></i>
+                                        <i class="uil uil-comment-message font-16 mr-1"></i>
                                         {{ task.comments.length }}
                                       </li>
                                       <li class="list-inline-item">
-                                        <span
-                                          class="badge p-1"
-                                          :class="{
-                                            'badge-soft-danger':
-                                              `${task.priority}` === 'High',
-                                            'badge-soft-info':
-                                              `${task.priority}` === 'Medium',
-                                            'badge-soft-success':
-                                              `${task.priority}` === 'Low',
-                                          }"
-                                          >{{ task.priority }}</span
-                                        >
+                                        <span class="badge p-1" :class="{
+                                          'badge-soft-danger':
+                                            `${task.priority}` === 'High',
+                                          'badge-soft-info':
+                                            `${task.priority}` === 'Medium',
+                                          'badge-soft-success':
+                                            `${task.priority}` === 'Low',
+                                        }">{{ task.priority }}</span>
                                       </li>
                                     </ul>
                                   </div>
@@ -300,39 +224,22 @@ export default {
                     </div>
 
                     <div class="mt-4">
-                      <a
-                        v-b-toggle.otherTask
-                        class="text-dark"
-                        href="javascript: void(0);"
-                        aria-controls="otherTask"
-                      >
+                      <a v-b-toggle.otherTask class="text-dark" href="javascript: void(0);" aria-controls="otherTask">
                         <h5 class="mb-0">
                           <i class="uil uil-angle-down font-size-18"></i>Other
-                          <span class="text-muted font-size-14"
-                            >({{ otherTask.length }})</span
-                          >
+                          <span class="text-muted font-size-14">({{ otherTask.length }})</span>
                         </h5>
                       </a>
                       <b-collapse id="otherTask" visible>
                         <div class="card mb-0 shadow-none">
                           <div class="card-body pt-0">
-                            <div
-                              v-for="(task, index) of otherTask"
-                              :key="index"
-                              class="row justify-content-sm-between border-bottom mt-2 pt-2"
-                            >
+                            <div v-for="(task, index) of otherTask" :key="index"
+                              class="row justify-content-sm-between border-bottom mt-2 pt-2">
                               <div class="col-lg-6 mb-2 mb-lg-0">
                                 <div class="custom-control custom-checkbox">
-                                  <input
-                                    :id="`task-other-${index}`"
-                                    type="checkbox"
-                                    class="custom-control-input"
-                                  />
-                                  <label
-                                    class="custom-control-label"
-                                    :for="`task-other-${index}`"
-                                    >{{ task.title }}</label
-                                  >
+                                  <input :id="`task-other-${index}`" type="checkbox" class="custom-control-input" />
+                                  <label class="custom-control-label" :for="`task-other-${index}`">{{ task.title
+                                  }}</label>
                                 </div>
                                 <!-- end checkbox -->
                               </div>
@@ -340,49 +247,32 @@ export default {
                               <div class="col-lg-6">
                                 <div class="d-sm-flex justify-content-between">
                                   <div>
-                                    <img
-                                      v-b-tooltip.hover
-                                      :title="`Assigned to ${task.assigned_to}`"
-                                      :src="`${task.assignee_avatar}`"
-                                      alt="image"
-                                      class="avatar-xs rounded-circle"
-                                    />
+                                    <img v-b-tooltip.hover :title="`Assigned to ${task.assigned_to}`"
+                                      :src="`${task.assignee_avatar}`" alt="image" class="avatar-xs rounded-circle" />
                                   </div>
                                   <div class="mt-3 mt-sm-0">
-                                    <ul
-                                      class="list-inline font-13 text-sm-right"
-                                    >
+                                    <ul class="list-inline font-13 text-sm-right">
                                       <li class="list-inline-item pr-1">
-                                        <i
-                                          class="uil uil-schedule font-16 mr-1"
-                                        ></i>
+                                        <i class="uil uil-schedule font-16 mr-1"></i>
                                         {{ task.due_date }}
                                       </li>
                                       <li class="list-inline-item pr-1">
-                                        <i
-                                          class="uil uil-align-alt font-16 mr-1"
-                                        ></i>
+                                        <i class="uil uil-align-alt font-16 mr-1"></i>
                                         {{ task.checklists.length }}
                                       </li>
                                       <li class="list-inline-item pr-2">
-                                        <i
-                                          class="uil uil-comment-message font-16 mr-1"
-                                        ></i>
+                                        <i class="uil uil-comment-message font-16 mr-1"></i>
                                         {{ task.comments.length }}
                                       </li>
                                       <li class="list-inline-item">
-                                        <span
-                                          class="badge p-1"
-                                          :class="{
-                                            'badge-soft-danger':
-                                              `${task.priority}` === 'High',
-                                            'badge-soft-info':
-                                              `${task.priority}` === 'Medium',
-                                            'badge-soft-success':
-                                              `${task.priority}` === 'Low',
-                                          }"
-                                          >{{ task.priority }}</span
-                                        >
+                                        <span class="badge p-1" :class="{
+                                          'badge-soft-danger':
+                                            `${task.priority}` === 'High',
+                                          'badge-soft-info':
+                                            `${task.priority}` === 'Medium',
+                                          'badge-soft-success':
+                                            `${task.priority}` === 'Low',
+                                        }">{{ task.priority }}</span>
                                       </li>
                                     </ul>
                                   </div>
@@ -407,11 +297,7 @@ export default {
                   <div class="col-12">
                     <div class="text-center">
                       <a href="javascript:void(0);" class="btn btn-white mb-3">
-                        <feather
-                          type="loader"
-                          class="icon-dual icon-xs mr-2 align-middle"
-                        ></feather
-                        >Load more
+                        <feather type="loader" class="icon-dual icon-xs mr-2 align-middle"></feather>Load more
                       </a>
                     </div>
                   </div>

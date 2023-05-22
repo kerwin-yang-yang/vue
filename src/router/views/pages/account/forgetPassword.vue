@@ -63,36 +63,20 @@ export default {
 										<div class="mx-auto mb-5">
 											<a href="/">
 												<img src="@assets/images/logo.png" alt height="24" />
-												<h3 class="d-inline align-middle ml-1 text-logo"
-													>Shreyu</h3
-												>
+												<h3 class="d-inline align-middle ml-1 text-logo">officeShield</h3>
 											</a>
 										</div>
 
 										<h6 class="h5 mb-0 mt-4">Reset Password</h6>
-										<p class="text-muted mt-1 mb-5"
-											>Enter your email address and we'll send you an email with
-											instructions to reset your password.</p
-										>
+										<p class="text-muted mt-1 mb-5">Enter your email address and we'll send you an email
+											with
+											instructions to reset your password.</p>
 
-										<b-alert
-											v-model="isResetError"
-											variant="danger"
-											dismissible
-											>{{ error }}</b-alert
-										>
+										<b-alert v-model="isResetError" variant="danger" dismissible>{{ error }}</b-alert>
 
-										<b-alert
-											v-model="isSuccess"
-											variant="success"
-											dismissible
-											>{{ successMessage }}</b-alert
-										>
-										<form
-											action="#"
-											class="authentication-form"
-											@submit.prevent="tryToReset"
-										>
+										<b-alert v-model="isSuccess" variant="success" dismissible>{{ successMessage
+										}}</b-alert>
+										<form action="#" class="authentication-form" @submit.prevent="tryToReset">
 											<div class="form-group">
 												<label class="form-control-label">Email Address</label>
 												<div class="input-group input-group-merge">
@@ -101,20 +85,13 @@ export default {
 															<feather type="mail" class="icon-dual"></feather>
 														</span>
 													</div>
-													<input
-														id="email"
-														v-model="email"
-														type="email"
-														class="form-control"
-														placeholder="hello@coderthemes.com"
-													/>
+													<input id="email" v-model="email" type="email" class="form-control"
+														placeholder="hello@coderthemes.com" />
 												</div>
 											</div>
 
 											<div class="form-group mb-0 text-center">
-												<button class="btn btn-primary btn-block" type="submit"
-													>Submit</button
-												>
+												<button class="btn btn-primary btn-block" type="submit">Submit</button>
 											</div>
 										</form>
 									</div>
@@ -122,12 +99,9 @@ export default {
 										<div class="auth-page-sidebar">
 											<div class="overlay"></div>
 											<div class="auth-user-testimonial">
-												<p class="font-size-24 font-weight-bold text-white mb-1"
-													>I simply love it!</p
-												>
-												<p class="lead"
-													>"It's a elegent templete. I love it very much!"</p
-												>
+												<p class="font-size-24 font-weight-bold text-white mb-1">I simply love it!
+												</p>
+												<p class="lead">"It's a elegent templete. I love it very much!"</p>
 												<p>- Admin User</p>
 											</div>
 										</div>
@@ -142,12 +116,8 @@ export default {
 							<div class="col-12 text-center">
 								<p class="text-muted">
 									Back to
-									<router-link
-										tag="a"
-										to="/login"
-										class="text-primary font-weight-bold ml-1"
-										>Login</router-link
-									>
+									<router-link tag="a" to="/login"
+										class="text-primary font-weight-bold ml-1">Login</router-link>
 								</p>
 							</div>
 							<!-- end col -->

@@ -2,28 +2,14 @@
 	<div class="card">
 		<div class="card-body">
 			<div class="text-center mt-3">
-				<img
-					:src="user.icon"
-					alt
-					class="avatar-lg rounded-circle"
-				/>
-				<h5 class="mt-2 mb-0">{{user.username}}</h5>
-				<h6 class="text-muted font-weight-normal mt-2 mb-0"
-					>User Experience Specialist</h6
-				>
-				<h6 class="text-muted font-weight-normal mt-1 mb-4"
-					>San Francisco, CA</h6
-				>
+				<img :src="user.icon" alt class="avatar-lg rounded-circle" />
+				<h5 class="mt-2 mb-0">{{ user.username }}</h5>
+				<h6 class="text-muted font-weight-normal mt-2 mb-0">User Experience Specialist</h6>
+				<h6 class="text-muted font-weight-normal mt-1 mb-4">San Francisco, CA</h6>
 
 				<div class="progress mb-4" style="height: 14px;">
-					<div
-						class="progress-bar bg-success"
-						role="progressbar"
-						style="width: 60%;"
-						aria-valuenow="60"
-						aria-valuemin="0"
-						aria-valuemax="100"
-					>
+					<div class="progress-bar bg-success" role="progressbar" style="width: 60%;" aria-valuenow="60"
+						aria-valuemin="0" aria-valuemax="100">
 						<span class="font-size-12 font-weight-bold">
 							Your Profile is
 							<span class="font-size-11">60%</span> completed
@@ -31,9 +17,7 @@
 					</div>
 				</div>
 
-				<button type="button" class="btn btn-primary btn-sm mr-1"
-					>Follow</button
-				>
+				<button type="button" class="btn btn-primary btn-sm mr-1">Follow</button>
 				<button type="button" class="btn btn-white btn-sm ml-1">Message</button>
 			</div>
 
@@ -41,7 +25,7 @@
 			<div class="mt-5 pt-2 border-top">
 				<h4 class="mb-3 font-size-15">About</h4>
 				<p class="text-muted mb-4">
-					Hi I'm Shreyu. I am user experience and user interface designer. I
+					Hi I'm officeShield. I am user experience and user interface designer. I
 					have been working on UI & UX since last 10 years.
 				</p>
 			</div>
@@ -52,17 +36,17 @@
 						<tbody>
 							<tr>
 								<th scope="row">Email</th>
-								<td>{{user.email}}</td>
+								<td>{{ user.email }}</td>
 							</tr>
 							<tr>
 								<th scope="row">Phone</th>
-								<td>(123) {{user.phone}}</td>
+								<td>(123) {{ user.phone }}</td>
 							</tr>
 							<tr>
 								<th scope="row">Address</th>
 								<td>
 									<!-- <strong>{{ user.documents[0].description }}</strong> -->
-									{{user.address}}
+									{{ user.address }}
 								</td>
 							</tr>
 						</tbody>
@@ -82,7 +66,7 @@
 	<!-- end card -->
 </template>
 <script>
-export default{
+export default {
 	props: {
 		user: {
 			type: Object,

@@ -22,7 +22,7 @@ export default {
       title: 'Email Detail',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {
@@ -52,7 +52,7 @@ export default {
         <div class="email-container">
           <!-- Left sidebar -->
           <div class="inbox-leftbar">
-            <router-link :to="{name:'Compose Email'}" class="btn btn-danger btn-block mb-4">Compose</router-link>
+            <router-link :to="{ name: 'Compose Email' }" class="btn btn-danger btn-block mb-4">Compose</router-link>
 
             <LeftbarList />
           </div>

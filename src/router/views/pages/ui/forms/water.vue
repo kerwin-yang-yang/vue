@@ -20,10 +20,10 @@ export default {
             title: '水印验证',
             isopen: false,
             images: [],
-            task:null,
+            task: null,
             items: [
                 {
-                    text: 'Shreyu',
+                    text: 'officeShield',
                     href: '/',
                 },
                 {
@@ -61,7 +61,7 @@ export default {
             this.getDocument()
             await this.getTasksDetail({ id: 1 })
             this.task = this.DetailTask
-            console.log(this.task,this.currentUser)
+            console.log(this.task, this.currentUser)
             this.isopen = true;
 
         },
@@ -143,23 +143,25 @@ export default {
             <div class="col-12">
                 <div class="card">
                     <div class="row no-gutters align-items-center">
-                        
-                        <div class="col-xl-6 col-lg-3">
-                                
-                                <div class="card-body" style="border:1px dashed; margin-right: 20px;margin-left: 20px;height: 700px;overflow:scroll;">
-                                    <div v-for="(image, index) in images"><b-img-lazy :id="'tooltip-button-' + (index + 1)"
-                                            :src="image.url" v-bind="mainProps" alt="Image 2"></b-img-lazy>
 
-                                    </div>
-                                
+                        <div class="col-xl-6 col-lg-3">
+
+                            <div class="card-body"
+                                style="border:1px dashed; margin-right: 20px;margin-left: 20px;height: 700px;overflow:scroll;">
+                                <div v-for="(image, index) in images"><b-img-lazy :id="'tooltip-button-' + (index + 1)"
+                                        :src="image.url" v-bind="mainProps" alt="Image 2"></b-img-lazy>
+
+                                </div>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-3">
-                            
-                                <div class="card-body" style="border:1px dashed;margin-right: 20px;height: 700px;overflow:scroll;">
-                                    <Demo :task="task" :createUser="this.currentUser" v-if="task" />
-                                </div>
-                            
+
+                            <div class="card-body"
+                                style="border:1px dashed;margin-right: 20px;height: 700px;overflow:scroll;">
+                                <Demo :task="task" :createUser="this.currentUser" v-if="task" />
+                            </div>
+
                         </div>
                     </div>
                 </div>

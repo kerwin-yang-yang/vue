@@ -46,7 +46,7 @@ export default {
 			title: 'UserInformation',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{

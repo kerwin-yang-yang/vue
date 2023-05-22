@@ -75,13 +75,13 @@ export default {
             });
             this.task.records.forEach((record) => {
                 if (record.leak_level == 'LOW') {
-                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text: record.create_time.substr(0, 11) + '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#43d39e', });
+                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text:  '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#43d39e', });
                 }
                 if (record.leak_level == 'MEDIUM') {
-                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text: record.create_time.substr(0, 11) + '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#ffbe0b', });
+                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text:  '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#ffbe0b', });
                 }
                 if (record.leak_level == 'HIGH') {
-                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text: record.create_time.substr(0, 11) + '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#ff5c75', });
+                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text:  '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#ff5c75', });
                 }
 
 
@@ -178,8 +178,8 @@ export default {
         makeToast(variant) {
             this.$bvToast.toast(variant, {
                 title: '详细信息',
-                variant: 'gray',
-                toaster: 'b-toaster-top-left',
+                variant: 'success',
+                toaster: 'b-toaster-top-center',
                 solid: true
             })
         },

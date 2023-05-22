@@ -16,7 +16,7 @@ export default {
 			title: '文档上传',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{
@@ -48,16 +48,9 @@ export default {
 				<div class="card">
 					<div class="card-body">
 						<h4 class="vue-editor mt-0 mb-1">上传文档并指定机密等级</h4>
-						<p class="text-muted font-13 m-b-30"
-							>Upload documents and specify confidentiality level</p
-						>
+						<p class="text-muted font-13 m-b-30">Upload documents and specify confidentiality level</p>
 						<!-- file upload -->
-						<vue-dropzone
-							id="dropzone"
-							ref="myVueDropzone"
-							:options="dropzoneOptions"
-							:use-custom-slot="true"
-						>
+						<vue-dropzone id="dropzone" ref="myVueDropzone" :options="dropzoneOptions" :use-custom-slot="true">
 							<div class="text-center">
 								<i class="h1 text-muted uil-cloud-upload"></i>
 								<h3>上传完整文档</h3>

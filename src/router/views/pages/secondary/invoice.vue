@@ -17,7 +17,7 @@ export default {
 			title: 'Invoice',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{
@@ -88,7 +88,7 @@ export default {
 						<div class="clearfix">
 							<div class="float-sm-right">
 								<img src="@assets/images/logo.png" alt height="48" />
-								<h4 class="m-0 d-inline align-middle">Shreyu</h4>
+								<h4 class="m-0 d-inline align-middle">officeShield</h4>
 								<address class="pl-2 mt-2">
 									{{ invoiceDetail.address.line_1 }}
 									<br />{{ invoiceDetail.address.city }},
@@ -160,10 +160,7 @@ export default {
 											</tr>
 										</thead>
 										<tbody>
-											<tr
-												v-for="(item, index) of invoiceDetail.items"
-												:key="`item-${index}`"
-											>
+											<tr v-for="(item, index) of invoiceDetail.items" :key="`item-${index}`">
 												<td>{{ index + 1 }}</td>
 												<td>
 													<h5 class="font-size-16 mt-0 mb-2">{{
@@ -207,9 +204,7 @@ export default {
 									</p>
 									<p>
 										<span class="font-weight-medium">Discount (10%):</span>
-										<span class="float-right"
-											>&nbsp;&nbsp;&nbsp; {{ invoiceDetail.discount }}</span
-										>
+										<span class="float-right">&nbsp;&nbsp;&nbsp; {{ invoiceDetail.discount }}</span>
 									</p>
 									<h3>{{ invoiceDetail.total }} USD</h3>
 								</div>
@@ -224,9 +219,7 @@ export default {
 								<a href="javascript:window.print()" class="btn btn-primary">
 									<i class="uil uil-print mr-1"></i> Print
 								</a>
-								<a href="javascript: void(0);" class="btn btn-info ml-1"
-									>Submit</a
-								>
+								<a href="javascript: void(0);" class="btn btn-info ml-1">Submit</a>
 							</div>
 						</div>
 					</div>

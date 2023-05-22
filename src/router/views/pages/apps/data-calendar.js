@@ -28,7 +28,7 @@ const categories = [
 const calendarEvents = [
   {
     id: 1,
-    title: 'Meeting with Mr. Shreyu',
+    title: 'Meeting with Mr. officeShield',
     start: new Date().setDate(new Date().getDate() + 1),
     end: new Date().setDate(new Date().getDate() + 2),
     className: 'bg-warning text-white',

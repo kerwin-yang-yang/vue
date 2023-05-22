@@ -14,7 +14,7 @@ export default {
       title: 'Basic Tables',
       items: [
         {
-          text: 'Shreyu',
+          text: 'officeShield',
           href: '/',
         },
         {
@@ -420,10 +420,8 @@ export default {
         <div class="card">
           <div class="card-body">
             <h4 class="header-title mt-0 mb-1">Contextual classes</h4>
-            <p class="sub-header"
-              >Use contextual classes to color table rows or individual
-              cells.</p
-            >
+            <p class="sub-header">Use contextual classes to color table rows or individual
+              cells.</p>
 
             <div class="table-responsive">
               <table class="table mb-0">

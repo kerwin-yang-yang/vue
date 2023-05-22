@@ -16,7 +16,7 @@ export default {
 			title: 'Forms Editor',
 			items: [
 				{
-					text: 'Shreyu',
+					text: 'officeShield',
 					href: '/',
 				},
 				{
