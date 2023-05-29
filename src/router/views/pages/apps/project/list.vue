@@ -216,7 +216,7 @@ export default {
 							</div>
 							<div class=" col-xl-6 col-lg-6">
 
-								<div class="text-center align-items-center" style="top:500px">
+								<div class="text-center align-items-center" style="margin-top:100px">
 									<!-- <h4 class="text-danger mt-4">{{ value2.title }} </h4> -->
 									<i class="uil-no-entry text-danger display-3"></i>
 									<h4 class="text-danger mt-4">目标文档是否对应文档 </h4>

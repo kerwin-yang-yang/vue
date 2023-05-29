@@ -2,7 +2,8 @@
 import Layout from '@layouts/default'
 import { authMethods } from '@state/helpers'
 import appConfig from '@src/app.config'
-
+import * as THREE from 'three'
+import WAVES from 'vanta/src/vanta.waves'
 /**
  * Register component
  */
@@ -24,10 +25,64 @@ export default {
 		}
 	},
 	computed: {},
+	mounted() {
+		this.screen()
+		this.vantaEffect = WAVES({
+			el: this.$refs.vantaRef,
+			THREE: THREE
+		})
+		VANTA.WAVES({
+			el: this.$refs.vantaRef,
+			mouseControls: true,
+			touchControls: true,
+			gyroControls: false,
+			minHeight: 200.00,
+			minWidth: 200.00,
+			scale: 1.00,
+			scaleMobile: 1.00,
+			shininess: 150.00,
+			waveHeight: 40.00,
+			waveSpeed: 1.35,
+			zoom: 0.65,
+			color: 0x210062
+		})
+
+	},
+	beforeDestroy() {
+		if (this.vantaEffect) {
+			this.vantaEffect.destroy()
+		}
+	},
 	methods: {
 		...authMethods,
 		// Try to register the user in with the email, fullname
 		// and password they provided.
+		screen() {
+			let element = document.documentElement
+			if (this.fullscreen) {
+				if (document.exitFullscreen) {
+					document.exitFullscreen()
+				} else if (document.webkitCancelFullScreen) {
+					document.webkitCancelFullScreen()
+				} else if (document.mozCancelFullScreen) {
+					document.mozCancelFullScreen()
+				} else if (document.msExitFullscreen) {
+					document.msExitFullscreen()
+				}
+			} else {
+				if (element.requestFullscreen) {
+					element.requestFullscreen()
+				} else if (element.webkitRequestFullScreen) {
+					element.webkitRequestFullScreen()
+				} else if (element.mozRequestFullScreen) {
+					element.mozRequestFullScreen()
+				} else if (element.msRequestFullscreen) {
+					// IE11
+					element.msRequestFullscreen()
+				}
+			}
+			this.fullscreen = !this.fullscreen
+		},
 		tryToRegisterIn() {
 			this.tryingToRegister = true
 			// Reset the regError if it existed.
@@ -61,15 +116,15 @@ export default {
 		<div class="account-pages my-5">
 			<div class="container">
 				<div class="row justify-content-center">
-					<div class="col-xl-10">
+					<div class="col-xl-12">
 						<div class="card">
 							<div class="card-body p-0">
 								<div class="row">
-									<div class="col-lg-6 p-5">
+									<div class="col-lg-6 p-5 align-self-center">
 										<div class="mx-auto mb-5">
 											<a href="/">
-												<img src="@assets/images/logo.png" alt height="24" />
-												<h3 class="d-inline align-middle ml-1 text-logo">officeShield</h3>
+												<img src="@src/state/logo3.jpg" alt height="50" />
+												<img src="@src/state/name.png" alt height="30" />
 											</a>
 										</div>
 
@@ -87,7 +142,7 @@ export default {
 														</span>
 													</div>
 													<input id="name" v-model="username" type="text" class="form-control"
-														placeholder="Your full name" required />
+														placeholder="Enter full name" required />
 												</div>
 											</div>
 
@@ -100,7 +155,7 @@ export default {
 														</span>
 													</div>
 													<input id="email" v-model="email" type="email" class="form-control"
-														placeholder="hello@coderthemes.com" />
+														placeholder="Enter email address" />
 												</div>
 											</div>
 											<div class="form-group">
@@ -111,8 +166,8 @@ export default {
 															<feather type="phone" class="icon-dual"></feather>
 														</span>
 													</div>
-													<input id="email" v-model="phone"  class="form-control"
-														placeholder="phoneNumber" />
+													<input id="email" v-model="phone" class="form-control"
+														placeholder="Enter phoneNumber" />
 												</div>
 											</div>
 											<div class="form-group">
@@ -147,8 +202,8 @@ export default {
 															<feather type="alert-circle" class="icon-dual"></feather>
 														</span>
 													</div>
-													<input id="repassword" v-model="message" type="password"
-														class="form-control" placeholder="System access code" />
+													<input id="repassword" v-model="message" class="form-control"
+														placeholder="System access code" />
 												</div>
 											</div>
 
@@ -170,16 +225,37 @@ export default {
 									</div>
 
 									<div class="col-lg-6 d-none d-md-inline-block">
-										<div class="auth-page-sidebar">
-											<div class="overlay"></div>
-											<div class="auth-user-testimonial">
-												<p class="font-size-24 font-weight-bold text-white mb-1">I officeShield
 
+										<!-- <div class="auth-page-sidebar">
+	<div class="overlay"></div>
+	<div class="auth-user-testimonial">
+		<p class="font-size-24 font-weight-bold text-white mb-1">officeShield
+		</p>
+		<p class="lead">基于抗屏摄文档暗水印和分级异常行为检测技术的涉密文件协同远程办公系统</p>
+		<p> ~</p>
+	</div>
+</div> -->
+										<div>
+											<div ref="vantaRef" style="width:100%;height:100vh">
+												<div class="my_title">
+													<div class="auth-user-testimonial">
+														<p class="text-center"><img src="@src/state/logo3.jpg" alt
+																height="100" /></p>
+														<p class="text-center"><img src="@src/state/name.png" alt
+																height="30" /></p>
+														<!-- <p
+					class="font-size-24 font-weight-bold text-white mb-1 text-center">
+					officeShield
+				</p> -->
+														<p class="font-size-24 font-weight-bold mb-1 text-center">
+															面向在线办公的隐私泄露 </p>
 
-												</p>
-												<p class="lead">基于抗屏摄文档暗水印和分级异常行为检测技术的涉密文件协同远程办公系统</p>
-												<p>~</p>
+														<p class="font-size-24 font-weight-bold mb-1 text-center">
+															多维感知与溯源防护系统</p>
+													</div>
+												</div>
 											</div>
+
 										</div>
 									</div>
 								</div>
@@ -191,9 +267,9 @@ export default {
 						<div class="row mt-3">
 							<div class="col-12 text-center">
 								<p class="text-muted">
-									Already have account?
-									<router-link tag="a" to="/login" class="text-primary font-weight-bold ml-1">Log
-										In</router-link>
+									已经有了账户？
+									<router-link tag="a" to="/login"
+										class="text-primary font-weight-bold ml-1">前往登录</router-link>
 								</p>
 							</div>
 							<!-- end col -->
@@ -209,4 +285,16 @@ export default {
 	</Layout>
 </template>
 
-<style lang="scss" module></style>
+<style >
+.my_title {
+	z-index: 999;
+	position: relative;
+
+	top: 35%;
+	/* left: 4%;
+	right: 4%; */
+	color: aquamarine;
+	font-size: 15px;
+	font-weight: bolder;
+}
+</style>

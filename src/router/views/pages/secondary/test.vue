@@ -1,54 +1,61 @@
+<template>
+	<div>
+		<div ref="vantaRef" style="width:100%;height:100vh"></div>
+		<div class="my_title">Hello,World</div>
+	</div>
+</template>
+	
 <script>
-import appConfig from '@src/app.config'
-import Layout from '@layouts/main'
-import PageHeader from '@components/page-header'
-
-/**
- * Invoice component
- */
+import * as THREE from 'three'
+import WAVES from 'vanta/src/vanta.waves'
 export default {
-	page: {
-		title: 'Invoice',
-		meta: [{ name: 'description', content: appConfig.description }],
-	},
-	components: { Layout, PageHeader },
+	name: "hello",
 	data() {
 		return {
-			title: 'test',
-			items: [
-				{
-					text: 'officeShield',
-					href: '/',
-				},
-				{
-					text: 'Pages',
-					href: '/',
-				},
-				{
-					text: 'Test',
-					active: true,
-				},
-			],
 
+		};
+	},
+	mounted() {
+		this.vantaEffect = WAVES({
+			el: this.$refs.vantaRef,
+			THREE: THREE
+		})
+		VANTA.WAVES({
+  el: this.$refs.vantaRef,
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  scale: 1.00,
+  scaleMobile: 1.00,
+  shininess: 142.00,
+  waveHeight: 35.00,
+  waveSpeed: 1.65
+})
+
+	},
+	beforeDestroy() {
+		if (this.vantaEffect) {
+			this.vantaEffect.destroy()
 		}
 	},
-}
-</script>
+	methods: {
 
-<template>
-	<Layout>
-		<PageHeader :title="title" :items="items" class="d-print-none" />
-		<div class="row">
-			<div class="col-12">
-				<div class="card">
-					<div class="card-body">
-						<div>hhhh</div>
-					</div>
-				</div>
-			</div>
-			<!-- end col -->
-		</div>
-		<!-- end row -->
-		<!-- end row -->
-	</Layout>
-</template>
+	},
+
+};
+</script>
+	
+<style>
+.my_title {
+	z-index: 999;
+	position: fixed;
+	top: 40%;
+	left: 10%;
+	color: aquamarine;
+	font-size: 100px;
+	font-weight: bolder;
+}
+</style>
+	

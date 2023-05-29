@@ -223,7 +223,7 @@ const projectAppsRoutes = [
       },
       {
         path: 'water',
-        name: '水印验证',
+        name: '水印溯源',
         meta: { authRequired: true },
         component: () => lazyLoadView(import('@views/pages/ui/forms/water')),
       },
@@ -234,7 +234,7 @@ const projectAppsRoutes = [
 const taskAppsRoutes = [
   {
     path: '/apps/task',
-    name: 'Issue',
+    name: '意见管理',
     icon: 'bookmark',
     meta: { authRequired: true },
     // create a container component
@@ -267,14 +267,14 @@ const appsRoutes = [
   ...calendarAppsRoutes,
 
   ...projectAppsRoutes,
-  
+
 ]
 
 // pages
 const pagesRoutes = [
   {
     path: '/pages',
-    name: 'Pages',
+    name: '页面管理',
     icon: 'file-text',
     header: 'Custom',
     meta: { authRequired: true },
@@ -500,22 +500,22 @@ const authProtectedRoutes = [
   ...dashboardRoutes,
   // ...errorPagesRoutes,
   ...appsRoutes,
- 
+
 
   ...pagesRoutes,
   ...taskAppsRoutes,
   ...emailAppsRoutes,
-  ...ReadRoutes,
+  // ...ReadRoutes,
   ...EditRoutes,
 
 
-  ...uiRoutes,
-  ...formsRoutes,
-  ...chartsRoutes,
-  ...tablesRoutes
+  // ...uiRoutes,
+  // ...formsRoutes,
+  // ...chartsRoutes,
+  // ...tablesRoutes
 ]
 const AdminRoutes = [
-  ...dashboardRoutes,
+  // ...dashboardRoutes,
   // ...pagesRoutes,
   ...appsRoutes,
   ...emailAppsRoutes,
@@ -528,7 +528,7 @@ const UserRoutes = [
   ...ReadRoutes,
   ...taskAppsRoutes,
   ...EditRoutes
-  
+
 ]
 // ...uiRoutes,
 // ...formsRoutes,
@@ -538,7 +538,7 @@ const UserRoutes = [
 
 const allRoutes = [...authRoutes, ...authProtectedRoutes, ...errorPagesRoutes]
 
-export { allRoutes, authProtectedRoutes,AdminRoutes,UserRoutes }
+export { allRoutes, authProtectedRoutes, AdminRoutes, UserRoutes }
 
 
 

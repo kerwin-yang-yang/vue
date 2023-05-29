@@ -25,8 +25,8 @@ export default {
       projectActivity: projectActivity,
 
       task_id: this.$route.query.task_id,
-      ideas_long: 5,
-      records_long: 5,
+      ideas_long: 8,
+      records_long: 8,
       ideaEdit: {
         selectedPage: null,
         overIdea: null,
@@ -135,7 +135,7 @@ export default {
               vertical: 3,
             },
           },
-          labels: ['开发人员', '一级', '二级', '三级', '四级', '五级'],
+          labels: ['管理人员', '任务发布者', '普通人员'],
           responsive: [
             {
               breakpoint: 480,
@@ -189,11 +189,9 @@ export default {
     this.salesDonutChart1.series2[0] = this.task.progress
     this.salesDonutChart1.series2[1] = 100 - this.task.progress
     this.salesDonutChart2.series3[0] = this.task.users.filter(user => user.role_id === 0).length
-    this.salesDonutChart2.series3[1] = this.task.users.filter(user => user.role_id === 1).length
-    this.salesDonutChart2.series3[2] = this.task.users.filter(user => user.role_id === 2).length
-    this.salesDonutChart2.series3[3] = this.task.users.filter(user => user.role_id === 3).length
-    this.salesDonutChart2.series3[4] = this.task.users.filter(user => user.role_id === 4).length
-    this.salesDonutChart2.series3[5] = this.task.users.filter(user => user.role_id === 5).length
+    this.salesDonutChart2.series3[1] = this.task.users.filter(user => user.role_id === 1).length+this.task.users.filter(user => user.role_id === 2).length+this.task.users.filter(user => user.role_id === 3).length
+    this.salesDonutChart2.series3[2] = this.task.users.filter(user => user.role_id === 4).length+this.task.users.filter(user => user.role_id === 5).length
+
   },
   methods: {
     ...TasksMethods,
@@ -632,7 +630,7 @@ export default {
                     </a>
                   </div>
                   <div class="media-body">
-                    <input type="text" class="form-control input-sm" placeholder="Some text value..." />
+                    <input type="text" class="form-control input-sm" placeholder="填写文档意见" />
                   </div>
                 </div>
               </b-tab>

@@ -172,8 +172,17 @@ export default {
 
 
     this.startTimer()
-
-
+    // this.makeToast('上传成功！')
+    this.$bvToast.toast('1、阅览文档的过程中你的异常行为将会受到监控 2、阅读时也将会进行录音，请注意你的行为规范 3、阅读时必须处于全屏模式，退出会有异常提醒 ', {
+      title: '阅读提醒',
+      variant: 'danger',
+      toaster: 'b-toaster-top-center',
+      solid: true,
+      noCloseButton: true, // 可选，根据需要设置是否显示关闭按钮
+      // autoHideDelay: 330, // 可选，根据需要设置自动隐藏的延迟时间
+      appendToast: true, // 可选，根据需要设置是否将toast追加到toaster容器中
+      toastClass: 'my-toast-class' // 可选，根据需要设置自定义的toast样式类名
+    });
   },
 
   methods: {
@@ -631,15 +640,14 @@ export default {
 
           <div class="inbox-leftbar" :class="{ active: this.leftSide }">
 
-            <div id="logo" data-content-field="site-title">
-              <h1 class="logo image" data-shrink-original-size="26" style="letter-spacing: 0em">
-                <a href="/">
-                  <img
-                    src="//images.squarespace-cdn.com/content/v1/5c0a0a92b27e3986f51e5eb0/1611794977300-EITI1LJ5WJJJAUCKRQKP/pedro-04.jpg?format=750w"
-                    alt="Pedrontheworld" />
-                  <!-- <img src="@src/state/logo.jpg" alt="Pedrontheworld" /> -->
-                </a>
-              </h1>
+            <div id="logo" >
+              <div class="mx-auto mb-5">
+											
+												<img src="@src/state/logo3.jpg" alt height="45" style="margin:20px  20px"/>
+												<img src="@src/state/name.png" alt height="25" width="135"  />
+												<!-- <h3 class="d-inline align-middle ml-1 text-logo">officeShield</h3> -->
+										
+										</div>
             </div>
 
             <div id="topNav" data-content-field="navigation">
@@ -658,13 +666,12 @@ export default {
                       title-class="font-18" no-close-on-backdrop no-close-on-esc>
                       <div class="text-center">
                         <i class=" uil-stopwatch-slash text-danger display-3"></i>
- 
+
                         <h4 class="text-danger mt-4">暂停警告 </h4>
-                        <p >请注意，你的暂停行为将被记录在文件中</p>
-                        <p>由此产生的任何泄密后果将由你承担</p>
+                        <h6>请注意，你的暂停行为将被记录在文件中</h6>
+                        <h6>由此产生的任何泄密后果将由你承担</h6>
                         <div class="mt-4">
-                          <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);"
-                            @click="cover">
+                          <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);" @click="cover">
                             暂停阅读
                           </a>
                         </div>
@@ -680,7 +687,7 @@ export default {
   align-items: center; ;display:flex">
                             <feather type="log-out" style="margin:0 20px;"></feather>退出
                           </span></a>
-                          <!-- uil-webcam  uil-shield-slash  
+                        <!-- uil-webcam  uil-shield-slash  
                         uil-shield-exclamation
                         uil-focus-target -->
                         <b-modal v-model="exitModal" centered hide-footer title="退出警告" title-class="font-18"
@@ -688,8 +695,8 @@ export default {
                           <div class="text-center">
                             <i class="uil-shield-exclamation text-danger display-3"></i>
                             <h4 class="text-danger mt-4">退出警告</h4>
-                            <p >请注意，你的退出行为将被记录在文件中</p>
-                            <p>由此产生的任何泄密后果将由你承担</p>
+                            <h6>请注意，你的退出行为将被记录在文件中</h6>
+                            <h6>由此产生的任何泄密后果将由你承担</h6>
                             <div class="mt-4">
                               <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);"
                                 @click="confirmJump">
@@ -738,6 +745,7 @@ export default {
                       }"></i></b-button>
                   </div>
                   <span>{{ formatTime(timer) }}</span>
+                  <feather type="mic" class="icon-dual-danger" style="margin-left:10px"></feather>
                 </div>
                 <div class="head-center"></div>
 
@@ -757,11 +765,10 @@ export default {
                     <div class="text-center">
                       <i class="uil-focus-target text-danger display-3"></i>
                       <h4 class="text-danger mt-4 ">警告：你退出了全屏模式 </h4>
-                      <p >请注意，你的行为有严重后果</p>
-                      <p>请进入全屏模式认真阅读，或者选择暂停</p>
+                      <h6>请注意，你的行为有严重后果</h6>
+                      <h6>请进入全屏模式认真阅读，或者选择暂停</h6>
                       <div class="mt-4">
-                        <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);"
-                          @click="screen">
+                        <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);" @click="screen">
                           进入全屏
                         </a>
                       </div>
@@ -1508,5 +1515,9 @@ nav {
 
   background-color: rgba(0, 0, 0, 1);
   /* 完全黑色，不透明 */
+}
+
+.my-toast-class .toast-body {
+  white-space: pre-line;
 }
 </style>

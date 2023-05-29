@@ -81,8 +81,10 @@ export default {
 			<!-- LOGO -->
 			<a href="/" class="navbar-brand mr-0 mr-md-2 logo">
 				<span class="logo-lg">
-					<img src="@assets/images/logo.png" alt height="24" />
-					<span class="d-inline h5 ml-2 text-logo">officeShield</span>
+					<!-- <img src="@assets/images/logo.png" alt height="24" />
+					<span class="d-inline h5 ml-2 text-logo">officeShield</span> -->
+					<img src="@src/state/logo3.jpg" alt height="40" />
+												<img src="@src/state/name.png" alt height="24" />
 				</span>
 				<span class="logo-sm">
 					<img src="@assets/images/logo.png" alt height="24" />
@@ -228,15 +230,14 @@ export default {
 						<feather type="bell" class="align-middle"></feather>
 						<span class="noti-icon-badge"></span>
 					</template>
-					<b-tooltip target="bell-notification" placement="left">{{ Notification.length }} new unread
-						notifications</b-tooltip>
+					<b-tooltip target="bell-notification" placement="left">{{ Notification.length }} 条未读通知</b-tooltip>
 					<!-- item-->
 					<b-dropdown-text class="noti-title border-bottom pb-2" tag="div">
 						<h5 class="m-0 font-size-16">
 							<span class="float-right">
 								<a href class="text-dark">
-									<small>Clear All</small>
-								</a> </span>Notification
+									<small>清除所有</small>
+								</a> </span>通知
 						</h5>
 					</b-dropdown-text>
 

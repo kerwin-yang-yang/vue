@@ -256,14 +256,14 @@ export default {
           </div>
           <!-- End Left sidebar -->
           <b-modal v-model="errorModal" centered hide-footer title="重要提醒" title-class="font-18">
-            <div class="text-center">
+            <div class="text-center" >
               <i class="uil-no-entry text-warning display-3"></i>
               <h4 class="text-danger mt-4">阅读行为提醒</h4>
-              <p class="w-75 mx-auto text-muted">请注意，你的所有阅读行为将会被记录</p>
-              <p class="w-75 mx-auto text-muted">产生的任何泄密后果将由你承担</p>
-              <p class="w-75 mx-auto text-muted">我们将对你的行为进行实时的监控，需要获取你的摄像头权限，同意则开始文档阅读</p>
+              <h6 class="w-75 mx-auto text-muted">请注意，你的所有阅读行为将会被记录</h6>
+              <h6 class="w-75 mx-auto text-muted">产生的任何泄密后果将由你承担</h6>
+              <h6 class="w-75 mx-auto text-muted">我们将对你的行为进行实时的监控，需要获取你的摄像头权限，同意则开始文档阅读</h6>
               <div class="mt-4">
-                <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);" @click="confirmJump">
+                <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);" @click="confirmJump">
                   <i class="uil uil-arrow-right mr-1"></i> 同意
                 </a>
               </div>

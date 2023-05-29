@@ -3,6 +3,26 @@
         <div style="height:calc(100vh - 50px);">
             <RelationGraph ref="seeksRelationGraph" :options="graphOptions" :on-node-click="onNodeClick"
                 :on-line-click="onLineClick">
+                <!-- <div slot="graph-plug"
+                    style="top:0px;left:0px;position:absolute; color:#ffffff;font-size:12px;width:600px;border:#efefef solid 1px;z-index:1001;">
+                    <div style="background-color: #fa7b7e;padding:10px;width:100%;">这里是图谱插槽 slot="graph-plug"</div>
+
+                </div> -->
+                                    <!-- <div style="background-color: #7a9ef8;padding:10px;width:100%;">可以自定义这里的内容，比如你可以放一个搜索框：<el-input
+                            v-model="searchText" placeholder="你可以通过这个搜素框实现节点搜索功能" /></div>
+                    <div style="background-color: #7a9ef8;padding:10px;width:100%;">
+                        你需要设置这个插槽div的z-index>1000才能让这里展示在节点之上，否则它默认会被节点覆盖</div>
+                    <div style="background-color: #c67ffa;padding:10px;width:100%;">
+                        你可以把悬浮菜单放到这里，这样全屏后，右键菜单依然有效，点击图谱全屏按钮后再点击节点试试</div>
+                    <div v-show="isShowNodeMenuPanel"
+                        :style="{ left: nodeMenuPanelPosition.x + 'px', top: nodeMenuPanelPosition.y + 'px' }"
+                        style="width:200px;z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
+                        <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">对这个节点进行操作：</div>
+                        <div class="c-node-menu-item" @click.stop="doAction('操作1')">操作1</div>
+                        <div class="c-node-menu-item" @click.stop="doAction('操作1')">操作2</div>
+                        <div class="c-node-menu-item" @click.stop="doAction('操作1')">操作3</div>
+                        <div class="c-node-menu-item" @click.stop="doAction('操作1')">操作4</div>
+                    </div> -->
             </RelationGraph>
         </div>
 
@@ -75,13 +95,13 @@ export default {
             });
             this.task.records.forEach((record) => {
                 if (record.leak_level == 'LOW') {
-                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text:  '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#43d39e', });
+                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text: '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#43d39e', });
                 }
                 if (record.leak_level == 'MEDIUM') {
-                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text:  '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#ffbe0b', });
+                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text: '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#ffbe0b', });
                 }
                 if (record.leak_level == 'HIGH') {
-                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text:  '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#ff5c75', });
+                    this.graph_json_data.nodes.push({ id: 'record-' + record.id, text: '  泄密等级：' + record.leak_level, nodeShape: 1, color: '#ff5c75', });
                 }
 
 
@@ -202,5 +222,4 @@ export default {
 
 .c-node-menu-item:hover {
     background-color: rgba(66, 187, 66, 0.2);
-}
-</style>
+}</style>
