@@ -5,6 +5,7 @@
 ## Getting started
 
 ```bash
+![image](https://github.com/kerwin-yang-yang/vue/assets/85538797/95e64ebb-e109-4a3d-8f62-46e338de7d0e)
 
 # 1. Open command line and go to this folder
 
