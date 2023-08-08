@@ -7,7 +7,7 @@ import VueDragResize from 'vue-drag-resize'
 import axios from 'axios'
 import Overview from '@components/overview'
 import appConfig from '@src/app.config'
-import { stackedAreaChart } from '../ui/chart/data-chart'
+// import { stackedAreaChart } from '../ui/chart/data-chart'
 import { authComputed } from '@state/helpers'
 
 export default {
@@ -25,14 +25,11 @@ export default {
 
     Overview,
   },
-  // watch: {
-  //   // 监听 series 数组中元素数据变化，并更新视图
-  //   'series.0.data': function (newData, oldData) {
-  //     this.$refs.chart.updateSeries([{ data: newData }]);
-  //   }
-  // },
   data() {
     return {
+      leftMouseDown: false,
+      rightMouseDown: false,
+      keyboardInputs: [],
       startTime: '', // 计时器开始的时间
       hours: 0, // 小时数
       minutes: 0, // 分钟数
@@ -41,16 +38,10 @@ export default {
       lastPauseTime: null, // 添加这个新变量
       stop_num: 0,
       series: [
-        { name: '画面中眼睛的数目：', data: [] }
+        { name: '异常行为可能性：', data: [] }
       ],
-      stackedAreaChart: stackedAreaChart,
+      // stackedAreaChart: stackedAreaChart,
       tabContent: `Vakal text here dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.`,
-      // content: ` Donec pede justo, fringilla vel, aliquet nec, vulputate
-      //             eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
-      //             justo. Nullam dictum felis eu pede mollis pretium. Integer
-      //             tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean
-      //             vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
-      //             consequat vitae, eleifend ac, enim.`,
       overviewData: [
         {
           class: 'py-3 border-bottom',
@@ -78,11 +69,13 @@ export default {
         },
       ],
       timer: 0,
-      document_id: this.$route.query.document_id,
+      document_id: this.$route.query.document_id ? this.$route.query.document_id : 9,
       timerRunning: false,
 
       exitModal: false,
       stopModal: false,
+      errorModal: false,
+      error1Modal: false,
       isVisible: true,
       fullscreen: false,
       fullmodal: false,
@@ -122,6 +115,93 @@ export default {
       height: 0,
       top: 0,
       left: 0,
+      warningIndicators: 0,
+      DangerModal: false,
+      stackedAreaChart: {
+        chartOptions: {
+          chart: {
+            stacked: true,
+            // events: {
+            //   selection(chart, e) {
+            //     console.log(new Date(e.xaxis.min))
+            //   },
+            // },
+            toolbar: {
+              show: false,
+            },
+          },
+
+          // colors: ['#5369f8', '#43d39e', '#f77e53'],
+          dataLabels: {
+            enabled: false,
+          },
+          tooltip: {
+            theme: 'dark',
+            // x: { show: false },
+          },
+
+          stroke: {
+            width: 5,
+            colors: ['#5369f8'], // 默认颜色为蓝色
+          },
+          markers: {
+            size: 0,
+            colors: function ({ value, seriesIndex, dataPointIndex, w }) {
+              if (value > 0.2) {
+                return '#ff0000'; // 数据大于0.4时，标记点颜色为红色
+              } else {
+                return '#5369f8'; // 数据小于等于0.4时，标记点颜色为蓝色
+              }
+            },
+          },
+          fill: {
+            type: 'gradient',
+            gradient: {
+              opacityFrom: 0.8,
+              opacityTo: 1,
+            },
+            colors: '#50a5f1'
+
+            // function ({ value, seriesIndex, dataPointIndex, w }) {
+            //   let isWarning = false;
+            //   if (value > 0.1 && w.globals.seriesCandleO[seriesIndex][dataPointIndex + 1] > 0.1 && w.globals.seriesCandleO[seriesIndex][dataPointIndex + 2] > 0.1) {
+            //     isWarning = true;
+            //   }
+            //   if (isWarning) {
+            //     return '#e32a46'; // 添加警告颜色
+            //   } else {
+            //     return ; // 默认颜色
+            //   }
+            // },
+          },
+          legend: {
+            position: 'top',
+            horizontalAlign: 'left',
+          },
+          yaxis: {
+            title: {
+              text: '异常行为指标',
+            },
+            max: 1,
+          },
+          xaxis: {
+            type: 'datetime',
+            // axisBorder: {
+            //   color: '#d6ddea',
+            // },
+            // axisTicks: {
+            //   color: '#d6ddea',
+            // },
+            tooltip: {
+              enabled: false,
+            },
+            axisBorder: {
+              show: true,
+            },
+          },
+        },
+
+      }
     }
   },
   computed: {
@@ -129,25 +209,14 @@ export default {
     ...authComputed,
 
   },
-  // 监听 chartData 属性变化并更新 ECharts 图表
-  //  watch: {
-  //    series(newValue) { 
-  //     this.$refs.chart.setOption({
-  //        series: [
-  //          {
-  //            type: 'line',
-  //            name: 'test',
-  //            data: newValue,
-  //          },
-  //        ],
-  //      })
-  //    },
-  //  },
   async mounted() {
     document.addEventListener('fullscreenchange', this.handleScreenChange);
     document.addEventListener('webkitfullscreenchange', this.handleScreenChange);
     document.addEventListener('mozfullscreenchange', this.handleScreenChange);
     document.addEventListener('MSFullscreenChange', this.handleScreenChange);
+    window.addEventListener('mousedown', this.handleMouseDown);
+    window.addEventListener('mouseup', this.handleMouseUp);
+    window.addEventListener('keydown', this.handleKeyDown);
 
     // this.getCompetence()
     this.screen()
@@ -162,13 +231,19 @@ export default {
       .then((stream) => {
         this.$refs.video.srcObject = stream
       })
-    await axios.get('/api/document/get_images', { params: { id: this.document_id ? this.document_id : 1 } }).then((response) => {
+    await axios.get('/api/document/get_images', { params: { id: this.document_id ? this.document_id : 9 } }).then((response) => {
       // this.images = response.data.images // 从Flask后端获取图片数据，并将其添加到images列表中
       this.images = response.data.images.map(image => ({ url: image.data }));
       this.ideas = response.data.ideas.map(ideas => ({ paper_id: 'tooltip-button-' + ideas.paper_id, description: ideas.description, user_name: ideas.user_name, icon: ideas.icon }))
     })
     // window.addEventListener("resize", () => {this.$refs.chart.resize()});
-    this.uploadTimer = setInterval(this.uploadVideo, 100);
+    this.uploadTimer = setInterval(this.uploadVideo, 200);
+    // 禁止键盘事件
+    // window.addEventListener('keydown', function (e) {
+    //   if (e.key === 'F12' ) {
+    //     e.preventDefault();
+    //   }
+    // });
 
 
     this.startTimer()
@@ -199,12 +274,17 @@ export default {
 
       }
     },
-    makeToast(variant = null) {
-      this.$bvToast.toast('你的意见我们会在审核后选择性采纳', {
+    makeToast(variant = null, state) {
+      const content = '你可能出现了违反泄密规定的异常行为,请规范阅读'
+      if (state == 'success') {
+        content = '意见已经成功被上级收到'
+      }
+      this.$bvToast.toast(content, {
         title: ` ${variant || 'default'}`,
-        variant: "success",
+        variant: state,
         toaster: 'b-toaster-top-center',
-        solid: true
+        solid: true,
+        autoHideDelay: 0
       })
     },
     Send_ideas() {
@@ -212,7 +292,7 @@ export default {
       axios.post('/api/document/pullIdeas', { idea })
         .then(response => {
           console.log(response.data)
-          this.makeToast('上传成功！')
+          this.makeToast('意见上传成功！', 'success')
           this.content = ''
         })
         .catch(error => {
@@ -330,7 +410,11 @@ export default {
 
         if (response) {
           console.log(response)
-          const eye_num = response.eyes_rects
+          if (response.warningIndicators == 1) {
+            this.DangerModal = true
+            this.error_test()
+          }
+          const eye_num = response.Indicators
           // 更新图表展示的数据
           this.updateData(eye_num);
           if (response.image && response.aspectRatio) {
@@ -345,23 +429,47 @@ export default {
     },
 
     updateData(num_eyes) {
-      const now = new Date();
+      // const now = new Date();
+      this.$forceUpdate();
+      let newDataPoint = [new Date().getTime(), num_eyes.toFixed(1)];
 
-      let newDataPoint = [now, num_eyes];
 
 
-      this.$nextTick(() => {
 
-        let seriesData = this.series[0].data;
+      let seriesData = this.series[0].data;
 
-        if (seriesData.length > 20) {
-          seriesData.shift(); // 移除首项元素.
-        }
+      if (seriesData.length > 20) {
+        seriesData.shift(); // 移除首项元素.
+      }
 
-        // 向数据源添加新节点.
-        this.$set(this.series[0], 'data', [...seriesData, newDataPoint]);
+      // 向数据源添加新节点.
+      // this.$set(this.series[0], 'data', [...seriesData, newDataPoint]);
 
-      })
+      this.series[0].data = [...seriesData, newDataPoint];
+
+      // 检查前三个数据是否满足条件
+      if (seriesData.length >= 2 && num_eyes > 0.4 && seriesData[seriesData.length - 1][1] > 0.4 && seriesData[seriesData.length - 2][1] > 0.4 && seriesData[seriesData.length - 3][1] > 0.4) {
+        // 修改图表样式为警告颜色
+        // this.series[0].color = 'red';
+        this.stackedAreaChart.chartOptions.fill.colors = '#e61232';
+        this.stackedAreaChart.chartOptions.stroke.colors = ['#e61232'];
+        // this.stackedAreaChart.chartOptions.fill.colors = '#5369f8';
+        // this.stackedAreaChart.chartOptions.stroke.colors = ['#5369f8'];
+        this.$refs.chart.updateOptions(this.stackedAreaChart.chartOptions);
+        this.makeToast('异常行为预警', 'danger')
+      } else {
+        this.stackedAreaChart.chartOptions.fill.colors = '#e61232';
+        this.stackedAreaChart.chartOptions.stroke.colors = ['#e61232'];
+        // this.stackedAreaChart.chartOptions.fill.colors = '#5369f8';
+        // this.stackedAreaChart.chartOptions.stroke.colors = ['#5369f8'];
+        this.$refs.chart.updateOptions(this.stackedAreaChart.chartOptions);
+      }
+      // 更新图表
+      // this.$refs.chart.updateOptions(this.stackedAreaChart.chartOptions);
+      this.$refs.chart.updateSeries([{
+        data: this.series[0].data,
+      }]);
+      // this.$forceUpdate();
     },
 
 
@@ -587,6 +695,34 @@ export default {
       this.topleft = !this.topleft
       this.label = !this.label
     },
+    error_test() {
+
+      this.exitModal = true
+
+      this.stopModal = true
+      this.error1Modal = true
+      setTimeout(() => {
+        this.errorModal = true
+      }, 100); // 延迟1秒钟执行
+    },
+    handleMouseDown(event) {
+      if (event.button === 0) {
+        this.leftMouseDown = true;
+      } else if (event.button === 2) {
+        this.rightMouseDown = true;
+      }
+    },
+    handleMouseUp(event) {
+      if (event.button === 0) {
+        this.leftMouseDown = false;
+      } else if (event.button === 2) {
+        this.rightMouseDown = false;
+      }
+    },
+    handleKeyDown(event) {
+      const key = event.key;
+      this.keyboardInputs.push(key);
+    },
   },
   beforeDestroy() {
 
@@ -607,7 +743,9 @@ export default {
     document.removeEventListener('webkitfullscreenchange', this.handleScreenChange);
     document.removeEventListener('mozfullscreenchange', this.handleScreenChange);
     document.removeEventListener('MSFullscreenChange', this.handleScreenChange);
-
+    window.removeEventListener('mousedown', this.handleMouseDown);
+    window.removeEventListener('mouseup', this.handleMouseUp);
+    window.removeEventListener('keydown', this.handleKeyDown);
   },
 
 }
@@ -628,33 +766,41 @@ export default {
             :parent-limitation="true" style="z-index: 1000; position: fixed" :sticks="['tr']">
             <div v-if="isVisible" class="chatbox1 overflow-hidden">
 
-              <video ref="video" autoplay width="640" height="360" style="display: none;"></video>
+              <video ref="video" autoplay width="360" height="240" style="display: none;"></video>
               <canvas ref="canvas" width="640" height="360" style="display: none;z-index: 100;"></canvas>
               <canvas ref="canvas1" width="304" height="171"></canvas>
-              <apexchart ref="chart" class="apex-charts" height="150" type="area" :series="this.series"
+              <apexchart ref="chart" class="apex-charts" height="180" type="area" :series="this.series"
                 :options="stackedAreaChart.chartOptions"></apexchart>
 
             </div>
 
           </VueDragResize>
 
+
           <div class="inbox-leftbar" :class="{ active: this.leftSide }">
 
-            <div id="logo" >
+            <div id="logo">
               <div class="mx-auto mb-5">
-											
-												<img src="@src/state/logo3.jpg" alt height="45" style="margin:20px  20px"/>
-												<img src="@src/state/name.png" alt height="25" width="135"  />
-												<!-- <h3 class="d-inline align-middle ml-1 text-logo">officeShield</h3> -->
-										
-										</div>
-            </div>
 
+                <img src="@src/state/logo3.jpg" alt height="45" style="margin:20px  20px" />
+                <img src="@src/state/name.png" alt height="25" width="135" />
+                <!-- <h3 class="d-inline align-middle ml-1 text-logo">officeShield</h3> -->
+
+              </div>
+            </div>
+            <!-- <div>
+              <div>鼠标左键按下: {{ leftMouseDown }}</div>
+              <div>鼠标右键按下: {{ rightMouseDown }}</div>
+              <div>键盘按键记录:</div>
+              <ul>
+                <li v-for="(key, index) in keyboardInputs" :key="index">{{ key }}</li>
+              </ul>
+            </div> -->
             <div id="topNav" data-content-field="navigation">
               <nav id="mainNavigation" class="main-nav dropdown-click desktop-nav">
                 <ul>
                   <li class="page-collection active-link">
-                    <a @click="stopModal = true">
+                    <a @click="error_test">
 
                       <span style="height:100%;    
   align-items: center;;display:flex">
@@ -673,6 +819,40 @@ export default {
                         <div class="mt-4">
                           <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);" @click="cover">
                             暂停阅读
+                          </a>
+                        </div>
+                      </div>
+                    </b-modal>
+                    <b-modal v-model="errorModal" modal-class="Mymodal" centered hide-footer title="严重警告"
+                      title-class="font-18" no-close-on-backdrop no-close-on-esc>
+                      <div class="text-center">
+                        <i class=" uil-stopwatch-slash text-danger display-3"></i>
+
+                        <h4 class="text-danger mt-4">异常行为警告 </h4>
+                        <h6>办公出现了异常行为和异常物体</h6>
+                        <h6>该行为可能涉及违法泄密</h6>
+                        <h6>若无意行为则立即停止阅读并联系管理员说明具体情况</h6>
+                        <div class="mt-4">
+                          <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);"
+                            @click="confirmJump">
+                            退出阅读
+                          </a>
+                        </div>
+                      </div>
+                    </b-modal>
+                    <b-modal v-model="error1Modal" modal-class="Mymodal" centered hide-footer title="严重警告"
+                      title-class="font-18" no-close-on-backdrop no-close-on-esc>
+                      <div class="text-center">
+                        <i class=" uil-stopwatch-slash text-danger display-3"></i>
+
+                        <h4 class="text-danger mt-4">异常行为警告 </h4>
+                        <h6>办公出现了异常行为和异常物体</h6>
+                        <h6>该行为可能涉及违法泄密</h6>
+                        <h6>若无意行为则立即停止阅读并联系管理员说明具体情况</h6>
+                        <div class="mt-4">
+                          <a class="btn btn-outline-dark btn-rounded width-md" href="javascript: void(0);"
+                            @click="confirmJump">
+                            退出阅读
                           </a>
                         </div>
                       </div>
@@ -737,7 +917,7 @@ export default {
                                                                                                                                                               border-radius: 8px;
                                                                                                                                                             border: 1px solid #bbb6b7;
                                                                                                                                                             height: 32px;
-                                                                                                                                                              width: 56px;margin-right: 20px;
+                                                                                                                                                              width: 56px;margin-right: 10px;
                                                                                                                                                             "
                       @click="changeLeftSide"><i class="uil font-size-15" :class="{
                         'uil-left-arrow-to-left': label,
@@ -818,7 +998,7 @@ export default {
               <div class="Lbody" :class="{ active: Fullrend }">
                 <!-- <h5>Hi Bro, How are you?</h5> -->
                 <!-- <hr /> -->
-                <div>
+                <div @contextmenu.prevent>
                   <!-- <b-img-lazy id="tooltip-button-1" v-bind="mainProps" :src="getImageUrl(1)" alt="Image 1"></b-img-lazy>
                                                                                                                                                     <b-img-lazy id="tooltip-button-2" v-bind="mainProps" :src="getImageUrl(2)" alt="Image 2"></b-img-lazy>
                                                                                                                                                     <b-img-lazy id="tooltip-button-3" v-bind="mainProps" :src="getImageUrl(3)" alt="Image 3"></b-img-lazy>
@@ -910,21 +1090,36 @@ export default {
                   <div class="card-body">
                     <!-- <h5 class="header-title mb-3 mt-0" >Nav Tabs</h5> -->
                     <b-tabs>
-                      <b-tab title="Home" active>
+                      <b-tab title="关于" active>
                         <p>{{ tabContent }}</p>
                         <!-- <p class="mb-0">{{ content }}</p> -->
                       </b-tab>
-                      <b-tab title="Profile">
-                        <!-- <p>{{ content }}</p>
-  
-                                                                                                                    <p class="mb-0">{{ tabContent }}</p> -->
+                      <b-tab title="注意事项">
+                        <!-- <h4 class="header-title mt-0 mb-3">Stacked Area</h4> -->
+                        <h4 class="header-title mt-0 mb-3">本项目规定：</h4>
+                        <!-- <p v-for="(paragraph, index) in paragraphs(this.task.notes)" :key="index"><span> （{{ index + 1
+                        }}）</span> {{
+  paragraph }}</p> -->
+                        <p>
+                          （1） 我们会记录你的行为
+                        </p>
+                        <p>（2） 禁止一切恶意的行为</p>
 
-                        <h4 class="header-title mt-0 mb-3">Stacked Area</h4>
-                        <!-- <apexchart ref="chart" class="apex-charts" height="150" type="area" :series="this.series"
-                                                                                                                :options="stackedAreaChart.chartOptions"></apexchart> -->
+                        <!-- <p>阅读秘密文件基本规定：</p> -->
+                        <h4 class="header-title mt-0 mb-3">阅读秘密文件基本规定：</h4>
+                        <p><strong>（1）</strong>阅读、传达国家秘密文件、资料，要严格限制在规定的范围内，不得擅自扩大范围;</p>
 
+                        <p><strong>（2）</strong>阅读国家秘密文件、资料，必须在办公室或阅文室等有保密保障的场所进行;</p>
+
+                        <p><strong>（3）</strong>阅读国家秘密文件、资料，应当进行登记，不得由阅件人直接传给他人;</p>
+
+                        <p><strong>（4）</strong>不得擅自存留传阅的国家秘密文件、资料;</p>
+
+                        <p><strong>（5）</strong>传达国家秘密文件时，不得使用无线话筒等无保密保障的设备;</p>
+
+                        <p><strong>（6）</strong>听传达的人员应当遵守保密纪律，需要录音、录像的，应当经过批准。</p>
                       </b-tab>
-                      <b-tab title="Me">
+                      <b-tab title="统计">
                         <Overview :items="overviewData" />
                       </b-tab>
                     </b-tabs>

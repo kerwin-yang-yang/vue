@@ -65,7 +65,7 @@ export default {
 
       // 用户点击了“确定”按钮，继续执行路由跳转
 
-      this.$router.push({ name: '阅读', query: { document_id: this.DocuId } });
+      this.$router.push({ name: '阅览文档', query: { document_id: this.DocuId } });
       this.errorModal = false
     },
     chooseDocu(id) {

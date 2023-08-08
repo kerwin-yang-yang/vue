@@ -70,6 +70,19 @@ export default {
 			}
 			this.fullscreen = !this.fullscreen;
 		},
+		makeToast(variant = null, state) {
+			// const content = '你可能出现了违反泄密规定的异常行为,请规范阅读'
+			if (state == 'success') {
+				// content = '意见已经成功被上级收到'
+			}
+			this.$bvToast.toast(variant, {
+				title: ` ${'通知内容' || 'default'}`,
+				variant: state,
+				toaster: 'b-toaster-top-center',
+				solid: true,
+				// autoHideDelay: 0
+			})
+		},
 	},
 }
 </script>
@@ -84,7 +97,7 @@ export default {
 					<!-- <img src="@assets/images/logo.png" alt height="24" />
 					<span class="d-inline h5 ml-2 text-logo">officeShield</span> -->
 					<img src="@src/state/logo3.jpg" alt height="40" />
-												<img src="@src/state/name.png" alt height="24" />
+					<img src="@src/state/name.png" alt height="24" />
 				</span>
 				<span class="logo-sm">
 					<img src="@assets/images/logo.png" alt height="24" />
@@ -106,7 +119,7 @@ export default {
 					<div class="app-search">
 						<form>
 							<div class="input-group">
-								<input type="text" class="form-control" placeholder="Search..." />
+								<input type="text" class="form-control" placeholder="搜索" />
 								<feather type="search" class="align-middle"></feather>
 							</div>
 						</form>
@@ -115,7 +128,7 @@ export default {
 
 				<li class="dropdown d-none d-lg-block" id="fullscreen-tooltip">
 					<a href="javascript:void(0);" class="nav-link right-bar-toggle toggle-right" @click="screen">
-						<b-tooltip target="fullscreen-tooltip" placement="left">Full screen</b-tooltip>
+						<b-tooltip target="fullscreen-tooltip" placement="buttom">全屏</b-tooltip>
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
 							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
 							class="feather feather-maximize">
@@ -135,7 +148,7 @@ export default {
 							<rect x="3" y="14" width="7" height="7"></rect>
 						</svg>
 					</template>
-					<b-tooltip target="project-tooltip" placement="left">Project Information</b-tooltip>
+					<b-tooltip target="project-tooltip" placement="buttom">Project Information</b-tooltip>
 					<!-- item-->
 
 					<div class="dropdown-menu dropdown-lg dropdown-menu-end p-0 show" data-popper-placement="bottom-end"
@@ -198,7 +211,7 @@ export default {
 					<template v-slot:button-content>
 						<feather type="globe"></feather>
 					</template>
-					<b-tooltip target="globe-tooltip" placement="left">Change language</b-tooltip>
+					<b-tooltip target="globe-tooltip" placement="buttom">选择语言</b-tooltip>
 					<!-- item-->
 					<b-dropdown-text href="javascript:void(0);" class="notify-item">
 						<img src="@assets/images/flags/germany.jpg" alt="user-image" class="mr-2" height="12" />
@@ -230,7 +243,7 @@ export default {
 						<feather type="bell" class="align-middle"></feather>
 						<span class="noti-icon-badge"></span>
 					</template>
-					<b-tooltip target="bell-notification" placement="left">{{ Notification.length }} 条未读通知</b-tooltip>
+					<b-tooltip target="bell-notification" placement="bottom">{{ Notification.length }} 条未读通知</b-tooltip>
 					<!-- item-->
 					<b-dropdown-text class="noti-title border-bottom pb-2" tag="div">
 						<h5 class="m-0 font-size-16">
@@ -244,14 +257,18 @@ export default {
 					<VuePerfectScrollbar v-once class="noti-scroll">
 						<!-- item-->
 						<b-dropdown-text href="javascript:void(0);" class="notify-item border-bottom"
-							v-for="notification in Notification" :key="notification.id">
+							v-for="notification in Notification" :key="notification.id"
+							@click="makeToast(notification.content, 'info')">
 							<div class="notify-icon">
 								<!-- <i class="uil uil-user-plus"></i> -->
 								<img :src="notification.sender_picture" class="img-fluid rounded-circle" />
 							</div>
 							<p class="notify-details">
 								{{ notification.content }}
-								<small class="text-muted">{{ formatTime(notification.timestamp) }}</small>
+								<!-- {{ notification.sender_name }} -->
+								<!-- <small></small> -->
+								<small class="text-muted"><strong>{{ notification.sender_name }}</strong> {{
+									formatTime(notification.timestamp) }}</small>
 							</p>
 						</b-dropdown-text>
 
@@ -328,7 +345,7 @@ export default {
 						@click="toggleRightSidebar">
 						<feather type="settings" class="toggle-right"></feather>
 					</a>
-					<b-tooltip target="setting-tooltip" placement="left">Settings</b-tooltip>
+					<b-tooltip target="setting-tooltip" placement="buttom">网站布局选择</b-tooltip>
 				</li>
 
 				<b-nav-item-dropdown right class="notification-list align-self-center profile-dropdown"
@@ -418,4 +435,5 @@ export default {
 .col img {
 	width: 24px;
 	height: 24px;
-}</style>
+}
+</style>

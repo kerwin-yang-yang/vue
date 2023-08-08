@@ -267,7 +267,7 @@ export default {
 								<b-table-simple class="table table-hover table-nowrap mb-0">
 									<b-thead class="thead-white">
 										<b-tr>
-											<b-th>#任务编号</b-th>
+											<!-- <b-th>#任务编号</b-th> -->
 											<b-th>文档</b-th>
 											<b-th>创建人</b-th>
 											<b-th>结束时间</b-th>
@@ -276,7 +276,7 @@ export default {
 									</b-thead>
 									<b-tbody>
 										<b-tr v-for="order in ordersData" :key="order.name" v-if="ordersData">
-											<b-td>{{ order.id }}</b-td>
+											<!-- <b-td>{{ order.id }}</b-td> -->
 											<b-td class="ellipsis">{{ order.document.substr(0, 40) }}</b-td>
 											<b-td>{{ order.createUser }}</b-td>
 											<b-td>{{ order.deadline_time.substr(0, 11) }}</b-td>

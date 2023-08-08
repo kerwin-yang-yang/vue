@@ -258,6 +258,7 @@ const stackedAreaChart = {
         show: false,
       },
     },
+
     colors: ['#5369f8', '#43d39e', '#f77e53'],
     dataLabels: {
       enabled: false,
@@ -267,7 +268,7 @@ const stackedAreaChart = {
       // x: { show: false },
     },
     stroke: {
-      width: [3, 3, 3],
+      width: [1, 1, 1],
       curve: 'smooth',
     },
     fill: {
@@ -281,6 +282,12 @@ const stackedAreaChart = {
       position: 'top',
       horizontalAlign: 'left',
     },
+    yaxis: {
+      title: {
+        text: '异常行为指标',
+      },
+      max: 1,
+    },
     xaxis: {
       type: 'datetime',
       // axisBorder: {
@@ -293,7 +300,7 @@ const stackedAreaChart = {
         enabled: false,
       },
       axisBorder: {
-        show: false,
+        show: true,
       },
     },
   },

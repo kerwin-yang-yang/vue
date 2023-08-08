@@ -51,6 +51,10 @@ export default {
 	},
 	methods: {
 		...TasksMethods,
+		load() {
+			this.getTasks({ username: this.currentUser.username })
+			this.$set(this, 'projectData', this.Tasks)
+		},
 		formDate() {
 			const nowtime = new Date();
 
@@ -75,7 +79,9 @@ export default {
 			if (this.users == null && this.document == null) {
 				await axios.get('/api/user').then(response => {
 
-					this.users = response.data.map(item => ({
+					this.users = response.data.filter(item => item.user_role_name == '普通人员'
+						// || item.user_role_name == '管理人员'
+					).map(item => ({
 						username: item.username,
 						user_role_name: item.user_role_name,
 						icon: item.icon,
@@ -213,6 +219,12 @@ export default {
 									<b-form-textarea id="example-textarea" v-model="notes" size="sm"
 										rows="4"></b-form-textarea>
 								</div>
+								<div class="form-group">
+									<label for="default">水印设置：</label>
+									<b-form-checkbox v-model="checked" name="check-button" switch>
+										用户访问文档时水印实时生成
+									</b-form-checkbox>
+								</div>
 							</div>
 							<div class=" col-xl-6 col-lg-6">
 
@@ -339,7 +351,7 @@ export default {
 		<div class="row mb-3 mt-2">
 			<div class="col-12">
 				<div class="text-center">
-					<a href="javascript:void(0);" class="btn btn-white">
+					<a href="javascript:void(0);" class="btn btn-white" @click="load">
 						<feather type="loader" class="icon-dual icon-xs mr-2 align-middle"></feather>Load more
 					</a>
 				</div>

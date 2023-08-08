@@ -82,7 +82,7 @@ export default {
 	<div class="row">
 		<div class="col-12">
 			<div class="card">
-				<div class="card-body">
+				<div class="card-body ">
 					<!-- Logo & title -->
 					<div class="clearfix">
 						<div class="float-right">
@@ -101,7 +101,7 @@ export default {
 							<h4 class="m-0 d-print-none">泄密事件详情</h4>
 							<dl class="row mb-2 mt-3">
 								<dt class="col-sm-3 font-weight-normal">泄密人员 :</dt>
-								<dd class="col-sm-9 font-weight-normal">bob</dd>
+								<dd class="col-sm-9 font-weight-normal">kerwin</dd>
 
 								<dt class="col-sm-3 font-weight-normal">泄密时间：</dt>
 								<dd class="col-sm-9 font-weight-normal">2023.4.23 10:15</dd>

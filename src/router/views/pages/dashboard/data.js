@@ -77,11 +77,12 @@ const targetsBarChart = {
         show: false,
       },
     },
+    
     plotOptions: {
       bar: {
         horizontal: false,
         endingShape: 'rounded',
-        columnWidth: '55%',
+        columnWidth: '5%',
       },
     },
     dataLabels: {
@@ -89,7 +90,7 @@ const targetsBarChart = {
     },
     stroke: {
       show: true,
-      width: 2,
+      width: 3,
       colors: ['transparent'],
     },
     colors: [ '#ff5c75', '#ffbe0b','#43d39e' ],

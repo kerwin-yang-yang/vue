@@ -79,7 +79,9 @@ export default {
 
 
 					// });
-					this.users = response.data.filter(item => item.user_role_name == '任务发布者' || item.user_role_name == '管理人员')
+					this.users = response.data.filter(item => item.user_role_name == '任务发布者'
+						// || item.user_role_name == '管理人员'
+					)
 						.map(item => ({
 							username: item.username,
 							user_role_name: item.user_role_name,
@@ -148,13 +150,13 @@ export default {
 				</div>
 			</div> -->
 		</div>
-		</div>
+
 
 		<div class="row">
 			<div class="col-12">
 				<div class="card">
 					<div class="card-body">
-						<h4 class="vue-editor mt-0 mb-1">上传文档并指定机密等级</h4>
+						<h4 class="vue-editor mt-0 mb-1">上传机密文档</h4>
 						<p class="text-muted font-13 m-b-30">Upload documents and specify confidentiality level</p>
 						<!-- file upload -->
 						<vue-dropzone id="dropzone" ref="myVueDropzone" :options="dropzoneOptions" :use-custom-slot="true"
@@ -198,7 +200,7 @@ export default {
 								<h5 class="card-title font-size-16"> - 文档发布人：{{ currentUser.username }}</h5>
 								<h5 class="card-title font-size-16"> - 加密用时：5.6秒</h5>
 								<h5 class="card-title font-size-16">- 共加密图片：4张 </h5>
-								<h5 class="card-title font-size-16">- 可授权文档任务发布人数：4人</h5>
+								<h5 class="card-title font-size-16">- 可授权文档任务发布人数：3人</h5>
 								<!-- <p class="card-text">
                                     Last updated 3 mins ago
                                 </p> -->

@@ -19,7 +19,7 @@ export default {
         'unaccepted': '未采纳',
         'ok': '最终可视意见'
       },
-      errorModal:false,
+      errorModal: false,
       widgetData: widgetData,
       task: '',
       projectActivity: projectActivity,
@@ -183,14 +183,17 @@ export default {
     console.log(this.task_id)
     await this.getTasksDetail({ id: this.task_id })
     this.task = this.DetailTask
-    this.salesDonutChart.series1[0] = this.task.records.filter(record => record.leak_level === 'LOW').length
-    this.salesDonutChart.series1[1] = this.task.records.filter(record => record.leak_level === 'MEDIUM').length
-    this.salesDonutChart.series1[2] = this.task.records.filter(record => record.leak_level === 'HIGH').length
+    console.log(this.task)
+    if (this.task.records!=[]) {
+      this.salesDonutChart.series1[0] = this.task.records.filter(record => record.leak_level === 'LOW').length
+      this.salesDonutChart.series1[1] = this.task.records.filter(record => record.leak_level === 'MEDIUM').length
+      this.salesDonutChart.series1[2] = this.task.records.filter(record => record.leak_level === 'HIGH').length
+    }
     this.salesDonutChart1.series2[0] = this.task.progress
     this.salesDonutChart1.series2[1] = 100 - this.task.progress
     this.salesDonutChart2.series3[0] = this.task.users.filter(user => user.role_id === 0).length
-    this.salesDonutChart2.series3[1] = this.task.users.filter(user => user.role_id === 1).length+this.task.users.filter(user => user.role_id === 2).length+this.task.users.filter(user => user.role_id === 3).length
-    this.salesDonutChart2.series3[2] = this.task.users.filter(user => user.role_id === 4).length+this.task.users.filter(user => user.role_id === 5).length
+    this.salesDonutChart2.series3[1] = this.task.users.filter(user => user.role_id === 1).length + this.task.users.filter(user => user.role_id === 2).length + this.task.users.filter(user => user.role_id === 3).length
+    this.salesDonutChart2.series3[2] = this.task.users.filter(user => user.role_id === 4).length + this.task.users.filter(user => user.role_id === 5).length
 
   },
   methods: {
@@ -230,12 +233,12 @@ export default {
     },
     async deleteTask() {
 
-      
+
       await axios.get('/api/documentTask/deleteTask', { params: { id: this.task.id } }).then(response => {
         this.makeToast('删除成功')
       })
-      this.errorModal=false
-      this.task=null
+      this.errorModal = false
+      this.task = null
     },
     makeToast(variant = null) {
       this.$bvToast.toast(variant, {
@@ -279,8 +282,7 @@ export default {
           <h4 class="text-danger mt-4">删除预警</h4>
           <p class="w-75 mx-auto text-muted">请注意，你的行为可能会导致问题，请谨慎选择</p>
           <div class="mt-4">
-            <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);"
-              @click="deleteTask">
+            <a class="btn btn-outline-primary btn-rounded width-md" href="javascript: void(0);" @click="deleteTask">
               <i class="uil uil-arrow-right mr-1"></i>同意<i class="uil uil-arrow-left mr-1"></i>
             </a>
           </div>
@@ -432,7 +434,7 @@ export default {
                       `${index % 3}` == 2,
                   }" v-for="type, index in task.type">{{ type.name }}</a>
 
-              </div>
+                </div>
               </div>
 
               <div class="row">
@@ -706,16 +708,16 @@ export default {
                       }}</a>
                     </h5>
                     <p class="text-muted font-size-13 text-truncate mb-0" :class="{
-                      'bg-soft-primary text-primary':
-                        `${record.leak_level}` === 'primary',
-                      'bg-soft-success text-success':
-                        `${record.leak_level}` === 'LOW',
-                      'bg-soft-warning text-warning':
-                        `${record.leak_level}` === 'MEDIUM',
-                      'bg-soft-danger text-danger':
-                        `${record.leak_level}` === 'HIGH',
-                    }">{{ record.description
-}}</p>
+                          'bg-soft-primary text-primary':
+                            `${record.leak_level}` === 'primary',
+                          'bg-soft-success text-success':
+                            `${record.leak_level}` === 'LOW',
+                          'bg-soft-warning text-warning':
+                            `${record.leak_level}` === 'MEDIUM',
+                          'bg-soft-danger text-danger':
+                            `${record.leak_level}` === 'HIGH',
+                        }">{{ record.description
+    }}</p>
                   </div>
                 </div>
               </li>

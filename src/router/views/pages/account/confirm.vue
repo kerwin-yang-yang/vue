@@ -25,24 +25,22 @@ export default {
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-6 col-xl-5">
         <div class="card bg-pattern">
-          <div class="card-body p-4">
+          <div class="card-body p-4" style="padding-bottom: 2px;">
             <div class="text-center w-75 m-auto">
               <a href="/"> </a>
             </div>
 
             <div class="mt-3 text-center">
               <h3>账号注册成功，可以返回登录</h3>
-              <p class="text-muted mt-2">
-                
-                请检查是否有来自公司的电子邮件，并点击其中包含的链接来重设密码。
-              </p>
 
-              <router-link
-                tag="a"
-                to="/login"
-                class="btn btn-block btn-primary waves-effect waves-light mt-3"
-                >立刻登录</router-link
-              >
+              <router-link tag="a" to="/login"
+                class="btn btn-block btn-primary waves-effect waves-light mt-3">立刻登录</router-link>
+              <div style="margin-top: 10px;">
+                <small>
+
+                  (请检查是否有来自系统的电子邮件,并点击其中包含的链接来重设密码)</small>
+              </div>
+
             </div>
           </div>
           <!-- end card-body -->

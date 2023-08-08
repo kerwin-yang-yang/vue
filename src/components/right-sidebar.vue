@@ -65,12 +65,12 @@ export default {
         <a href="javascript:void(0);" class="right-bar-toggle float-right" @click="hide">
           <feather type="x-circle"></feather>
         </a>
-        <h5 class="m-0">Customization</h5>
+        <h5 class="m-0">样式</h5>
       </div>
 
       <div class="slimscroll-menu pb-5">
         <VuePerfectScrollbar style="height: 100%">
-          <h5 class="font-size-16 pl-3 mt-4">Choose Variation</h5>
+          <h5 class="font-size-16 pl-3 mt-4">选择其他样式</h5>
           <div class="p-3">
             <h6>Default</h6>
             <a href="javascript: void(0);" @click="changeLayout('vertical')">

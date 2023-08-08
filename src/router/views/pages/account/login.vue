@@ -46,33 +46,33 @@ export default {
 				toaster: 'b-toaster-top-center',
 				solid: true
 			})
-		},    
+		},
 		screen() {
-      let element = document.documentElement
-      if (this.fullscreen) {
-        if (document.exitFullscreen) {
-          document.exitFullscreen()
-        } else if (document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen()
-        } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen()
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen()
-        }
-      } else {
-        if (element.requestFullscreen) {
-          element.requestFullscreen()
-        } else if (element.webkitRequestFullScreen) {
-          element.webkitRequestFullScreen()
-        } else if (element.mozRequestFullScreen) {
-          element.mozRequestFullScreen()
-        } else if (element.msRequestFullscreen) {
-          // IE11
-          element.msRequestFullscreen()
-        }
-      }
-      this.fullscreen = !this.fullscreen
-    },
+			let element = document.documentElement
+			if (this.fullscreen) {
+				if (document.exitFullscreen) {
+					document.exitFullscreen()
+				} else if (document.webkitCancelFullScreen) {
+					document.webkitCancelFullScreen()
+				} else if (document.mozCancelFullScreen) {
+					document.mozCancelFullScreen()
+				} else if (document.msExitFullscreen) {
+					document.msExitFullscreen()
+				}
+			} else {
+				if (element.requestFullscreen) {
+					element.requestFullscreen()
+				} else if (element.webkitRequestFullScreen) {
+					element.webkitRequestFullScreen()
+				} else if (element.mozRequestFullScreen) {
+					element.mozRequestFullScreen()
+				} else if (element.msRequestFullscreen) {
+					// IE11
+					element.msRequestFullscreen()
+				}
+			}
+			this.fullscreen = !this.fullscreen
+		},
 		// Try to log the user in with the username
 		// and password they provided.
 		tryToLogIn() {
@@ -106,7 +106,7 @@ export default {
 	},
 	mounted() {
 		this.screen()
-		 this.vantaEffect = WAVES({
+		this.vantaEffect = WAVES({
 			el: this.$refs.vantaRef,
 			THREE: THREE
 		})
@@ -211,7 +211,7 @@ export default {
 													<input id="checkbox-signin" type="checkbox" class="custom-control-input"
 														checked />
 													<label class="custom-control-label" for="checkbox-signin">
-														Remember me
+														记住账号
 													</label>
 												</div>
 											</div>
@@ -261,10 +261,10 @@ export default {
 															officeShield
 														</p> -->
 														<p class="font-size-24 font-weight-bold mb-1 text-center">
-															面向在线办公的隐私泄露 </p>
+															面向远程办公场景的泄密 </p>
 
 														<p class="font-size-24 font-weight-bold mb-1 text-center">
-															多维感知与溯源防护系统</p>
+															风险感知与防护溯源系统</p>
 													</div>
 												</div>
 											</div>
@@ -310,11 +310,12 @@ export default {
 .my_title {
 	z-index: 999;
 	position: relative;
-	
+
 	top: 35%;
 	/* left: 4%;
 	right: 4%; */
 	color: aquamarine;
 	font-size: 15px;
 	font-weight: bolder;
-}</style>
+}
+</style>

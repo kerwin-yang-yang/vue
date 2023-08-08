@@ -151,7 +151,7 @@ const calendarAppsRoutes = [
 const emailAppsRoutes = [
   {
     path: '/apps/email',
-    name: '所有文档',
+    name: '文档管理',
     icon: 'inbox',
     meta: { authRequired: true },
     // create a container component
@@ -190,7 +190,45 @@ const emailAppsRoutes = [
 const projectAppsRoutes = [
   {
     path: '/apps/project',
-    name: '文档项目管理',
+    name: '泄密处理',
+    icon: 'briefcase',
+    meta: { authRequired: true },
+    // create a container component
+    component: {
+      render(c) {
+        return c('router-view')
+      },
+    },
+    props: (route) => ({ user: store.state.auth.currentUser || {} }),
+    children: [
+
+      {
+        path: 'water',
+        name: '水印溯源',
+        meta: { authRequired: true },
+        component: () => lazyLoadView(import('@views/pages/ui/forms/water')),
+      },
+      {
+        path: 'eventList',
+        name: '事件列表',
+        meta: { authRequired: true },
+        component: () => lazyLoadView(import('@views/pages/event/eventList')),
+      },
+      {
+        path: 'eventDetail',
+        name: '事件详情',
+        meta: { authRequired: true },
+        component: () => lazyLoadView(import('@views/pages/event/profile')),
+      },
+    ],
+  }
+];
+
+// apps
+const PPRoutes = [
+  {
+    path: '/apps/project',
+    name: '任务管理',
     icon: 'briefcase',
     meta: { authRequired: true },
     // create a container component
@@ -215,21 +253,108 @@ const projectAppsRoutes = [
         component: () =>
           lazyLoadView(import('@views/pages/apps/project/detail')),
       },
-      {
-        path: 'uploads',
-        name: '文件上传',
-        meta: { authRequired: true },
-        component: () => lazyLoadView(import('@views/pages/ui/forms/uploads')),
-      },
-      {
-        path: 'water',
-        name: '水印溯源',
-        meta: { authRequired: true },
-        component: () => lazyLoadView(import('@views/pages/ui/forms/water')),
-      },
+      // {
+      //   path: 'uploads',
+      //   name: '文件上传',
+      //   meta: { authRequired: true },
+      //   component: () => lazyLoadView(import('@views/pages/ui/forms/uploads')),
+      // },
+      // {
+      //   path: 'water',
+      //   name: '水印溯源',
+      //   meta: { authRequired: true },
+      //   component: () => lazyLoadView(import('@views/pages/ui/forms/water')),
+      // },
     ],
   }
 ];
+const projectAppsRoutes1 = [
+  {
+    path: '/apps/project',
+    name: '任务管理',
+    icon: 'briefcase',
+    meta: { authRequired: true },
+    // create a container component
+    component: {
+      render(c) {
+        return c('router-view')
+      },
+    },
+    props: (route) => ({ user: store.state.auth.currentUser || {} }),
+    children: [
+      {
+        path: 'list',
+        icon: 'grid',
+        name: '所有任务',
+        meta: { authRequired: true },
+        component: () =>
+          lazyLoadView(import('@views/pages/apps/project/list')),
+      },
+      {
+        path: 'detail',
+        icon: 'grid',
+        name: '任务详情',
+        meta: { authRequired: true },
+        component: () =>
+          lazyLoadView(import('@views/pages/apps/project/detail')),
+      },
+      // {
+      //   path: 'uploads',
+      //   name: '文件上传',
+      //   meta: { authRequired: true },
+      //   component: () => lazyLoadView(import('@views/pages/ui/forms/uploads')),
+      // },
+      // {
+      //   path: 'water',
+      //   name: '水印溯源',
+      //   meta: { authRequired: true },
+      //   component: () => lazyLoadView(import('@views/pages/ui/forms/water')),
+      // },
+    ],
+  }
+];
+const fileRoutes = [
+  {
+    path: '/uploads',
+    icon: 'file',
+    name: '文件上传',
+    meta: { authRequired: true },
+    component: () => lazyLoadView(import('@views/pages/ui/forms/uploads')),
+    // props: (route) => ({ user: store.state.auth.currentUser || {} }),
+  },
+]
+
+const NoteRoutes = [
+  {
+    path: '/apps/task',
+    name: '通知管理',
+    icon: 'bookmark',
+    meta: { authRequired: true },
+    // create a container component
+    component: {
+      render(c) {
+        return c('router-view')
+      },
+    },
+    props: (route) => ({ user: store.state.auth.currentUser || {} }),
+    children: [
+      {
+        path: 'list',
+        name: 'Task List',
+        meta: { authRequired: true },
+        component: () =>
+          lazyLoadView(import('@views/pages/apps/tasks/task-list')),
+      },
+      {
+        path: 'task-board',
+        name: 'Kanban Board',
+        meta: { authRequired: true },
+        component: () =>
+          lazyLoadView(import('@views/pages/apps/tasks/task-board')),
+      },
+    ],
+  }
+]
 
 const taskAppsRoutes = [
   {
@@ -470,7 +595,7 @@ const chartsRoutes = [
 const ReadRoutes = [
   {
     path: '/Read',
-    name: '阅读',
+    name: '阅览文档',
     icon: 'book-open',
     component: () => lazyLoadView(import('@views/pages/read/read')),
     meta: { authRequired: true },
@@ -495,38 +620,62 @@ const EditRoutes = [
     props: (route) => ({ user: store.state.auth.currentUser || {} }),
   },
 ]
+const RoleRoutes = [
+
+  {
+    path: '/role',
+    icon: 'edit',
+    name: '角色管理',
+    component: () => lazyLoadView(import('@views/pages/apps/role')),
+    props: (route) => ({ user: store.state.auth.currentUser || {} }),
+  },
+]
 
 const authProtectedRoutes = [
+  ...fileRoutes,
   ...dashboardRoutes,
-  // ...errorPagesRoutes,
-  ...appsRoutes,
-
+  ...errorPagesRoutes,
+  ...calendarAppsRoutes,
+  ...PPRoutes,
+  ...projectAppsRoutes,
+  ...RoleRoutes,
 
   ...pagesRoutes,
   ...taskAppsRoutes,
   ...emailAppsRoutes,
-  // ...ReadRoutes,
+  ...ReadRoutes,
   ...EditRoutes,
 
 
+  ...uiRoutes,
+  ...formsRoutes,
+  ...chartsRoutes,
+  ...tablesRoutes
+]
+const AdminRoutes = [
+  ...dashboardRoutes,
+  // ...errorPagesRoutes,
+  // ...fileRoutes,
+  ...calendarAppsRoutes,
+  ...PPRoutes,
+  ...projectAppsRoutes,
+  ...RoleRoutes,
+
+  ...pagesRoutes,
+  // ...taskAppsRoutes,
+  ...emailAppsRoutes,
+  // ...ReadRoutes,
   // ...uiRoutes,
   // ...formsRoutes,
   // ...chartsRoutes,
   // ...tablesRoutes
-]
-const AdminRoutes = [
-  // ...dashboardRoutes,
-  // ...pagesRoutes,
-  ...appsRoutes,
-  ...emailAppsRoutes,
-  ...EditRoutes,
 ]
 const UserRoutes = [
   ...calendarAppsRoutes,
   // ...pagesRoutes,
   ...emailAppsRoutes,
   ...ReadRoutes,
-  ...taskAppsRoutes,
+  // ...taskAppsRoutes,
   ...EditRoutes
 
 ]
@@ -535,10 +684,22 @@ const UserRoutes = [
 // ...chartsRoutes,
 // ...tablesRoutes
 
+const projectRoutes = [
 
-const allRoutes = [...authRoutes, ...authProtectedRoutes, ...errorPagesRoutes]
 
-export { allRoutes, authProtectedRoutes, AdminRoutes, UserRoutes }
+  ...fileRoutes,
+  ...projectAppsRoutes1,
+  ...calendarAppsRoutes,
+  ...emailAppsRoutes,
+
+  ...taskAppsRoutes,
+  ...NoteRoutes,
+  ...EditRoutes,
+
+]
+const allRoutes = [...authRoutes, ...authProtectedRoutes, ...errorPagesRoutes,]
+
+export { allRoutes, authProtectedRoutes, AdminRoutes, UserRoutes, projectRoutes }
 
 
 

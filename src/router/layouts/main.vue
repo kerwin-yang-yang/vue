@@ -1,5 +1,5 @@
 <script>
-import { layoutComputed } from '@state/helpers'
+import { layoutComputed, authComputed } from '@state/helpers'
 import Vertical from '@router/layouts/vertical'
 import Horizontal from '@router/layouts/horizontal'
 
@@ -10,6 +10,7 @@ export default {
   },
   computed: {
     ...layoutComputed,
+    ...authComputed
   },
   methods: {},
 }

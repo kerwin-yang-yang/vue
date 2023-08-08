@@ -104,29 +104,29 @@ export default {
 
 				<b-dropdown-item href="/pages/profile" class="notify-item">
 					<feather type="user" class="icon-dual icon-xs mr-2 align-middle"></feather>
-					<span>My Account</span>
+					<span>账户信息</span>
 				</b-dropdown-item>
 
 				<b-dropdown-item href="javascript:void(0);" class="notify-item">
 					<feather type="settings" class="icon-dual icon-xs mr-2 align-middle"></feather>
-					<span>Settings</span>
+					<span>设置</span>
 				</b-dropdown-item>
 
 				<b-dropdown-item href="javascript:void(0);" class="notify-item">
 					<feather type="help-circle" class="icon-dual icon-xs mr-2 align-middle"></feather>
-					<span>Support</span>
+					<span>支持</span>
 				</b-dropdown-item>
 
 				<b-dropdown-item href="javascript: void(0);" class="notify-item">
 					<feather type="lock" class="icon-dual icon-xs mr-2 align-middle"></feather>
-					<span>Lock Screen</span>
+					<span>锁定屏幕</span>
 				</b-dropdown-item>
 
 				<b-dropdown-divider></b-dropdown-divider>
 
 				<b-dropdown-item href="/logout" class="notify-item">
 					<feather type="log-out" class="icon-dual icon-xs mr-2 align-middle"></feather>
-					<span>Logout</span>
+					<span>登出</span>
 				</b-dropdown-item>
 			</b-dropdown>
 		</div>

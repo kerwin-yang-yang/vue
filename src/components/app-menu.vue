@@ -2,7 +2,8 @@
 import MetisMenu from 'metismenujs/dist/metismenujs'
 
 import { authComputed } from '@state/helpers'
-import { authProtectedRoutes, AdminRoutes, UserRoutes  } from '@routes'
+import { authProtectedRoutes, AdminRoutes, UserRoutes, projectRoutes } from '@routes'
+import { layoutComputed } from '@state/helpers'
 
 /**
  * Application menu component
@@ -15,6 +16,7 @@ export default {
       default: 'vertical',
     },
   },
+
   data() {
     return {
       menuItems: '',
@@ -23,18 +25,23 @@ export default {
   },
   created() {
     if (this.currentUser.role_id == 0) {
-      this.menuItems = authProtectedRoutes
-    }
-    else 
-    if (this.currentUser.role_id <= 3) {
       this.menuItems = AdminRoutes
     }
-    else {
-      this.menuItems = UserRoutes
-    }
+    else
+      if (this.currentUser.role_id <= 3) {
+        this.menuItems = projectRoutes
+      }
+      else {
+        console.log(this.$store.state.layout.layoutType)
+        this.$store.state.layout.layoutType = 'vertical'
+        console.log(this.$store.state.layout.layoutType)
+        this.menuItems = UserRoutes
+
+      }
   },
   computed: {
     ...authComputed,
+    ...layoutComputed,
   },
   mounted: function () {
     // eslint-disable-next-line no-unused-vars
@@ -129,9 +136,8 @@ export default {
       <router-link v-if="!hasItems(item)" tag="a" :to="`${item.path}`" class="side-nav-link side-nav-link-ref">
         <feather v-if="item.icon" :type="item.icon"></feather>
         <span>{{ item.name }}</span>
-        <span v-if="item.badge" :class="
-          'badge badge-' + item.badge.varient + ' float-right font-size-11'
-        ">{{ item.badge.text }}</span>
+        <span v-if="item.badge" :class="'badge badge-' + item.badge.varient + ' float-right font-size-11'
+          ">{{ item.badge.text }}</span>
       </router-link>
 
       <ul v-if="hasItems(item)" class="nav-second-level">
